@@ -7,6 +7,11 @@ import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 
+import 'pages/calendar.dart';
+import 'pages/events.dart';
+import 'pages/home.dart';
+import 'pages/people.dart';
+
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
   const MyApp({
@@ -71,9 +76,18 @@ class MyApp extends StatelessWidget {
                     return SettingsView(controller: settingsController);
                   case SampleItemDetailsView.routeName:
                     return const SampleItemDetailsView();
-                  case SampleItemListView.routeName:
+                  case HomePage.routeName:
+                    return const HomePage();
+                  case EventsPage.routeName:
+                    return const EventsPage();
+                  case CalendarPage.routeName:
+                    return const CalendarPage();
+                  case PeoplePage.routeName:
+                    return const PeoplePage();
+                  // case SampleItemListView.routeName:
+                  //   return const SampleItemListView();
                   default:
-                    return const SampleItemListView();
+                    return const HomePage();
                 }
               },
             );
