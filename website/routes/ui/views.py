@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template
 from flask_login import current_user
 
 views = Blueprint('views', __name__)

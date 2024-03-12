@@ -1,15 +1,14 @@
 from typing import Set
-from .. import db, json_response
-from ..models import User
+from ... import db, json_response
+from ...models import User
 import json
 import requests
 from flask import Blueprint, request, url_for, jsonify
 
-user_route = Blueprint('user_route', __name__)
+user_orm = Blueprint('user_route', __name__)
    
-
-
-@user_route.route("user/create", methods=["POST"])
+# Creates a new User object
+@user_orm.route("user/create", methods=["POST"])
 def create_user(email: str, password: str, name: str, username: str = None, pronouns: str = ""):
     if len(email) < 4:
         return json_response(400, 'Email must be greater than 3 characters.')
@@ -29,6 +28,7 @@ def create_user(email: str, password: str, name: str, username: str = None, pron
         is_admin=False,
         name=name,
         pronouns="",
+        bio="",
         tags=set(),
         events_organized=set(),
         events_participated=set()
@@ -40,7 +40,8 @@ def create_user(email: str, password: str, name: str, username: str = None, pron
 
     return json_response(201, "User created successfully.", new_user)
 
-@user_route.route("api/user/create", methods=["POST"])
+# API access for the create_user method
+@user_orm.route("api/user/create", methods=["POST"])
 def create_user_api():
     criteria = json.loads(request.json)
     email = criteria.get('email')
@@ -53,3 +54,14 @@ def create_user_api():
         output["data"] = new_user.id
 
     return jsonify(output)
+
+#######
+
+# Creates a new User object
+@user_orm.route("user/read", methods=["POST"])
+def read_user():
+    #TODO: Add filters
+    users = db.session.query(User).all()
+    return json_response(200, f"{len(users)} users found.", users)
+
+#TODO: Make API endpoint for read_user

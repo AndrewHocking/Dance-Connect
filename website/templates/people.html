@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}People{% endblock %} 
+{% block content %}
+  <h3 align="center">People</h3>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Name</th>
+    </tr>
+    {% for person in people %}
+    <tr>
+      <td>{{ person.id }}</td>
+      <td>{{ person.username }}</td>
+      <td>{{ person.name }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

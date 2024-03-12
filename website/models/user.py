@@ -27,6 +27,7 @@ class User(db.Model, UserMixin):
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
     name: Mapped[str]
     pronouns: Mapped[str]
+    bio: Mapped[str]
     tags: Mapped[Set['UserTag']] = relationship('UserTag', secondary="user_tag_relationships", back_populates='users')
     events_organized: Mapped[Set['Event']] = relationship('Event', back_populates='organizer')
     events_participated: Mapped[Set['Event']] = relationship('Event', secondary='event_participants', back_populates='participants')
