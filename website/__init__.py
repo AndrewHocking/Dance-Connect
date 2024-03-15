@@ -41,12 +41,16 @@ def create_app():
     from .routes.ui.views import views
     from .routes.ui.auth import auth
     from .routes.ui.people import people
+    from .routes.ui.events import events
     from .routes.orm.user import user_orm
+    from .routes.orm.event import event_orm
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
-    app.register_blueprint(user_orm, url_prefix='/')
     app.register_blueprint(people, url_prefix='/')
+    app.register_blueprint(events, url_prefix='/')
+    app.register_blueprint(user_orm, url_prefix='/')
+    app.register_blueprint(event_orm, url_prefix='/')
 
     from .models import User
     

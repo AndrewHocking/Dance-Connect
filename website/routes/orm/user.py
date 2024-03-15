@@ -1,6 +1,6 @@
-from typing import Set
+from typing import List
 from ... import db, json_response
-from ...models import User
+from ...models import User, UserTag
 import json
 import requests
 from flask import Blueprint, request, url_for, jsonify
@@ -29,9 +29,9 @@ def create_user(email: str, password: str, name: str, username: str = None, pron
         name=name,
         pronouns="",
         bio="",
-        tags=set(),
-        events_organized=set(),
-        events_participated=set()
+        tags=list(),
+        events_organized=list(),
+        events_participated=list()
     )
     db.session.add(new_user)
     db.session.flush()
@@ -55,13 +55,38 @@ def create_user_api():
 
     return jsonify(output)
 
+
+# Creates a new UserTag object, or finds one that already exists on the database with the same name
+@user_orm.route("user/tag/create", methods=["POST"])
+def create_user_tag(name: str, user: User, commit_db_after_creation: bool = True):
+    name = name.lower
+    existing_tag = db.session.query(UserTag).filter_by(name = name).first()
+    if existing_tag is not None:
+        existing_tag.users.append(user)
+    else:
+        new_tag = UserTag(name = name, users = [user])
+
+    db.session.add(new_tag)
+
+    if commit_db_after_creation:
+        db.session.commit()
+
+    return json_response(201, "User tag created successfully.", new_tag)
+
+
 #######
+
+#TODO: Make API endpoint for these methods
 
 # Creates a new User object
 @user_orm.route("user/read", methods=["POST"])
-def read_user():
+def read_users():
     #TODO: Add filters
     users = db.session.query(User).all()
     return json_response(200, f"{len(users)} users found.", users)
 
-#TODO: Make API endpoint for read_user
+@user_orm.route("user/tag/read", methods=["POST"])
+def read_user_tag():
+    #TODO: Add filters
+    user_tags = db.session.query(UserTag).all()
+    return json_response(200, f"{len(user_tags)} user tags found.", user_tags)

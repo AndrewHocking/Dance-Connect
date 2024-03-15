@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<form method="POST">
+    <h3 align="center">Sign Up</h3>
+    <div class="form-group">
+        {{ form.title.label() }}
+        {{ form.title() }}
+    </div>
+    <div class="form-group">
+        {{ form.description.label() }}
+        {{ form.description() }}
+    </div>
+    <div class="form-group">
+        {{ form.url.label() }}
+        {{ form.url() }}
+    </div>
+    <div class="form-group">
+        {{ form.tags.label() }}
+        {{ form.tags() }}
+        <span id="tags-help-block" class="help-block">{{ form.tags.description }}</span>
+    </div>
+    <div class="form-group">
+        {{ form.venue_name.label() }}
+        {{ form.venue_name() }}
+    </div>
+    <div class="form-group">
+        {{ form.venue_address.label() }}
+        {{ form.venue_address() }}
+    </div>
+    <div class="form-group">
+        {{ form.venue_is_wheelchair_accessible.label() }}
+        {{ form.venue_is_wheelchair_accessible() }}
+    </div>
+    <div class="form-group">
+        {{ form.accessibility_notes.label() }}
+        {{ form.accessibility_notes() }}
+    </div>
+    <div class="form-group">
+        {{ form.min_ticket_price.label() }}
+        {{ form.min_ticket_price() }}
+        <span id="min-ticket-price-help-block" class="help-block">{{ form.min_ticket_price.description }}</span>
+    </div>
+    <div class="form-group">
+        {{ form.max_ticket_price.label() }}
+        {{ form.max_ticket_price() }}
+        <span id="min-ticket-price-help-block" class="help-block">{{ form.max_ticket_price.description }}</span>
+    </div>
+    <br />
+    {{ form.submit(class_="btn btn-primary") }}
+</form>
+{% endblock %}

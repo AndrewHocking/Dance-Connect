@@ -1,4 +1,4 @@
-from typing import Set
+from typing import List
 from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -16,7 +16,7 @@ class UserTag(db.Model):
     __tablename__ = "user_tags"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, unique=True)
-    users: Mapped[Set['User']] = relationship('User', secondary="user_tag_relationships", back_populates='tags')
+    users: Mapped[List['User']] = relationship('User', secondary="user_tag_relationships", back_populates='tags')
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
@@ -28,9 +28,9 @@ class User(db.Model, UserMixin):
     name: Mapped[str]
     pronouns: Mapped[str]
     bio: Mapped[str]
-    tags: Mapped[Set['UserTag']] = relationship('UserTag', secondary="user_tag_relationships", back_populates='users')
-    events_organized: Mapped[Set['Event']] = relationship('Event', back_populates='organizer')
-    events_participated: Mapped[Set['Event']] = relationship('Event', secondary='event_participants', back_populates='participants')
+    tags: Mapped[List['UserTag']] = relationship('UserTag', secondary="user_tag_relationships", back_populates='users')
+    events_organized: Mapped[List['Event']] = relationship('Event', back_populates='organizer')
+    events_participated: Mapped[List['Event']] = relationship('Event', secondary='event_participants', back_populates='participants')
     #TODO: add profile_picture: Mapped[str] = mapped_column(String, nullable=False, default="default.jpg")
 
 class UserTagRelationship(db.Model):

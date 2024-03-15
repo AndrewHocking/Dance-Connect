@@ -57,4 +57,4 @@ def sign_up():
             else:
                 flash(response["message"], category=response["response_type"])
 
-    return render_template("sign_up.html", user=current_user, form=form)
+    return render_template("sign-up.html", user=current_user, form=form)

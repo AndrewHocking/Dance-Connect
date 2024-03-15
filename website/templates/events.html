@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Events{% endblock %} 
+{% block content %}
+  <h3 align="center">Events</h3>
+  <a href="/create-event">Create Event</a>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Title</th>
+      <th>Organizer</th>
+      <th>Tags</th>
+    </tr>
+    {% for event in events %}
+    <tr>
+      <td>{{ event.id }}</td>
+      <td>{{ event.title }}</td>
+      <td>{{ event.organizer.name }}</td>
+      <td>{% for tag in event.tags %}{{ tag.name }}, {% endfor %}</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
