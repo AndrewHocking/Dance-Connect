@@ -4,6 +4,7 @@ import json
 import uuid
 import os
 import shutil
+from PIL import Image
 
 
 class CDN:
@@ -45,6 +46,8 @@ class CDN:
 
         THIS FUNCTION IS NOT ASYNCHRONOUS. It will block the thread until the file is uploaded.
 
+        This function will strip all the metadata from the image before uploading it to the CDN.
+
         Supported file formats: PNG, GIF, JPEG, and SVG.
         Supported file sizes: Up to 10MB.
         Supported image dimention: 12'000 pixels on the longest side.
@@ -82,8 +85,26 @@ class CDN:
         Returns:
             dict: A dictionary containing the response from cloudflare's image CDN or a dictionary containing an error message.
         """
-        # TODO - Add error handling for when the file is too large/unsupported/invalidFormat.
-        # https://developers.cloudflare.com/images/upload-images/
+
+        # strip metadata, this ensures there is no more than 10MB of metadata
+        # we don't need the metadata anyways
+        # from: https://stackoverflow.com/a/72247130
+        img = Image.open(path)
+        if "exif" in img.info:
+            del img.info["exif"]  # Strip just EXIF data
+        img.save(path, quality="keep")
+        img = Image.open(path)  # reopen the image to update the image object
+
+        # check file attributes
+        width, height = img.size
+        if width > 12000:
+            return self._error_message("Image width is greater than 12000 pixels")
+        if height > 12000:
+            return self._error_message("Image height is greater than 12000 pixels")
+        if width * height > 100000000:
+            return self._error_message("Image area is greater than 100 MegaPixels")
+        if os.path.getsize(path) > 1000000:
+            return self._error_message("Image size is greater than 10MB")
 
         # check file formats
         if not path.lower().endswith((".png", ".gif", ".jpeg", ".svg", "jpg")):
