@@ -11,7 +11,9 @@ class CDN:
     A class that represents a CDN (Content Delivery Network) object. This class is used to upload and download
     files from cloudflare.
 
-    dict reply from cloudflare format example:
+    Notes:
+    I did not implement List images V2 because we should never need to list all images in the CDN. If we do and there is a
+    lot of pictues, then it could cause unessesary load on the server.
 
     Methods:
         upload: Uploads a file to cloudflare's image CDN.
@@ -216,3 +218,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+"""
+Notes:
+https://developers.cloudflare.com/api/operations/cloudflare-images-base-image
+https://developers.cloudflare.com/images/upload-images/
+
+"""
