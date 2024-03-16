@@ -33,12 +33,22 @@ class CDN:
     _key: str
     _account_hash: str
 
-    def __init__(self):
-        with open("./secrets/keys.json", "r") as file:
-            data = json.load(file)
-            self._key = data["cloudflare"]["cdn_key"]
-            self._account_hash = data["cloudflare"]["account_hash"]
-            file.close()
+    def __init__(self) -> bool:
+        """
+        The constructor for the CDN class. It reads the keys from the secrets folder and stores them in the class attributes.
+
+        Returns:
+            bool: True if the keys were read successfully, False otherwise.
+        """
+        try:
+            with open("./secrets/keys.json", "r") as file:
+                data = json.load(file)
+                self._key = data["cloudflare"]["cdn_key"]
+                self._account_hash = data["cloudflare"]["account_hash"]
+                file.close()
+            return True
+        except Exception as e:
+            return False
 
     def upload(self, path: str) -> dict:
         """
@@ -85,51 +95,50 @@ class CDN:
         Returns:
             dict: A dictionary containing the response from cloudflare's image CDN or a dictionary containing an error message.
         """
-
-        # strip metadata, this ensures there is no more than 10MB of metadata
-        # we don't need the metadata anyways
-        # from: https://stackoverflow.com/a/72247130
-        img = Image.open(path)
-        if "exif" in img.info:
-            del img.info["exif"]  # Strip just EXIF data
-        img.save(path, quality="keep")
-        img = Image.open(path)  # reopen the image to update the image object
-
-        # check file attributes
-        width, height = img.size
-        if width > 12000:
-            return self._error_message("Image width is greater than 12000 pixels")
-        if height > 12000:
-            return self._error_message("Image height is greater than 12000 pixels")
-        if width * height > 100000000:
-            return self._error_message("Image area is greater than 100 MegaPixels")
-        if os.path.getsize(path) > 1000000:
-            return self._error_message("Image size is greater than 10MB")
-
-        # check file formats
-        if not path.lower().endswith((".png", ".gif", ".jpeg", ".svg", "jpg")):
-            return self._error_message("Invalid file format")
-
-        upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1".format(
-            account_id=self._account_hash
-        )
-        header = {
-            "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
-        }
-
-        # handles file not found
         try:
-            file = {
-                "file": open("{path_to_image}".format(path_to_image=path), "rb"),
-            }
-        except FileNotFoundError:
-            return self._error_message("File not found")
+            # strip metadata, this ensures there is no more than 10MB of metadata
+            # we don't need the metadata anyways
+            # from: https://stackoverflow.com/a/72247130
+            img = Image.open(path)
+            if "exif" in img.info:
+                del img.info["exif"]  # Strip just EXIF data
+            img.save(path, quality="keep")
+            img = Image.open(path)  # reopen the image to update the image object
 
+            # check file attributes
+            width, height = img.size
+            if width > 12000:
+                return self._error_message("Image width is greater than 12000 pixels")
+            if height > 12000:
+                return self._error_message("Image height is greater than 12000 pixels")
+            if width * height > 100000000:
+                return self._error_message("Image area is greater than 100 MegaPixels")
+            if os.path.getsize(path) > 1000000:
+                return self._error_message("Image size is greater than 10MB")
+
+            # check file formats
+            if not path.lower().endswith((".png", ".gif", ".jpeg", ".svg", "jpg")):
+                return self._error_message("Invalid file format")
+
+            upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1".format(
+                account_id=self._account_hash
+            )
+            header = {
+                "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
+            }
+
+            # handles file not found
+            try:
+                file = {
+                    "file": open("{path_to_image}".format(path_to_image=path), "rb"),
+                }
+            except FileNotFoundError:
+                return self._error_message("File not found")
+
+            response = requests.post(upload_url, headers=header, files=file)
+            return response.json()
         except Exception as e:
             return self._error_message(str(e))
-
-        response = requests.post(upload_url, headers=header, files=file)
-        return response.json()
 
     def delete(self, image_id: str) -> dict:
         """
@@ -149,14 +158,17 @@ class CDN:
         Returns:
             dict: A dictionary containing the response from cloudflare's image CDN.
         """
-        upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1/{image_id}".format(
-            account_id=self._account_hash, image_id=image_id
-        )
-        header = {
-            "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
-        }
-        response = requests.delete(upload_url, headers=header)
-        return response.json()
+        try:
+            upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1/{image_id}".format(
+                account_id=self._account_hash, image_id=image_id
+            )
+            header = {
+                "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
+            }
+            response = requests.delete(upload_url, headers=header)
+            return response.json()
+        except Exception as e:
+            return self._error_message(str(e))
 
     def get_image_details(self, image_id: str) -> dict:
         """
@@ -189,14 +201,17 @@ class CDN:
         Returns:
             dict: A dictionary containing the response from cloudflare's image CDN.
         """
-        upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1/{image_id}".format(
-            account_id=self._account_hash, image_id=image_id
-        )
-        header = {
-            "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
-        }
-        response = requests.get(upload_url, headers=header)
-        return response.json()
+        try:
+            upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1/{image_id}".format(
+                account_id=self._account_hash, image_id=image_id
+            )
+            header = {
+                "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
+            }
+            response = requests.get(upload_url, headers=header)
+            return response.json()
+        except Exception as e:
+            return self._error_message(str(e))
 
     def download_original(self, image_id: str) -> str:
         """
@@ -207,29 +222,33 @@ class CDN:
             image_id (str): The ID of the image to download.
 
         Returns:
-            str: The path to the downloaded file.
+            str: The path to the downloaded file or an error message that prefixes with: "ERROR_FAIL" followed by the error message.
         """
-        # uuid is used to generate a unique file name
-        fileName = (
-            str(uuid.uuid4()) + self.get_image_details(image_id)["result"]["filename"]
-        )
+        try:
+            # uuid is used to generate a unique file name
+            fileName = (
+                str(uuid.uuid4())
+                + self.get_image_details(image_id)["result"]["filename"]
+            )
 
-        path = "./cloud/temp/{}".format(fileName)
+            path = "./cloud/temp/{}".format(fileName)
 
-        upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1/{image_id}/blob".format(
-            account_id=self._account_hash, image_id=image_id
-        )
-        header = {
-            "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
-        }
-        blob = requests.get(upload_url, headers=header)
-        print(type(blob.content))
+            upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1/{image_id}/blob".format(
+                account_id=self._account_hash, image_id=image_id
+            )
+            header = {
+                "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
+            }
+            blob = requests.get(upload_url, headers=header)
+            print(type(blob.content))
 
-        with open(path, "wb") as bn_fl:
-            bn_fl.write(blob.content)
-            bn_fl.close()
+            with open(path, "wb") as bn_fl:
+                bn_fl.write(blob.content)
+                bn_fl.close()
 
-        return path
+            return path
+        except Exception as e:
+            return "ERROR_FAIL: " + str(e)
 
     def empty_temp_folder(self) -> bool:
         """
@@ -238,20 +257,23 @@ class CDN:
         Returns:
             bool: True if the folder was emptied successfully, False otherwise.
         """
-        folder = "./cloud/temp/"
-        for filename in os.listdir(folder):
-            file_path = os.path.join(folder, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(
-                        file_path
-                    )  # This will remove a folder and all its contents
-            except Exception as e:
-                print("Failed to delete %s. Reason: %s" % (file_path, e))
-                return False
-        return True
+        try:
+            folder = "./cloud/temp/"
+            for filename in os.listdir(folder):
+                file_path = os.path.join(folder, filename)
+                try:
+                    if os.path.isfile(file_path) or os.path.islink(file_path):
+                        os.unlink(file_path)
+                    elif os.path.isdir(file_path):
+                        shutil.rmtree(
+                            file_path
+                        )  # This will remove a folder and all its contents
+                except Exception as e:
+                    print("Failed to delete %s. Reason: %s" % (file_path, e))
+                    return False
+            return True
+        except Exception as e:
+            return False
 
     def _error_message(self, message: str) -> dict:
         """
