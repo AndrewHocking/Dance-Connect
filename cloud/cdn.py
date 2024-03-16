@@ -186,12 +186,12 @@ class CDN:
 
         return path
 
-    def empty_temp_folder(self):
+    def empty_temp_folder(self) -> bool:
         """
         Empties the temporary folder used to store downloaded files.
 
         Returns:
-            None
+            bool: True if the folder was emptied successfully, False otherwise.
         """
         folder = "./cloud/temp/"
         for filename in os.listdir(folder):
@@ -205,6 +205,8 @@ class CDN:
                     )  # This will remove a folder and all its contents
             except Exception as e:
                 print("Failed to delete %s. Reason: %s" % (file_path, e))
+                return False
+        return True
 
 
 def main():
