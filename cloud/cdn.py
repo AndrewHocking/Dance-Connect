@@ -40,7 +40,7 @@ class CDN:
             self._account_hash = data["cloudflare"]["account_hash"]
             file.close()
 
-    def upload(self, path: str = "./cloud/testimage.jpg") -> dict:
+    def upload(self, path: str) -> dict:
         """
         Uploads a file to cloudflare's image CDN.
 
