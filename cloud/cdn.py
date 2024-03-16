@@ -18,6 +18,11 @@ class CDN:
     Methods:
         upload: Uploads a file to cloudflare's image CDN.
         download: Downloads a file from cloudflare's image CDN.
+        delete: Deletes a file from cloudflare's image CDN.
+        get_image_details: Gets a link to a file from cloudflare's image CDN.
+        download_original: Downloads the original file from cloudflare's image CDN and saves it within a temporary folder.
+        empty_temp_folder: Empties the temporary folder used to store downloaded files.
+        _error_message: Returns a dictionary with an error message.
 
     Attributes:
         _key (str): The key used to authenticate with cloudflare's image CDN.
@@ -37,6 +42,16 @@ class CDN:
     def upload(self, path: str = "./cloud/testimage.jpg") -> dict:
         """
         Uploads a file to cloudflare's image CDN.
+
+        THIS FUNCTION IS NOT ASYNCHRONOUS. It will block the thread until the file is uploaded.
+
+        Supported file formats: PNG, GIF, JPEG, and SVG.
+        Supported file sizes: Up to 10MB.
+        Supported image dimention: 12'000 pixels on the longest side.
+        Supported image area: 100 MegaPixels. (ex. 10'000 x 10'000 pixels)
+        Supported metadata: 10MB of metadata.
+        Animated GIFs, including all frames, are limited to 100 megapixels (MP).
+
         To access image ID: ["result"]["id"]
         To access image URL: ["result"]["variants"][0]
 
@@ -65,13 +80,15 @@ class CDN:
             path (str): The path to the file to upload.
 
         Returns:
-            dict: A dictionary containing the response from cloudflare's image CDN.
+            dict: A dictionary containing the response from cloudflare's image CDN or a dictionary containing an error message.
         """
-        # TODO - Add error handling for when the file does not exist.
-        # TODO - Add error handling for when the file is not an image.
         # TODO - Add error handling for when the file is too large/unsupported/invalidFormat.
         # https://developers.cloudflare.com/images/upload-images/
-        # TODO - create an easier dict to return
+
+        # check file formats
+        if not path.lower().endswith((".png", ".gif", ".jpeg", ".svg", "jpg")):
+            return self._error_message("Invalid file format")
+
         upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1".format(
             account_id=self._account_hash
         )
@@ -79,9 +96,16 @@ class CDN:
             "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
         }
 
-        file = {
-            "file": open("{path_to_image}".format(path_to_image=path), "rb"),
-        }
+        # handles file not found
+        try:
+            file = {
+                "file": open("{path_to_image}".format(path_to_image=path), "rb"),
+            }
+        except FileNotFoundError:
+            return self._error_message("File not found")
+
+        except Exception as e:
+            return self._error_message(str(e))
 
         response = requests.post(upload_url, headers=header, files=file)
         return response.json()
@@ -208,14 +232,31 @@ class CDN:
                 return False
         return True
 
+    def _error_message(self, message: str) -> dict:
+        """
+        Returns a dictionary with an error message.
+
+        Args:
+            message (str): The error message.
+
+        Returns:
+            dict: A dictionary containing the error message.
+        """
+        return {
+            "errors": [message],
+            "messages": [],
+            "result": {},
+            "success": False,
+        }
+
 
 def main():
     """
     The main function used for manually testing the CDN class.
     """
     cdn = CDN()
-    # cdn.empty_temp_folder()
-    # print(cdn.download_original("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
+    cdn.empty_temp_folder()
+    print(cdn.get_image_details("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
 
 
 if __name__ == "__main__":
