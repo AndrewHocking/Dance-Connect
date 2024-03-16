@@ -276,8 +276,8 @@ def main():
     The main function used for manually testing the CDN class.
     """
     cdn = CDN()
-    cdn.empty_temp_folder()
-    print(cdn.get_image_details("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
+    # cdn.empty_temp_folder()
+    # print(cdn.get_image_details("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
 
 
 if __name__ == "__main__":
