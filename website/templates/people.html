@@ -1,6 +1,103 @@
 {% extends "base.html" %}
 {% block title %}People{% endblock %} 
 {% block content %}
+  <form method="POST" class="container m-1">
+    <div class="row align-items-center mb-4">
+      <div class="col-12 col-md-4 col-xl-3">
+        <h1>People</h1>
+      </div>
+      
+      <div class="col-12 col-md-8 col-xl-9">
+        <div class="d-flex">
+          <div class="flex-grow-1 pr-2">
+            {{ form.searchName }}
+          </div>
+          {{ form.searchSubmit }}
+        </div>
+      </div>
+    </div>  <!-- HEADER ROW END -->
+
+    <div class="row mb-4">
+      <div class="col-12 col-md-4 col-xl-3">
+        <div class="row">
+          <div>
+            <div class="col-12 mb-3">
+              <h4>{{ form.sortOption.label }}</h4>
+              {{ form.sortOption }}
+            </div>
+
+            <div class="col-12 mb-3">
+              <h4>{{ form.organizationType.description }}</h4>
+              <p class="mb-0">
+                {{ form.organizationType.form.individual }} 
+                {{ form.organizationType.form.individual.label() }} 
+              </p>
+              <p class="mb-0">
+                {{ form.organizationType.form.group }} 
+                {{ form.organizationType.form.group.label() }} 
+              </p>
+              <p class="mb-0">
+                {{ form.organizationType.form.organization }} 
+                {{ form.organizationType.form.organization.label() }} 
+              </p>
+            </div>
+
+            <div class="col-12 mb-3">
+              <h4>{{ form.filters.description }}</h4>
+              <p class="mb-0">
+                {{ form.filters.form.choreographer }} 
+                {{ form.filters.form.choreographer.label() }} 
+              </p>
+              <p class="mb-0">
+                {{ form.filters.form.designer }} 
+                {{ form.filters.form.designer.label() }} 
+              </p>
+              <p class="mb-0">
+                {{ form.filters.form.writer }} 
+                {{ form.filters.form.writer.label() }} 
+              </p>
+              <p class="mb-0">
+                {{ form.filters.form.producer }} 
+                {{ form.filters.form.producer.label() }} 
+              </p>
+              <p class="mb-0">
+                {{ form.filters.form.stageManager }} 
+                {{ form.filters.form.stageManager.label() }} 
+              </p>
+              <p class="mb-0">
+                {{ form.filters.form.other }} 
+                {{ form.filters.form.other.label() }} 
+              </p>
+            </div>
+            <div class="col-12 ">
+              {{ form.applyFilterSubmit }}
+              {{ form.clearFilterSubmit }}
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- FILTER BAR END-->
+
+      <div class="col-12 col-md-8 col-xl-9">
+        <div class="row">
+          {% for person in people %}
+          <div class="col-12 col-md-6 col-xl-3">
+            <div class="d-flex flex-column">
+              <div class="flex-grow-1 bg-primary">
+                Image Here
+              </div>
+              <p>{{ person.name }}</p>
+              <p>{{ person.tags }} </p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div> <!-- ITEM LIST END -->
+    </div> <!-- ITEM ROW END -->
+
+  </form> <!-- CONTAINER END -->
+
+
   <div class="page-header">
     <h1>People</h1>
   </div>
