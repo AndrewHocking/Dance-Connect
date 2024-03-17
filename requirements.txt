@@ -8,3 +8,4 @@ sqlalchemy
 pillow
 email_validator
 requests
+pillow
