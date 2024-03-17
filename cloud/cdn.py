@@ -33,7 +33,7 @@ class CDN:
     _key: str
     _account_hash: str
 
-    def __init__(self) -> bool:
+    def __init__(self):
         """
         The constructor for the CDN class. It reads the keys from the secrets folder and stores them in the class attributes.
 
@@ -46,9 +46,8 @@ class CDN:
                 self._key = data["cloudflare"]["cdn_key"]
                 self._account_hash = data["cloudflare"]["account_hash"]
                 file.close()
-            return True
         except Exception as e:
-            return False
+            pass
 
     def upload(self, path: str) -> dict:
         """
@@ -173,6 +172,7 @@ class CDN:
     def get_image_details(self, image_id: str) -> dict:
         """
         Gets a link to a file from cloudflare's image CDN.
+        ["result"]["variants"][0] is the link to the image.
 
         Response example:
         {
@@ -240,13 +240,38 @@ class CDN:
                 "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
             }
             blob = requests.get(upload_url, headers=header)
-            print(type(blob.content))
+            # print(type(blob.content))
 
             with open(path, "wb") as bn_fl:
                 bn_fl.write(blob.content)
                 bn_fl.close()
 
             return path
+        except Exception as e:
+            return "ERROR_FAIL: " + str(e)
+
+    def test(self) -> dict:
+        # TODO add iterative request to get all images
+        """
+        Downloads the original file from cloudflare's image CDN and saves it within a temporary folder.
+        Please delete file in temporary folder after use!!! (CDN.empty_temp_folder())
+
+        Args:
+            image_id (str): The ID of the image to download.
+
+        Returns:
+            str: The path to the downloaded file or an error message that prefixes with: "ERROR_FAIL" followed by the error message.
+        """
+        try:
+            upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v2".format(
+                account_id=self._account_hash
+            )
+            header = {
+                "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
+            }
+            response = requests.get(upload_url, headers=header)
+            return response.json()
+
         except Exception as e:
             return "ERROR_FAIL: " + str(e)
 
@@ -296,9 +321,12 @@ class CDN:
 def main():
     """
     The main function used for manually testing the CDN class.
+    https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v2
     """
     cdn = CDN()
+    # print(cdn.download_original("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
     # cdn.empty_temp_folder()
+    # print(cdn.test())
     # print(cdn.get_image_details("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
 
 
@@ -310,5 +338,4 @@ if __name__ == "__main__":
 Notes:
 https://developers.cloudflare.com/api/operations/cloudflare-images-base-image
 https://developers.cloudflare.com/images/upload-images/
-
 """
