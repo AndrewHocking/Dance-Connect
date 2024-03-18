@@ -1,0 +1,36 @@
+<div class="container border rounded mb-3">
+    <div class = "row align-items-center mt-2">
+        <div class = "col-auto form-group">
+            {{ event_occurrence_form.date.label() }}
+            {{ event_occurrence_form.date() }}
+        </div>
+        <div class = "col-auto form-group">
+            {{ event_occurrence_form.start_time.label() }}
+            {{ event_occurrence_form.start_time() }}
+        </div>
+        <div class = "col-auto form-group">
+            {{ event_occurrence_form.end_time.label() }}
+            {{ event_occurrence_form.end_time() }}
+        </div>
+        <div class = "col form-group my-auto">
+            <div class = "row">
+                <div class = "form-check">
+                    {{ event_occurrence_form.is_relaxed_performance() }}
+                    {{ event_occurrence_form.is_relaxed_performance.label() }}
+                    <a href="https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed">(learn more)</a>.
+                </div>
+            </div>
+            <div class = "row">
+                <div class = "form-check">
+                    {{ event_occurrence_form.has_asl_interpreter() }}
+                    {{ event_occurrence_form.has_asl_interpreter.label() }}
+                </div>
+            </div>
+        </div>
+        {% if show_delete_button %}
+        <div class = "col-auto d-flex justify-content-start justify-content-md-end form-group mt-2">
+            <button id="{{ occurrence_label }}-delete-btn" class="btn btn-danger delete-btn" type="button">Delete</button>
+        </div>
+        {% endif %}
+    </div>
+</div>

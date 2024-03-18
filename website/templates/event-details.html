@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }}{% endblock %}
+{% block content %}
+<h1>{{ event.title }}</h1>
+<div>
+    <p>Tags: {% for tag in event.tags %}{{tag.name}}{{ ", " if not loop.last else "" }}{% endfor %}</p>
+    <h4>Overview</h4>
+    <p>{{event.description}}</p>
+    <h4>Ticket Prices</h4>
+    <p>Min: {{event.min_ticket_price}}</p>
+    <p>Max: {{event.max_ticket_price}}</p>
+    <a class="btn btn-primary" href="{{event.url}}">Learn More</a>
+    <br/>
+    <br/>
+    <h4>Location</h4>
+    <p>{{event.venue_name}}</p>
+    <p>{{event.venue_address}}</p>
+    <h4>Accessibility Information</h4>
+    <p>{{ "Venue is wheelchair accessible" if event.venue_is_wheelchair_accessible else "Venue is not wheelchair accessible" }}</p>
+    <p>{{ "Show is photosensitivity friendly" if event.show_is_photosensitivity_friendly else "Show is not photosensitivity friendly" }}</p>
+    <h5>Accessibility Notes</h5>
+    <p>{{event.accessibility_notes}}</p>
+    <h4>Occurrences</h4>
+    
+    <ul>
+    {% for occurrence in event.occurrences %}
+        <li>{{occurrence.start_time.strftime("%Y-%m-%d %H:%M")}} to {{occurrence.end_time.strftime("%Y-%m-%d %H:%M")}} {{ "Relaxed performance." if occurrence.is_relaxed_performance else "" }} {{ "Has ASL interpreter." if occurrence.has_asl_interpreter else "" }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
