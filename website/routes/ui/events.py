@@ -14,9 +14,13 @@ def events_list():
 @events.route('/create-event', methods=['GET', 'POST'])
 @login_required
 def event_create():
-    form = CreateEventForm()
-
+    occurrences = []
+    for i in range(0,50):
+        occurrences.append({"name" : f"occurrence_{i}"})
+    event_form = CreateEventForm(occurrences=occurrences)
+        
     if request.method == 'POST':
+        print(request.form)
         title = request.form.get('title')
         description = request.form.get('description')
         url = request.form.get('url')
@@ -57,4 +61,4 @@ def event_create():
         else:
             flash(response["message"], category=response["response_type"])
 
-    return render_template("create-event.html", user=current_user, form=form)
+    return render_template("create-event.html", user=current_user, event_form=event_form)
