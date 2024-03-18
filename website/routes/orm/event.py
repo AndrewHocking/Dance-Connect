@@ -21,10 +21,11 @@ def create_event(
     venue_name: str = "",
     venue_address: str = "",
     venue_is_wheelchair_accessible: bool = False,
+    show_is_photosensitivity_friendly: bool = False,
     accessibility_notes: str = "",
     min_ticket_price: float = None,
     max_ticket_price: float = None,
-    occurrences: List[EventOccurrence] = list(),
+    occurrences: List[dict] = list(),
     participants: List[User] = list(),
     commit_db_after_creation: bool = True
 ):
@@ -38,16 +39,22 @@ def create_event(
         venue_name = venue_name,
         venue_address = venue_address,
         venue_is_wheelchair_accessible = venue_is_wheelchair_accessible,
+        show_is_photosensitivity_friendly = show_is_photosensitivity_friendly,
         accessibility_notes = accessibility_notes,
         min_ticket_price = min_ticket_price,
         max_ticket_price = max_ticket_price,
-        occurrences = occurrences,
+        occurrences = list(),
         participants = participants
     )
 
     db.session.add(new_event)
     for tag in tags:
         create_event_tag(tag, new_event, False)
+        
+    for occurrence in occurrences:
+        start_time = datetime.strptime(f"{occurrence.get("date")} {occurrence.get("start_time")}", "%Y-%m-%d %H:%M")
+        end_time = datetime.strptime(f"{occurrence.get("date")} {occurrence.get("end_time")}", "%Y-%m-%d %H:%M")
+        create_event_occurrence(event=new_event, start_time=start_time, end_time=end_time, is_relaxed_performance=bool(occurrence.get("is_relaxed_performance")) or False, has_asl_interpreter=bool(occurrence.get("has_asl_interpreter")) or False)
     
     if commit_db_after_creation:
         db.session.commit()

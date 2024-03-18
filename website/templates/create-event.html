@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Sign Up{% endblock %}
+{% block title %}Create Event{% endblock %}
 {% block content %}
 <div class="page-header">
     <h1>Create Event</h1>
@@ -132,6 +132,11 @@
     function addOccurrence() {
         numOccurrences++;
         document.getElementById("occurrences-" + numOccurrences).classList.remove(["d-none"]);
+        document.getElementById("occurrences-" + numOccurrences + "-date").value = document.getElementById("occurrences-" + (numOccurrences - 1) + "-date").value;
+        document.getElementById("occurrences-" + numOccurrences + "-start_time").value = document.getElementById("occurrences-" + (numOccurrences - 1) + "-start_time").value;
+        document.getElementById("occurrences-" + numOccurrences + "-end_time").value = document.getElementById("occurrences-" + (numOccurrences - 1) + "-end_time").value;
+        document.getElementById("occurrences-" + numOccurrences + "-is_relaxed_performance").checked = document.getElementById("occurrences-" + (numOccurrences - 1) + "-is_relaxed_performance").checked;
+        document.getElementById("occurrences-" + numOccurrences + "-has_asl_interpreter").checked = document.getElementById("occurrences-" + (numOccurrences - 1) + "-has_asl_interpreter").checked;
         document.getElementById("num_occurrences").value = numOccurrences + 1;
     }
 
@@ -141,8 +146,8 @@
             document.getElementById("occurrences-" + (i - 1) + "-date").value = i == numOccurrences ? null : document.getElementById("occurrences-" + i + "-date").value;
             document.getElementById("occurrences-" + (i - 1) + "-start_time").value = i == numOccurrences ? null : document.getElementById("occurrences-" + i + "-start_time").value;
             document.getElementById("occurrences-" + (i - 1) + "-end_time").value = i == numOccurrences ? null : document.getElementById("occurrences-" + i + "-end_time").value;
-            document.getElementById("occurrences-" + (i - 1) + "-is_relaxed_performance").value = i == numOccurrences ? false : document.getElementById("occurrences-" + i + "-is_relaxed_performance").value;
-            document.getElementById("occurrences-" + (i - 1) + "-has_asl_interpreter").value = i == numOccurrences ? false : document.getElementById("occurrences-" + i + "-has_asl_interpreter").value;
+            document.getElementById("occurrences-" + (i - 1) + "-is_relaxed_performance").checked = i == numOccurrences ? false : document.getElementById("occurrences-" + i + "-is_relaxed_performance").checked;
+            document.getElementById("occurrences-" + (i - 1) + "-has_asl_interpreter").checked = i == numOccurrences ? false : document.getElementById("occurrences-" + i + "-has_asl_interpreter").checked;
         }
         document.getElementById("occurrences-" + numOccurrences).classList.add(["d-none"]);
         document.getElementById("num_occurrences").value = numOccurrences;
@@ -151,6 +156,14 @@
 
     document.getElementById("add_occurrence_btn").addEventListener("click", event => {
         addOccurrence();
+    });
+
+    $("form").bind("keypress", function (e) {
+        if (e.keyCode == 13) {
+            $("#btnSearch").attr('value');
+            //add more buttons here
+            e.preventDefault();
+        }
     });
 
 </script>

@@ -11,7 +11,7 @@ def events_list():
     events = response["data"]
     return render_template("events.html", user=current_user, events=events)
 
-@events.route('/create-event', methods=['GET', 'POST'])
+@events.route('/events/create', methods=['GET', 'POST'])
 @login_required
 def event_create():
     occurrences = []
@@ -29,6 +29,17 @@ def event_create():
         venue_address = request.form.get('venue_address')
         venue_is_wheelchair_accessible = request.form.get('venue_is_wheelchair_accessible')
         accessibility_notes = request.form.get('accessibility_notes')
+        show_is_photosensitivity_friendly = request.form.get("show_is_photosensitivity_friendly")
+        occurrences = []
+        for i in range(0, int(request.form.get("num_occurrences"))):
+            occurrences.append({
+                "date" : request.form.get(f"occurrences-{i}-date"),
+                "start_time" : request.form.get(f"occurrences-{i}-start_time"),
+                "end_time" : request.form.get(f"occurrences-{i}-end_time"),
+                "is_relaxed_performance" : request.form.get(f"occurrences-{i}-is_relaxed_performance"),
+                "has_asl_interpreter" : request.form.get(f"occurrences-{i}-has_asl_interpreter")
+            })
+
         try:
             min_ticket_price = float(request.form.get('min_ticket_price'))
         except:
@@ -50,9 +61,11 @@ def event_create():
             venue_name=venue_name,
             venue_address=venue_address,
             venue_is_wheelchair_accessible=bool(venue_is_wheelchair_accessible),
+            show_is_photosensitivity_friendly=bool(show_is_photosensitivity_friendly),
             accessibility_notes=accessibility_notes,
             min_ticket_price=min_ticket_price,
-            max_ticket_price=max_ticket_price
+            max_ticket_price=max_ticket_price,
+            occurrences=occurrences
         )
 
         if (response["status_code"] == 201):
@@ -62,3 +75,10 @@ def event_create():
             flash(response["message"], category=response["response_type"])
 
     return render_template("create-event.html", user=current_user, event_form=event_form)
+
+@events.route('/events/<int:event_id>', methods=['GET'])
+def event_details(event_id: int):
+    from ... import db
+    from ...models import Event
+    event: Event = db.session.query(Event).get(event_id)
+    return render_template("event-details.html", user=current_user, event=event)
