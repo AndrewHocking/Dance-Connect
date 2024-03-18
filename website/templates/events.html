@@ -14,11 +14,11 @@
     {% for event in events %}
     <tr>
       <td>{{ event.id }}</td>
-      <td>{{ event.title }}</td>
+      <td><a href="/events/{{event.id}}">{{ event.title }}</a></td>
       <td>{{ event.organizer.name }}</td>
       <td>{% for tag in event.tags %}{{ tag.name }}, {% endfor %}</td>
     </tr>
     {% endfor %}
   </table>
-  <a class="btn btn-primary" href="/create-event">Create Event</a>
+  <a class="btn btn-primary" href="/events/create">Create Event</a>
 {% endblock %}
