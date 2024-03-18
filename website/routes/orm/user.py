@@ -4,6 +4,7 @@ from ...models import User, UserTag
 import json
 import requests
 from flask import Blueprint, request, url_for, jsonify
+from sqlalchemy import asc, desc;
 
 user_orm = Blueprint('user_route', __name__)
    
@@ -78,12 +79,33 @@ def create_user_tag(name: str, user: User, commit_db_after_creation: bool = True
 
 #TODO: Make API endpoint for these methods
 
-# Creates a new User object
+# Returns List[User] that pass the filter parameters
 @user_orm.route("user/read", methods=["POST"])
-def read_users():
-    #TODO: Add filters
-    users = db.session.query(User).all()
+def read_users(searchName: str = None, sortOption: str = 'alpha-asc', filterTags: list[str] = []):
+    print('params', searchName, sortOption, filterTags)
+    users = db.session.query(User)
+    if searchName != None:
+        users = users.filter(User.name.icontains(searchName.lower()))
+    
+    if sortOption == 'alpha-asc':
+        users = users.order_by(asc(User.name))
+    elif sortOption == 'alpha-desc':
+        users = users.order_by(desc(User.name))
+
+    #TODO: Add support for filtering by user tags
+        
+    users = users.all()
+
     return json_response(200, f"{len(users)} users found.", users)
+
+
+# Returns a single User by their id. Returns null if no such user exists.
+@user_orm.route('user/read_one', methods=["POST"])
+def read_single_user(user_id: int):
+    user = db.session.query(User).filter_by(id = user_id).first()
+
+    return json_response(200, "No user found" if user == None else f"User {user.name} found.", user)
+
 
 @user_orm.route("user/tag/read", methods=["POST"])
 def read_user_tag():

@@ -8,11 +8,11 @@ class OrganizationCheckbox(FlaskForm):
     organization = BooleanField(label="Organization", name="organization", render_kw={"class": ""})
 
 class FiltersCheckbox(FlaskForm):
-    choreographer = BooleanField(label="Individual", name="Search", render_kw={"class": ""})
+    choreographer = BooleanField(label="Choreographer", name="choreographer", render_kw={"class": ""})
     designer = BooleanField(label="Designer", name="designer", render_kw={"class": ""})
     writer = BooleanField(label="Writer", name="writer", render_kw={"class": ""})
     producer = BooleanField(label="Producer", name="producer", render_kw={"class": ""})
-    stageManager = BooleanField(label="Stage Manager", name="stage-manager", render_kw={"class": ""})
+    stageManager = BooleanField(label="Stage Manager", name="stageManager", render_kw={"class": ""})
     other = BooleanField(label="Other", name="other", render_kw={"class": ""})
 
 class PeopleFilter(FlaskForm):
@@ -26,7 +26,7 @@ class PeopleFilter(FlaskForm):
         label="Sort",
         validators=[],
         name="sort",
-        choices=[('alpha-desc', 'Name (A-Z)'), ('alpha-asc', 'Name (Z-A)')],
+        choices=[('alpha-asc', 'Name (A-Z)'), ('alpha-desc', 'Name (Z-A)')],
         render_kw={"placeholder": "", "class" : "form-control"}
     )
     organizationType = FormField(OrganizationCheckbox, description="Organization Type")
@@ -46,3 +46,27 @@ class PeopleFilter(FlaskForm):
         name="submit",
         render_kw={"class": "btn btn-secondary form-control", "value": "Clear Filters"}
     )
+
+
+def fillOrganizationData(form: OrganizationCheckbox, tags: list[str]):
+    print('individual', form.individual.data)
+    if 'individual' in tags:
+        form.individual.data = True
+    if 'group' in tags:
+        form.group.data = True
+    if 'organization' in tags:
+        form.organization.data = True
+
+def fillFilterData(form: FiltersCheckbox, tags: list[str]):
+    if 'choreographer' in tags:
+        form.choreographer.data = True
+    if 'designer' in tags:
+        form.designer.data = True
+    if 'writer' in tags:
+        form.writer.data = True
+    if 'producer' in tags:
+        form.producer.data = True
+    if 'stageManager' in tags:
+        form.stageManager.data = True
+    if 'other' in tags:
+        form.other.data = True
