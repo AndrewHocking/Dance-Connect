@@ -1,10 +1,10 @@
 from typing import List
 from ... import db, json_response
-from ...models import User, UserTag
+from ...models import User, UserTag, ORG_TYPES, ROLES
 import json
 import requests
 from flask import Blueprint, request, url_for, jsonify
-from sqlalchemy import asc, desc;
+from sqlalchemy import asc, desc, or_, and_;
 
 user_orm = Blueprint('user_route', __name__)
    
@@ -93,6 +93,51 @@ def read_users(searchName: str = None, sortOption: str = 'alpha-asc', filterTags
         users = users.order_by(desc(User.name))
 
     #TODO: Add support for filtering by user tags
+    tags = db.session.query(UserTag)
+    tag_query = None
+
+    org_queries = []
+    for tag in filterTags:
+        if tag in ORG_TYPES.LIST:
+            query = (UserTag.name == tag)
+            org_queries.append(query)
+    
+    if len(org_queries) > 0:
+        tag_query = or_(*org_queries)
+    
+    role_tags = []
+    for tag in filterTags:
+        if tag in ROLES.LIST:
+            role_tags.append(tag)
+    
+    role_query = None
+    if ROLES.OTHER in role_tags:
+        queries = []
+        for tag in ROLES.LIST:
+            if tag not in role_tags and tag != ROLES.OTHER:
+                query = (UserTag.name != tag)
+        
+        if len(queries) > 0:
+            role_query = and_(*queries)
+    else:
+        queries = []
+        for tag in role_tags:
+            if tag in ROLES.LIST:
+                query = (UserTag.name == tag)
+                queries.append(query)
+
+        if len(queries) > 0: 
+            role_query = or_(*queries)
+
+    if tag_query == None:
+        tag_query = role_query
+    else:
+        tag_query = and_(tag_query, role_query)
+    
+    if tag_query != None:
+        tags = tags.filter(role_query)
+    
+
         
     users = users.all()
 

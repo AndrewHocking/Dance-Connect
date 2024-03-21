@@ -38,3 +38,24 @@ class UserTagRelationship(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
     tag_id: Mapped[int] = mapped_column(Integer, ForeignKey('user_tags.id'))
+
+
+class ORG_TYPES:
+    INDIVIDUAL: str = "Individual"
+    GROUP: str = "Group"
+    ORGANIZATION: str = "Organization"
+
+    LIST: list[str] = [INDIVIDUAL, GROUP, ORGANIZATION]
+
+class ROLES:
+    CHOREOGRAPHER: str = "Choreographer"
+    DESIGNER: str = "Designer"
+    WRITER: str = "Writer"
+    PRODUCER: str = "Producer"
+    STAGEMANAGER: str = "Stage Manager"
+    OTHER: str = "Other"
+
+    LIST: list[str] = [CHOREOGRAPHER, DESIGNER, WRITER, PRODUCER, STAGEMANAGER, OTHER]
+
+
+
