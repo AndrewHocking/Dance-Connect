@@ -1,7 +1,27 @@
+#logo {
+    height: 40px;
+    > img {
+        height: 80px;
+        background-color: #01628B;
+    }
+}
+nav {
+    background-color: #01628B;
+}
+.navbar-collapse:not(.collapse) {
+    padding-bottom: 20px;
+}
+body {
+    background-color: #D9EDF5;
+}
 .base {
     padding: 20px;
 }
 .btn-primary {
     background-color: #D63063;
     border-color: #D63063;
+}
+.contentbox {
+    border-radius: 25px;
+    background-color: white;
 }

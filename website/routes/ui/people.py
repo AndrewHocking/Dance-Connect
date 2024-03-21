@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
-from ..orm.user import read_users, read_single_user, User
+from ...orm.user.user import read_users, read_single_user, User
 from ...forms.people_filter import PeopleFilter, fillOrganizationData, fillFilterData
 
 people = Blueprint('people', __name__)
