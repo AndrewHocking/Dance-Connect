@@ -1,10 +1,16 @@
 #logo {
     height: 40px;
-    > img {
-        height: 80px;
-        background-color: #01628B;
-    }
 }
+
+#logo-img {
+    height: 80px;
+    background-color: #01628B;
+}
+
+#logo-img.shrink {
+    height: 50px;
+}
+
 nav {
     background-color: #01628B;
 }

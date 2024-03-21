@@ -84,14 +84,14 @@ class CreateEventForm(FlaskForm):
         label="Minimum Ticket Price",
         validators=[NumberRange(min=0)],
         name="min_ticket_price",
-        description="Leave this blank to not include display the minimum ticket price.",
+        description="Leave this blank to not display the minimum ticket price.",
         render_kw={"placeholder": "e.g. 0.00", "class" : "form-control", "aria-describedby" : "min-ticket-price-help-block"}
     )
     max_ticket_price = DecimalField(
         label="Maximum Ticket Price",
         validators=[NumberRange(min=0)],
         name="max_ticket_price",
-        description="Leave this blank to not include display the maximum ticket price.",
+        description="Leave this blank to not display the maximum ticket price.",
         render_kw={"placeholder": "e.g. 149.99", "class" : "form-control", "aria-describedby" : "max-ticket-price-help-block"}
     )
     num_occurrences = HiddenField(

@@ -6,51 +6,47 @@
 </div>
 <form method="POST">
     {{ event_form.num_occurrences() }}
-    <fieldset class="form-group">
+    <fieldset class="form-group mb-3">
         <legend>Event Information</legend>
-        <div class="form-group">
+        <div class="form-group mb-3">
             {{ event_form.title.label() }}
             {{ event_form.title() }}
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
             {{ event_form.description.label() }}
             {{ event_form.description() }}
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
             {{ event_form.url.label() }}
             {{ event_form.url() }}
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
             {{ event_form.tags.label() }}
             {{ event_form.tags() }}
-            <span id="tags-help-block" class="help-block text-muted">{{ event_form.tags.description }}</span>
+            <div id="tags-help-block" class="form-text">{{ event_form.tags.description }}</div>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
             <div class="row">
                 <div class="col-md-6">
                     {{ event_form.min_ticket_price.label() }}
                     <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
-                        </div>
+                        <span class="input-group-text">$</span>
                         {{ event_form.min_ticket_price() }}
                     </div>
-                    <span id="min-ticket-price-help-block" class="help-block text-muted">{{ event_form.min_ticket_price.description }}</span>
+                    <div id="min-ticket-price-help-block" class="form-text">{{ event_form.min_ticket_price.description }}</div>
                 </div>
                 <div class="col-md-6">
                     {{ event_form.max_ticket_price.label() }}
                     <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
-                        </div>
+                        <span class="input-group-text">$</span>
                         {{ event_form.max_ticket_price() }}
                     </div>
-                    <span id="max-ticket-price-help-block" class="help-block text-muted">{{ event_form.max_ticket_price.description }}</span>
+                    <div id="max-ticket-price-help-block" class="form-text">{{ event_form.max_ticket_price.description }}</div>
                 </div>
             </div>
         </div>
     </fieldset>
-    <fieldset class="form-group">
+    <fieldset class="form-group mb-3">
         <legend>Event Occurrences</legend>
         {% for event_occurrence_form in event_form.occurrences %}
         {% with occurrence_label=event_occurrence_form.date.id[:-5] %}
@@ -70,12 +66,12 @@
         {% endwith %}
         {% endfor %}
     </fieldset>
-    <div class="form-group">
+    <div class="form-group mb-3">
         <button type="button" id="add_occurrence_btn" class="btn btn-secondary">Add Another Occurrence</button>
     </div>
-    <fieldset class="form-group">
+    <fieldset class="form-group mb-3">
         <legend>Venue Information</legend>
-        <div class="form-group">
+        <div class="form-group mb-3">
             <div class="row">
                 <div class="col-md-6">
                     {{ event_form.venue_name.label() }}
@@ -88,9 +84,9 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="form-group">
+    <fieldset class="form-group mb-3">
         <legend>Accessibility Information</legend>
-        <div class="form-group">
+        <div class="form-group mb-3">
             {{ event_form.venue_is_wheelchair_accessible.label() }}
             {% for radio_option in event_form.venue_is_wheelchair_accessible %}
                 <div class="form-check">
@@ -99,7 +95,7 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
             {{ event_form.show_is_photosensitivity_friendly.label() }}
             {% for radio_option in event_form.show_is_photosensitivity_friendly %}
                 <div class="form-check">
@@ -108,7 +104,7 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="form-group">
+        <div class="form-group mb-3">
             {{ event_form.accessibility_notes.label() }}
             {{ event_form.accessibility_notes() }}
         </div>
@@ -165,6 +161,11 @@
             e.preventDefault();
         }
     });
+
+    let elements = document.getElementsByTagName("label");
+    for (let i = 0; i < elements.length; i++) {
+        elements[i].classList.add("form-label");
+    }
 
 </script>
 {% endblock %}

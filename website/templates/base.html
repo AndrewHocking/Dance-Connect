@@ -10,9 +10,9 @@
         <title>{% block title %}Home{% endblock %}</title>
     </head>
     <body>
-        <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-2">
+        <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-5">
             <a id="logo" class="navbar-brand d-flex align-items-center" href="/">
-                <img class="rounded-circle p-1" src="{{url_for('static', filename='images/logo.png')}}" alt="DanceConnect Logo"/>
+                <img id="logo-img" class="rounded-circle p-1" src="{{url_for('static', filename='images/logo.png')}}" alt="DanceConnect Logo"/>
             </a>
             <button
                 class="navbar-toggler collapsed"
@@ -41,27 +41,30 @@
             </div>
         </nav>
 
+        <div class="container d-flex justify-content-center">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
                     {% if category == 'error' %}
-                    <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                    <div class="alert alert-danger alert-dismissible fade show mt-5 d-inline-block" role="alert">
                         {{ message }}
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% elif category == 'success' %}
+                    <div class="alert alert-success alert-dismissible fade show mt-5 d-inline-block" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     {% else %}
-                    <div class="alert alert-success alter-dismissable fade show" role="alert">
+                    <div class="alert alert-warning alert-dismissible fade show mt-5 d-inline-block" role="alert">
                         {{ message }}
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     {% endif %}
                 {% endfor %}
             {% endif %}
         {% endwith %}
+        </div>
 
         <div class="base container"><div class="contentbox border p-5 my-2 shadow">{% block content %} {% endblock %}</div></div>
         <script
@@ -104,6 +107,16 @@
                 srSpan.textContent = "(current)";
                 element.appendChild(srSpan);
             }
+
+            window.addEventListener("scroll", function() {
+                const navbar = document.getElementById("logo-img"); // Replace with your actual navbar ID
+                if (window.scrollY > 0) {
+                    navbar.classList.add("shrink");
+                } else {
+                    navbar.classList.remove("shrink");
+                }
+            });
+
         </script>
 
 {% block javascript %}
