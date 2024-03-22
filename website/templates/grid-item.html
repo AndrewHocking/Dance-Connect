@@ -1,0 +1,21 @@
+{% macro grid_item(image_src, title, subtitle, text, tags, href) %}
+<div class="card me-2 mb-2" style="width: 280px;">
+  <a href="{{ href }}"><img src="{{ image_src }}" class="card-img-top" alt="Image preview for {{ title }}"></a>
+  <div class="card-body">
+    <div style="transform: rotate(0);">
+        <h5 class="card-title">{{ title }}</h5>
+        {% if subtitle %}
+        <h6 class="card-subtitle mb-2 text-muted">{{ subtitle }}</h6>
+        {% endif %}
+        <p class="card-text text-truncate">{{ text }}</p>
+        <a href="{{ href }}" class="stretched-link"></a>
+    </div>
+    <div class="form-text">Tags</div>
+    <div class="d-flex overflow-scroll border rounded p-1">
+        {% for tag in tags %}
+        <p class="m-1 px-2 text-dark bg-opacity-25 rounded text-nowrap tag">{{ tag.name }}</p>
+        {% endfor %}
+    </div>
+  </div>
+</div>
+{% endmacro %}

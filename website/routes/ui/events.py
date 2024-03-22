@@ -2,14 +2,16 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from ...orm.event.event import read_event, create_event
 from ...forms.events import CreateEventForm
+from ...forms.event_filter import EventFilterForm
 
 events = Blueprint('events', __name__)
 
 @events.route('/events', methods=['GET', 'POST'])
 def events_list():
+    filters = EventFilterForm()
     response = read_event()
     events = response["data"]
-    return render_template("events.html", user=current_user, events=events)
+    return render_template("events.html", user=current_user, events=events, filters=filters)
 
 @events.route('/events/create', methods=['GET', 'POST'])
 @login_required

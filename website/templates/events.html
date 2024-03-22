@@ -4,21 +4,72 @@
 <div class="page-header mb-3">
     <h1>Events</h1>
 </div>
-<table class="table">
-    <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Organizer</th>
-        <th>Tags</th>
-    </tr>
+<form class="d-flex">
+    <div class="sidebar w-75">
+        <div class="form-group mb-3">
+            {{ filters.sort.label() }}
+            {{ filters.sort() }}
+        </div>
+        <label class="form-label">Accessibility</label>
+        <div class="form-group mb-3">
+            <div class="form-check">
+                {{ filters.accessible_venue() }}
+                {{ filters.accessible_venue.label(class_="form-check-label") }}
+            </div>
+            <div class="form-check">
+                {{ filters.asl_interpreter() }}
+                {{ filters.asl_interpreter.label(class_="form-check-label") }}
+            </div>
+            <div class="form-check">
+                {{ filters.relaxed_performance() }}
+                {{ filters.relaxed_performance.label(class_="form-check-label") }}
+            </div>
+        </div>
+        <label class="form-label">Ticket prices between</label>
+        <div class="form-group mb-3">
+            <div class="input-group">
+                <span class="input-group-text"><div class="text-center" style="width: 30px;">Min</div></span>
+                <span class="input-group-text">$</span>
+                {{ filters.min_ticket_price() }}
+            </div>
+            <div class="input-group">
+                <span class="input-group-text"><div class="text-center" style="width: 30px;">Max</div></span>
+                <span class="input-group-text">$</span>
+                {{ filters.max_ticket_price() }}
+            </div>
+        </div>
+        <label class="form-label">Date range</label>
+        <div class="form-group mb-3">
+            <div class="input-group">
+                <span class="input-group-text"><div class="text-center" style="width: 40px;">Start</div></span>
+                {{ filters.start_date() }}
+            </div>
+            <div class="input-group">
+                <span class="input-group-text"><div class="text-center" style="width: 40px;">End</div></span>
+                {{ filters.end_date() }}
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            {{ filters.apply_filters(class_="btn btn-primary mb-1 w-100") }}
+            {{ filters.clear_filters(class_="btn btn-secondary mb-1 w-100") }}
+        </div>
+    </div>
+    <div class="d-flex flex-wrap mx-auto justify-content-center">
+    {% from 'grid-item.html' import grid_item %}
     {% for event in events %}
-    <tr>
-        <td>{{ event.id }}</td>
-        <td><a href="/events/{{event.id}}">{{ event.title }}</a></td>
-        <td>{{ event.organizer.display_name }}</td>
-        <td>{% for tag in event.tags %}{{ tag.name }}, {% endfor %}</td>
-    </tr>
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title, subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else (event.occurrences[0].start_time|string)), text=event.description, tags=event.tags, href="/events/"+(event.id|string)) }}
     {% endfor %}
-</table>
+    </div>
+</form>
 <a class="btn btn-primary" href="/events/create">Create Event</a>
 {% endblock %}

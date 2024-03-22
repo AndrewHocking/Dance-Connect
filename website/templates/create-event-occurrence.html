@@ -16,14 +16,14 @@
             <div class = "row mt-2">
                 <div class = "form-check">
                     {{ event_occurrence_form.is_relaxed_performance() }}
-                    {{ event_occurrence_form.is_relaxed_performance.label() }}
+                    {{ event_occurrence_form.is_relaxed_performance.label(class_="form-check-label") }}
                     <a href="https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed">(learn more)</a>.
                 </div>
             </div>
             <div class = "row">
                 <div class = "form-check">
                     {{ event_occurrence_form.has_asl_interpreter() }}
-                    {{ event_occurrence_form.has_asl_interpreter.label() }}
+                    {{ event_occurrence_form.has_asl_interpreter.label(class_="form-check-label") }}
                 </div>
             </div>
         </div>
