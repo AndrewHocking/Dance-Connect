@@ -20,7 +20,6 @@ def event_create():
     event_form = CreateEventForm(occurrences=occurrences)
         
     if request.method == 'POST':
-        print(request.form)
         title = request.form.get('title')
         description = request.form.get('description')
         url = request.form.get('url')

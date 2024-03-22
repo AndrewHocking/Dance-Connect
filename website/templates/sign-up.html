@@ -2,26 +2,28 @@
 {% block title %}Sign Up{% endblock %}
 {% block content %}
 <form method="POST">
-  <div class="page-header mb-3">
-    <h1>Sign Up</h1>
-  </div>
-  <div class="form-group">
-    {{ form.email.label() }}
-    {{ form.email() }}
-  </div>
-  <div class="form-group">
-    {{ form.first_name.label() }}
-    {{ form.first_name() }}
-  </div>
-  <div class="form-group">
-    {{ form.password.label() }}
-    {{ form.password() }}
-  </div>
-  <div class="form-group">
-    {{ form.confirm_password.label() }}
-    {{ form.confirm_password() }}
-  </div>
-  <br />
-  {{ form.submit(class_="btn btn-primary") }}
+    <div class="page-header mb-3">
+        <h1>Sign Up</h1>
+    </div>
+    <div class="form-floating mb-3">
+        {{ form.email() }}
+        {{ form.email.label() }}
+        <div id="email-help-block" class="form-text">We'll never share your email with anyone.</div>
+    </div>
+    <div class="form-floating mb-3">
+        {{ form.display_name() }}
+        {{ form.display_name.label() }}
+        <div id="display-name-help-block" class="form-text">This is how your name will appear to everyone else on DanceConnect.</div>
+    </div>
+    <div class="form-floating mb-3">
+        {{ form.password() }}
+        {{ form.password.label() }}
+    </div>
+    <div class="form-floating mb-3">
+        {{ form.confirm_password() }}
+        {{ form.confirm_password.label() }}
+    </div>
+    <br />
+    {{ form.submit(class_="btn btn-primary") }}
 </form>
 {% endblock %}

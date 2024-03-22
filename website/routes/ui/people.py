@@ -9,13 +9,9 @@ people = Blueprint('people', __name__)
 @people.route('/people/<search>/<sort>/<filters>', methods=['GET', 'POST'])
 def people_list(search, sort, filters):
     form = PeopleFilter()
-    print()
-    print('Arg', search, sort, filters)
 
     if request.method == 'POST':
-        print(request.form)
         if request.form['submit'] == 'Search':
-            print("Search Request")
             searchInput = request.form.get('search', '')
             if searchInput == '':
                 searchInput = '_'
@@ -23,7 +19,6 @@ def people_list(search, sort, filters):
             return redirect(url_for('people.people_list', search=searchInput, sort=sort, filters=filters))
         
         elif request.form['submit'] == 'Apply Filters':
-            print("Filter Request")
             sortMethod = request.form.get('sort', '')
             if sortMethod == '':
                 sortMethod = '_'
@@ -41,7 +36,6 @@ def people_list(search, sort, filters):
             return redirect(url_for('people.people_list', search=search, sort=sortMethod, filters=filterStr))
 
         elif request.form['submit'] == 'Clear Filters':
-            print("Clear Filter Request")
             return redirect(url_for('people.people_list', search=search, sort='_', filters='_'))
 
     if search != '_':
@@ -74,7 +68,6 @@ def person(id):
     person: User = read_single_user(user_id = id)["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_participated))
-    print(events)
 
     bio = None
     if person.bio != '':
@@ -84,6 +77,5 @@ def person(id):
     if person in affiliations:
         affiliations.remove(person)
     
-    print('occ', events[0].occurrences)
     return render_template("person.html", user=current_user, person=person, bio=bio, events=events, affiliations=affiliations)
 
