@@ -1,126 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous"/>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style/base.css') }}"/>
-        {% block stylesheet %}{% endblock stylesheet %}
-        <title>{% block title %}Home{% endblock %}</title>
-    </head>
-    <body>
-        <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-5">
-            <a id="logo" class="navbar-brand d-flex align-items-center" href="/">
-                <img id="logo-img" class="rounded-circle p-1" src="{{url_for('static', filename='images/logo.png')}}" alt="DanceConnect Logo"/>
-            </a>
-            <button
-                class="navbar-toggler collapsed"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbar"
-                aria-controls="navbar"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div id="navbar" class="navbar-collapse collapse justify-content-between">
-                <div class="navbar-nav navbar-left">
-                    <a class="nav-link" id="home" href="/">Home </a>
-                    <a class="nav-link" id="events" href="/events">Events </a>
-                    <a class="nav-link" id="people" href="/people">People </a>
-                </div>
-                <div class="navbar-nav navbar-right">
-                    {% if user.is_authenticated %}
-                    <a class="nav-link" id="logout" href="/logout">Logout</a>
-                    {% else %}
-                    <a class="nav-link" id="login" href="/login">Login </a>
-                    <a class="nav-link" id="sign-up" href="/sign-up">Sign Up </a>
-                    {% endif %}
-                </div>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        crossorigin="anonymous" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/base.css') }}" />
+    {% block stylesheet %}{% endblock stylesheet %}
+    <title>{% block title %}Home{% endblock %}</title>
+</head>
+
+<body class="d-none">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-5">
+        <a id="logo" class="navbar-brand d-flex align-items-center" href="/">
+            <img id="logo-img" class="rounded-circle p-1" src="{{url_for('static', filename='images/logo.png')}}"
+                alt="DanceConnect Logo" />
+        </a>
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
+            aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbar" class="navbar-collapse collapse justify-content-between">
+            <div class="navbar-nav navbar-left">
+                <a class="nav-link" id="home" href="/">Home </a>
+                <a class="nav-link" id="events" href="/events">Events </a>
+                <a class="nav-link" id="people" href="/people">People </a>
             </div>
-        </nav>
-
-        <div class="container d-flex justify-content-center">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    {% if category == 'error' %}
-                    <div class="alert alert-danger alert-dismissible fade show mt-5 d-inline-block" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% elif category == 'success' %}
-                    <div class="alert alert-success alert-dismissible fade show mt-5 d-inline-block" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% else %}
-                    <div class="alert alert-warning alert-dismissible fade show mt-5 d-inline-block" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+            <div class="navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                <a class="nav-link" id="logout" href="/logout">Logout</a>
+                {% else %}
+                <a class="nav-link" id="login" href="/login">Login </a>
+                <a class="nav-link" id="sign-up" href="/sign-up">Sign Up </a>
+                {% endif %}
+            </div>
         </div>
+    </nav>
 
-        <div class="base container"><div class="contentbox border p-5 my-2 shadow">{% block content %} {% endblock %}</div></div>
-        <script
-            src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-            integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
-            crossorigin="anonymous">
+    <div class="container d-flex justify-content-center">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        {% if category == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show mt-5 d-inline-block" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% elif category == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show mt-5 d-inline-block" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% else %}
+        <div class="alert alert-warning alert-dismissible fade show mt-5 d-inline-block" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="base container">
+        <div class="contentbox border p-5 my-2 shadow">{% block content %} {% endblock %}</div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous">
         </script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-            crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
         </script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-            crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous">
         </script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
         </script>
-        <script>
-            var element;
-            if (window.location.pathname.startsWith("/events")) {
-                element = document.getElementById("events");
-            } else if (window.location.pathname.startsWith("/people")) {
-                element = document.getElementById("people");
-            } else if (window.location.pathname.startsWith("/login")) {
-                element = document.getElementById("login");
-            } else if (window.location.pathname.startsWith("/sign-up")) {
-                element = document.getElementById("sign-up");
-            } else if (window.location.pathname == "/") {
-                element = document.getElementById("home");
+    <script>
+        var element;
+        if (window.location.pathname.startsWith("/events")) {
+            element = document.getElementById("events");
+        } else if (window.location.pathname.startsWith("/people")) {
+            element = document.getElementById("people");
+        } else if (window.location.pathname.startsWith("/login")) {
+            element = document.getElementById("login");
+        } else if (window.location.pathname.startsWith("/sign-up")) {
+            element = document.getElementById("sign-up");
+        } else if (window.location.pathname == "/") {
+            element = document.getElementById("home");
+        }
+        if (element != null) {
+            element.classList.add("active");
+            element.classList.add("fw-bold");
+            const srSpan = document.createElement("span");
+            srSpan.className = "sr-only";
+            srSpan.textContent = "(current)";
+            element.appendChild(srSpan);
+        }
+
+        window.addEventListener("scroll", function () {
+            const navbar = document.getElementById("logo-img"); // Replace with your actual navbar ID
+            if (window.scrollY > 0) {
+                navbar.classList.add("shrink");
+            } else {
+                navbar.classList.remove("shrink");
             }
-            if (element != null) {
-                element.classList.add("active");
-                element.classList.add("fw-bold");
-                const srSpan = document.createElement("span");
-                srSpan.className = "sr-only";
-                srSpan.textContent = "(current)";
-                element.appendChild(srSpan);
-            }
+        });
 
-            window.addEventListener("scroll", function() {
-                const navbar = document.getElementById("logo-img"); // Replace with your actual navbar ID
-                if (window.scrollY > 0) {
-                    navbar.classList.add("shrink");
-                } else {
-                    navbar.classList.remove("shrink");
-                }
-            });
+        window.addEventListener("load", function () {
+            const body = document.getElementsByTagName("body")[0];
+            body.classList.remove("d-none");
+        });
 
-        </script>
+    </script>
 
-{% block javascript %}
-{% endblock %}
-    </body>
+    {% block javascript %}
+    {% endblock %}
+</body>
+
 </html>
