@@ -29,13 +29,13 @@ class CreateEventOccurrenceForm(FlaskForm):
     
 class CreateEventForm(FlaskForm):
     title = StringField(
-        label="Event Title*",
+        label="Event Title ✽",
         validators=[DataRequired(), Length(min=1, max=100, message="Must be between 1 and 100 characters.")],
         name="title",
         render_kw={"placeholder": "e.g. The Nutcracker", "class" : "form-control"}
     )
     description = TextAreaField(
-        label="Event Description*",
+        label="Event Description ✽",
         validators=[DataRequired(), Length(max=10000, message="Maximum 10,000 characters.")],
         name="description",
         render_kw={"placeholder": "e.g. The classic ballet portraying a young girl's magical journey through a wondrous land filled with enchanting characters and holiday joy.", "class" : "form-control"}
@@ -62,14 +62,14 @@ class CreateEventForm(FlaskForm):
         render_kw={"placeholder": "e.g. 4141 Sugarplum Dr., Toronto, M4Y 2E5", "class" : "form-control"}
     )
     venue_is_wheelchair_accessible = RadioField(
-        label="Venue Accessibility*",
+        label="Venue Accessibility ✽",
         validators=[DataRequired()],
         name="venue_is_wheelchair_accessible",
         choices = [('False', 'This venue is NOT fully accessible to users of wheelchairs and other mobility devices.'), ('True', 'This venue is fully accessible to users of wheelchairs and other mobility devices.')],
         default="False"
     )
     show_is_photosensitivity_friendly = RadioField(
-        label="Photosensitivity*",
+        label="Photosensitivity ✽",
         validators=[DataRequired()],
         name="show_is_photosensitivity_friendly",
         choices = [('False', 'Some lighting effects used during this event may be unsafe for those who experience photosensitivity.'), ('True', 'No lighting effects used during this event may be unsafe for those who experience photosensitivity.')],
@@ -84,14 +84,14 @@ class CreateEventForm(FlaskForm):
         label="Minimum Ticket Price",
         validators=[NumberRange(min=0)],
         name="min_ticket_price",
-        description="Leave this blank to not include display the minimum ticket price.",
+        description="Leave this blank to not display the minimum ticket price.",
         render_kw={"placeholder": "e.g. 0.00", "class" : "form-control", "aria-describedby" : "min-ticket-price-help-block"}
     )
     max_ticket_price = DecimalField(
         label="Maximum Ticket Price",
         validators=[NumberRange(min=0)],
         name="max_ticket_price",
-        description="Leave this blank to not include display the maximum ticket price.",
+        description="Leave this blank to not display the maximum ticket price.",
         render_kw={"placeholder": "e.g. 149.99", "class" : "form-control", "aria-describedby" : "max-ticket-price-help-block"}
     )
     num_occurrences = HiddenField(

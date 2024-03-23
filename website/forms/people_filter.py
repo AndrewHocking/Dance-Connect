@@ -49,7 +49,6 @@ class PeopleFilter(FlaskForm):
 
 
 def fillOrganizationData(form: OrganizationCheckbox, tags: list[str]):
-    print('individual', form.individual.data)
     if 'individual' in tags:
         form.individual.data = True
     if 'group' in tags:
