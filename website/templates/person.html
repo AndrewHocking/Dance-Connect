@@ -6,7 +6,7 @@
 <div class="container m-1">
     <div class="row align-items-center mb-4">
         <div class="col-12">
-            <h1>{{ person.name }}</h1> {{person.pronouns}}
+            <h1>{{ person.display_name }}</h1> {{person.pronouns}}
             <h4>
                 {% if person.tags|length == 0 %}
                     DanceConnect User

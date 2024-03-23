@@ -1,111 +1,112 @@
 {% extends "base.html" %}
-{% block title %}People{% endblock %} 
+{% block title %}People{% endblock %}
 {% block content %}
-  <form method="POST" class="container m-1">
+<form method="POST" class="container">
     <div class="row align-items-center mb-4">
-      <div class="col-12 col-md-4 col-xl-3">
-        <h1>People</h1>
-      </div>
-      
-      <div class="col-12 col-md-8 col-xl-9">
-        <div class="d-flex">
-          <div class="flex-grow-1 pr-2">
-            {{ form.searchName }}
-          </div>
-          {{ form.searchSubmit }}
+        <div class="col-12 col-md-4 col-xl-3">
+            <h1>People</h1>
         </div>
-      </div>
-    </div>  <!-- HEADER ROW END -->
+
+        <div class="col-12 col-md-8 col-xl-9">
+            <div class="d-flex">
+                <div class="flex-grow-1 pr-2">
+                    {{ form.searchName }}
+                </div>
+                {{ form.searchSubmit }}
+            </div>
+        </div>
+    </div> <!-- HEADER ROW END -->
 
     <div class="row mb-4">
-      <div class="col-12 col-md-4 col-xl-3 mb-4">
-        <div class="row">
-          <div>
-            <div class="col-12 mb-3">
-              <h4>{{ form.sortOption.label }}</h4>
-              {{ form.sortOption }}
+        <div class="col-12 col-md-4 col-xl-3 mb-4">
+            <div class="row">
+                <div>
+                    <div class="col-12 mb-3">
+                        <h4>{{ form.sortOption.label }}</h4>
+                        {{ form.sortOption }}
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <h4>{{ form.organizationType.description }}</h4>
+                        <p class="mb-0">
+                            {{ form.organizationType.form.individual }}
+                            {{ form.organizationType.form.individual.label() }}
+                        </p>
+                        <p class="mb-0">
+                            {{ form.organizationType.form.group }}
+                            {{ form.organizationType.form.group.label() }}
+                        </p>
+                        <p class="mb-0">
+                            {{ form.organizationType.form.organization }}
+                            {{ form.organizationType.form.organization.label() }}
+                        </p>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <h4>{{ form.filters.description }}</h4>
+                        <p class="mb-0">
+                            {{ form.filters.form.choreographer }}
+                            {{ form.filters.form.choreographer.label() }}
+                        </p>
+                        <p class="mb-0">
+                            {{ form.filters.form.designer }}
+                            {{ form.filters.form.designer.label() }}
+                        </p>
+                        <p class="mb-0">
+                            {{ form.filters.form.writer }}
+                            {{ form.filters.form.writer.label() }}
+                        </p>
+                        <p class="mb-0">
+                            {{ form.filters.form.producer }}
+                            {{ form.filters.form.producer.label() }}
+                        </p>
+                        <p class="mb-0">
+                            {{ form.filters.form.stageManager }}
+                            {{ form.filters.form.stageManager.label() }}
+                        </p>
+                        <p class="mb-0">
+                            {{ form.filters.form.other }}
+                            {{ form.filters.form.other.label() }}
+                        </p>
+                    </div>
+                    <div class="col-12 ">
+                        {{ form.applyFilterSubmit }}
+                        {{ form.clearFilterSubmit }}
+                    </div>
+                </div>
             </div>
 
-            <div class="col-12 mb-3">
-              <h4>{{ form.organizationType.description }}</h4>
-              <p class="mb-0">
-                {{ form.organizationType.form.individual }} 
-                {{ form.organizationType.form.individual.label() }} 
-              </p>
-              <p class="mb-0">
-                {{ form.organizationType.form.group }} 
-                {{ form.organizationType.form.group.label() }} 
-              </p>
-              <p class="mb-0">
-                {{ form.organizationType.form.organization }} 
-                {{ form.organizationType.form.organization.label() }} 
-              </p>
-            </div>
+        </div> <!-- FILTER BAR END-->
 
-            <div class="col-12 mb-3">
-              <h4>{{ form.filters.description }}</h4>
-              <p class="mb-0">
-                {{ form.filters.form.choreographer }} 
-                {{ form.filters.form.choreographer.label() }} 
-              </p>
-              <p class="mb-0">
-                {{ form.filters.form.designer }} 
-                {{ form.filters.form.designer.label() }} 
-              </p>
-              <p class="mb-0">
-                {{ form.filters.form.writer }} 
-                {{ form.filters.form.writer.label() }} 
-              </p>
-              <p class="mb-0">
-                {{ form.filters.form.producer }} 
-                {{ form.filters.form.producer.label() }} 
-              </p>
-              <p class="mb-0">
-                {{ form.filters.form.stageManager }} 
-                {{ form.filters.form.stageManager.label() }} 
-              </p>
-              <p class="mb-0">
-                {{ form.filters.form.other }} 
-                {{ form.filters.form.other.label() }} 
-              </p>
+        <div class="col-12 col-md-8 col-xl-9">
+            <div class="row">
+                {% for person in people %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="d-flex flex-column">
+                        <a class="flex-grow-1 p-5 mb-2 bg-primary rounded-lg text-light text-align-center text-decoration-none"
+                            href="{{ url_for('people.person', id=person.id) }}">
+                            User Image
+                        </a>
+                        <a href="{{ url_for('people.person', id=person.id) }}" class="h5 text-decoration-none">{{
+                            person.display_name }}</a>
+                        <div class="d-flex flex-row">
+                            {% if person.tags|length == 0 %}
+                            <div class="bg-light rounded-lg p-1 mr-1 mb-1">
+                                DanceConnect User
+                            </div>
+                            {% else %}
+                            {% for tag in person.tags %}
+                            <div class="bg-light rounded-lg p-1 mr-1 mb-1">
+                                {{ tag.name }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            <div class="col-12 ">
-              {{ form.applyFilterSubmit }}
-              {{ form.clearFilterSubmit }}
-            </div>
-          </div>
-        </div>
-
-      </div> <!-- FILTER BAR END-->
-
-      <div class="col-12 col-md-8 col-xl-9">
-        <div class="row">
-          {% for person in people %}
-          <div class="col-12 col-md-6 col-xl-4">
-            <div class="d-flex flex-column">
-              <a class="flex-grow-1 p-5 mb-2 bg-primary rounded-lg text-light text-align-center text-decoration-none" href="{{ url_for('people.person', id=person.id) }}">
-                User Image
-              </a>
-              <a href="{{ url_for('people.person', id=person.id) }}" class="h5 text-decoration-none">{{ person.name }}</a>
-              <div class="d-flex flex-row">
-                {% if person.tags|length == 0 %}
-                  <div class="bg-light rounded-lg p-1 mr-1 mb-1">
-                    DanceConnect User
-                  </div>
-                {% else %}
-                  {% for tag in person.tags %}
-                  <div class="bg-light rounded-lg p-1 mr-1 mb-1">
-                    {{ tag.name }}
-                  </div>
-                  {% endfor %}
-                {% endif %}
-              </div>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-      </div> <!-- ITEM LIST END -->
+        </div> <!-- ITEM LIST END -->
     </div> <!-- ITEM ROW END -->
-
-  </form> <!-- CONTAINER END -->
+</form> <!-- CONTAINER END -->
 {% endblock %}
