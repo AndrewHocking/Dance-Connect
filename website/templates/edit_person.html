@@ -1,0 +1,98 @@
+{% extends "person.html" %}
+
+{% block edit_person_saveChanges %}
+<a href="/people/{{ user.id }}">
+    <div class="btn btn-secondary px-4"> Cancel </div>
+</a>
+<button class="btn bg-icon-background px-4 ms-3" type="submit" name="submit" value="Save"> Save Changes
+</button>
+{% endblock %}
+
+{% block edit_person_bio %}
+{% if bio == None %}
+<div class="form-floating">
+    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea"
+        style="height: 100px"></textarea>
+    <label for="floatingTextarea2">Enter your bio</label>
+</div>
+{% else %}
+<div class="form-floating">
+    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea"
+        style="height: 100px">{{ bio|default('') }}</textarea>
+    <label for="floatingTextarea2">Your bio</label>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block edit_person_EditContacts %}
+<div class="row align-items-center ps-3 py-1">
+    <div class="col-auto p-0">
+        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+            <i class="bi bi-globe" style="font-size: 1rem;"></i>
+        </div>
+    </div>
+    <div class="col ps-2">
+        <input type="text" class="form-control" name="website" value="{{ person.website|default('empty') }}">
+    </div>
+</div>
+<div class="row align-items-center ps-3 py-1">
+    <div class="col-auto p-0">
+        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+            <i class="bi bi-instagram" style="font-size: 1rem;"></i>
+        </div>
+    </div>
+    <div class="col ps-2">
+        <input type="text" class="form-control" name="website" value="{{ person.instagram|default('empty') }}">
+    </div>
+</div>
+<div class="row align-items-center ps-3 py-1">
+    <div class="col-auto p-0">
+        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+            <i class="bi-envelope-at" style="font-size: 1rem;"></i>
+        </div>
+    </div>
+    <div class="col ps-2">
+        <input type="text" class="form-control" name="website" value="{{ person.email|default('empty') }}">
+    </div>
+</div>
+<div class="row align-items-center ps-3 py-1">
+    <div class="col-auto p-0">
+        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+            <i class="bi bi-threads" style="font-size: 1rem;"></i>
+        </div>
+    </div>
+    <div class="col ps-2">
+        <input type="text" class="form-control" name="website" value="{{ person.threads|default('empty') }}">
+    </div>
+</div>
+<div class="row align-items-center ps-3 py-1">
+    <div class="col-auto p-0">
+        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+            <i class="bi bi-tiktok" style="font-size: 1rem;"></i>
+        </div>
+    </div>
+    <div class="col ps-2">
+        <input type="text" class="form-control" name="website" value="{{ person.tiktok|default('empty') }}">
+    </div>
+</div>
+<div class="row align-items-center ps-3 py-1">
+    <div class="col-auto p-0">
+        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+            <i class="bi bi-twitter-x" style="font-size: 1rem;"></i>
+        </div>
+    </div>
+    <div class="col ps-2">
+        <input type="text" class="form-control" name="website" value="{{ person.twitter|default('empty') }}">
+    </div>
+</div>
+<div class="row align-items-center ps-3 py-1">
+    <div class="col-auto p-0">
+        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+            <i class="bi bi-facebook" style="font-size: 1rem;"></i>
+        </div>
+    </div>
+    <div class="col ps-2">
+        <input type="text" class="form-control" name="website" value="{{ person.facebook|default('empty') }}">
+    </div>
+</div>
+{% endblock %}
