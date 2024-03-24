@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
-from ...orm.user.user import read_users, read_single_user, User
+from ...orm.user.user import read_users, read_single_user, User, update_user
 from ...forms.people_filter import PeopleFilter, fillOrganizationData, fillFilterData
 
 people = Blueprint("people", __name__)
@@ -126,6 +126,10 @@ def edit_person(id):
         affiliations.remove(person)
     if request.method == "POST":
         if request.form["submit"] == "Save":
+            update_user(
+                user_id=id,
+                bio=request.form.get("bioTextArea", ""),
+            )
             person.bio = request.form.get("bioTextArea", "")
             print(request.form.get("bioTextArea", ""))
             # person.save()

@@ -1,6 +1,9 @@
 {% extends "person.html" %}
 
 {% block edit_person_saveChanges %}
+<a href="/people/{{ user.id }}">
+    <button class="btn btn-secondary px-4"> Cancel </button>
+</a>
 <button class="btn bg-icon-background px-4 ms-3" type="submit" name="submit" value="Save"> Save Changes
 </button>
 {% endblock %}
