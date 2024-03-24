@@ -105,7 +105,19 @@
             element.appendChild(srSpan);
         }
 
+        var first_loaded = true;
+
         window.addEventListener("scroll", function () {
+            if (first_loaded) {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: "instant",
+                });
+                first_loaded = false;
+                return;
+            }
+
             const navbar = document.getElementById("logo-img"); // Replace with your actual navbar ID
             if (window.scrollY > 0) {
                 navbar.classList.add("shrink");

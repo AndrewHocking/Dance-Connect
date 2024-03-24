@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
-from ...orm.user.user import read_users, read_single_user, User, update_user
+from ...orm.user.user import read_users, read_single_user,  update_user, update_socials_link, User, OrgType, Roles
 from ...forms.people_filter import PeopleFilter, fillOrganizationData, fillFilterData
 
 people = Blueprint("people", __name__)
@@ -80,7 +80,7 @@ def people_list(search, sort, filters):
     people = response["data"]
 
     return render_template(
-        "people.html", user=current_user, people=people, filters=form
+        "people.html", user=current_user, people=people, filters=form, orgType=OrgType, roles=Roles
     )
 
 
@@ -89,7 +89,7 @@ def person(id):
     person: User = read_single_user(user_id=id)["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_participated))
-
+    
     edit = False
 
     bio = None

@@ -4,17 +4,24 @@ from wtforms.validators import InputRequired
 from ..models.user import OrgType, Roles
 
 class OrganizationCheckbox(FlaskForm):
-    individual = BooleanField(label="Individual", name="Individual", render_kw={"class": "form-check-input"})
-    group = BooleanField(label="Group", name="Group", render_kw={"class": "form-check-input"})
-    organization = BooleanField(label="Organization", name="Organization", render_kw={"class": "form-check-input"})
+    pass
+
+for type in OrgType:
+    setattr(
+        OrganizationCheckbox, 
+        type.name.lower(),
+        BooleanField(label=type.name, name=type.name, render_kw={"class": "form-check-input"})
+    )
 
 class FiltersCheckbox(FlaskForm):
-    choreographer = BooleanField(label="Choreographer", name="Choreographer", render_kw={"class": "form-check-input"})
-    designer = BooleanField(label="Designer", name="Designer", render_kw={"class": "form-check-input"})
-    writer = BooleanField(label="Writer", name="Writer", render_kw={"class": "form-check-input"})
-    producer = BooleanField(label="Producer", name="Producer", render_kw={"class": "form-check-input"})
-    stageManager = BooleanField(label="Stage Manager", name="StageManager", render_kw={"class": "form-check-input"})
-    other = BooleanField(label="Other", name="Other", render_kw={"class": "form-check-input"})
+    pass
+
+for role in Roles:
+    setattr(
+        FiltersCheckbox,
+        role.name.lower(),
+        BooleanField(label=role.value, name=role.name, render_kw={"class": "form-check-input"})
+    )
 
 class PeopleFilter(FlaskForm):
     search = StringField(
@@ -50,24 +57,11 @@ class PeopleFilter(FlaskForm):
 
 
 def fillOrganizationData(form: OrganizationCheckbox, tags: list[str]):
-    print(tags)
-    if OrgType.Individual.name in tags:
-        form.individual.data = True
-    if OrgType.Group.name in tags:
-        form.group.data = True
-    if OrgType.Organization.name in tags:
-        form.organization.data = True
+    for type in OrgType:
+        if type.name in tags:
+            form[type.name.lower()].data = True
 
 def fillFilterData(form: FiltersCheckbox, tags: list[str]):
-    if Roles.Choreographer.name in tags:
-        form.choreographer.data = True
-    if Roles.Designer.name in tags:
-        form.designer.data = True
-    if Roles.Writer.name in tags:
-        form.writer.data = True
-    if Roles.Producer.name in tags:
-        form.producer.data = True
-    if Roles.StageManager.name in tags:
-        form.stageManager.data = True
-    if Roles.Other.name in tags:
-        form.other.data = True
+    for role in Roles:
+        if role.name in tags:
+            form[role.name.lower()].data = True

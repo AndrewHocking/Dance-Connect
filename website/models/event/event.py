@@ -23,7 +23,7 @@ class Event(db.Model):
     min_ticket_price: Mapped[Optional[float]]
     max_ticket_price: Mapped[Optional[float]]
     occurrences: Mapped[List['EventOccurrence']] = relationship('EventOccurrence', back_populates='event')
-    participants = relationship('User', secondary='event_participants', back_populates='events_participated')
+    participants: Mapped[List['User']] = relationship('User', secondary='event_participants', back_populates='events_participated')
     request_notifications: Mapped[List['EventRequestNotification']] = relationship('EventRequestNotification', back_populates="event")
     #TODO: add media gallery
 
