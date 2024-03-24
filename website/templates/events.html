@@ -60,7 +60,7 @@
 <div class="form-group mb-3">
     {{ filters.tags.label() }}
     {% for choice in filters.match_all_tags %}
-    <div class = "form-check form-check-inline">
+    <div class="form-check form-check-inline">
         {{ choice(class_="form-check-input") }}
         {{ choice.label(class_="form-check-label") }}
     </div>
