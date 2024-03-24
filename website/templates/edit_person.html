@@ -2,7 +2,7 @@
 
 {% block edit_person_saveChanges %}
 <a href="/people/{{ user.id }}">
-    <button class="btn btn-secondary px-4"> Cancel </button>
+    <div class="btn btn-secondary px-4"> Cancel </div>
 </a>
 <button class="btn bg-icon-background px-4 ms-3" type="submit" name="submit" value="Save"> Save Changes
 </button>
@@ -19,7 +19,7 @@
 <div class="form-floating">
     <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea"
         style="height: 100px">{{ bio|default('') }}</textarea>
-    <label for="floatingTextarea2">{{ bio }}</label>
+    <label for="floatingTextarea2">Your bio</label>
 </div>
 {% endif %}
 {% endblock %}

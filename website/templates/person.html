@@ -3,8 +3,9 @@
 {% block title %}Person{% endblock %}
 
 {% block content %}
-{% if edit %}
-<form action="{{ url_for('people.edit_person', id=person.id) }}" method="POST"> {% else %} <div class="container m-1">
+<div class="container m-1">
+    {% if edit %}
+    <form action="{{ url_for('people.edit_person', id=person.id) }}" method="POST">
         {% endif %}
         <div class="row align-items-center mb-4 ">
             <div class="col-5">
@@ -126,11 +127,13 @@
                 <div class="pb-4">
                     <p class="h4">Bio</p>
                     <p>
+                        {% block edit_person_bio %}
                         {% if bio == None %}
                         This user has not added a bio to their profile yet.
                         {% else %}
                         {{ bio }}
                         {% endif %}
+                        {% endblock %}
                     </p>
                 </div>
                 <div class="pb-4">
@@ -179,5 +182,8 @@
                 </div>
             </div> <!-- RIGHT BLOCK END -->
         </div> <!-- BODY ROW END -->
-    </div>
-    {% endblock %}
+        {% if edit %}
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

@@ -133,7 +133,6 @@ def edit_person(id):
                 bio=request.form.get("bioTextArea", ""),
             )
             person.bio = request.form.get("bioTextArea", "")
-            print(request.form.get("bioTextArea", ""))
             # person.save()
             return redirect(url_for("people.person", id=id))
 
