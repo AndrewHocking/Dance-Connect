@@ -1,20 +1,20 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField, BooleanField, FormField
 from wtforms.validators import InputRequired
-from ..models.user import ORG_TYPES, ROLES
+from ..models.user import OrgType, Roles
 
 class OrganizationCheckbox(FlaskForm):
-    individual = BooleanField(label=ORG_TYPES.INDIVIDUAL, name=ORG_TYPES.INDIVIDUAL, render_kw={"class": ""})
-    group = BooleanField(label=ORG_TYPES.GROUP, name=ORG_TYPES.GROUP, render_kw={"class": ""})
-    organization = BooleanField(label=ORG_TYPES.ORGANIZATION, name=ORG_TYPES.ORGANIZATION, render_kw={"class": ""})
+    individual = BooleanField(label=OrgType.Individual.name, name=OrgType.Individual.name, render_kw={"class": ""})
+    group = BooleanField(label=OrgType.Group.name, name=OrgType.Group.name, render_kw={"class": ""})
+    organization = BooleanField(label=OrgType.Organization.name, name=OrgType.Organization.name, render_kw={"class": ""})
 
 class FiltersCheckbox(FlaskForm):
-    choreographer = BooleanField(label=ROLES.CHOREOGRAPHER, name=ROLES.CHOREOGRAPHER, render_kw={"class": ""})
-    designer = BooleanField(label=ROLES.DESIGNER, name=ROLES.DESIGNER, render_kw={"class": ""})
-    writer = BooleanField(label=ROLES.WRITER, name=ROLES.WRITER, render_kw={"class": ""})
-    producer = BooleanField(label=ROLES.PRODUCER, name=ROLES.PRODUCER, render_kw={"class": ""})
-    stageManager = BooleanField(label=ROLES.STAGEMANAGER, name=ROLES.STAGEMANAGER, render_kw={"class": ""})
-    other = BooleanField(label=ROLES.OTHER, name=ROLES.OTHER, render_kw={"class": ""})
+    choreographer = BooleanField(label=Roles.Choreographer.name, name=Roles.Choreographer.name, render_kw={"class": ""})
+    designer = BooleanField(label=Roles.Designer.name, name=Roles.Designer.name, render_kw={"class": ""})
+    writer = BooleanField(label=Roles.Writer.name, name=Roles.Writer.name, render_kw={"class": ""})
+    producer = BooleanField(label=Roles.Producer.name, name=Roles.Producer.name, render_kw={"class": ""})
+    stageManager = BooleanField(label=Roles.StageManager.name, name=Roles.StageManager.name, render_kw={"class": ""})
+    other = BooleanField(label=Roles.Other.name, name=Roles.Other.name, render_kw={"class": ""})
 
 class PeopleFilter(FlaskForm):
     searchName = StringField(
@@ -50,23 +50,23 @@ class PeopleFilter(FlaskForm):
 
 
 def fillOrganizationData(form: OrganizationCheckbox, tags: list[str]):
-    if ORG_TYPES.INDIVIDUAL in tags:
+    if OrgType.Individual.name in tags:
         form.individual.data = True
-    if ORG_TYPES.GROUP in tags:
+    if OrgType.Group.name in tags:
         form.group.data = True
-    if ORG_TYPES.ORGANIZATION in tags:
+    if OrgType.Organization.name in tags:
         form.organization.data = True
 
 def fillFilterData(form: FiltersCheckbox, tags: list[str]):
-    if ROLES.CHOREOGRAPHER in tags:
+    if Roles.Choreographer.name in tags:
         form.choreographer.data = True
-    if ROLES.DESIGNER in tags:
+    if Roles.Designer.name in tags:
         form.designer.data = True
-    if ROLES.WRITER in tags:
+    if Roles.Writer.name in tags:
         form.writer.data = True
-    if ROLES.PRODUCER in tags:
+    if Roles.Producer.name in tags:
         form.producer.data = True
-    if ROLES.STAGEMANAGER in tags:
+    if Roles.StageManager.name in tags:
         form.stageManager.data = True
-    if ROLES.OTHER in tags:
+    if Roles.Other.name in tags:
         form.other.data = True

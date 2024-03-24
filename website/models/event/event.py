@@ -3,6 +3,8 @@ from sqlalchemy import Boolean, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from typing import List, Optional
+from .event_tag import EventTag
+from .event_occurrence import EventOccurrence
 
 class Event(db.Model):
     __tablename__ = "events"
@@ -22,6 +24,7 @@ class Event(db.Model):
     max_ticket_price: Mapped[Optional[float]]
     occurrences: Mapped[List['EventOccurrence']] = relationship('EventOccurrence', back_populates='event')
     participants = relationship('User', secondary='event_participants', back_populates='events_participated')
+    request_notifications: Mapped[List['EventRequestNotification']] = relationship('EventRequestNotification', back_populates="event")
     #TODO: add media gallery
 
 class EventParticipant(db.Model):

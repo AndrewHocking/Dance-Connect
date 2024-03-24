@@ -1,7 +1,7 @@
 import string
 from ... import db, json_response
-from ...models.user import User
-from sqlalchemy import asc, desc;
+from ...models.user import User, OrgType, Roles, UserTag, UserTagRelationship
+from sqlalchemy import asc, desc, or_, and_, func;
 
 # Creates a new User object
 def create_user(email: str, password: str, display_name: str):
@@ -29,7 +29,11 @@ def create_user(email: str, password: str, display_name: str):
         display_name=display_name,
         pronouns="",
         bio="",
+        organization_type=OrgType.Individual,
         tags=list(),
+        socials=list(),
+        received_notifications=list(),
+        sent_notifications=list(),
         events_organized=list(),
         events_participated=list()
     )
@@ -41,6 +45,8 @@ def create_user(email: str, password: str, display_name: str):
 # Returns List[User] that pass the filter parameters
 def read_users(searchName: str = None, sortOption: str = 'alpha-asc', filterTags: list[str] = []):
     users = db.session.query(User)
+    filterTags = [tag.split('-')[1] for tag in filterTags]
+
     if searchName != None:
         users = users.filter(User.display_name.icontains(searchName.lower()))
     
@@ -49,8 +55,37 @@ def read_users(searchName: str = None, sortOption: str = 'alpha-asc', filterTags
     elif sortOption == 'alpha-desc':
         users = users.order_by(desc(User.display_name))
 
-    #TODO: Add support for filtering by user tags
+    orgTypes = [type.name for type in OrgType if type.name in filterTags]
+    
+    if len(orgTypes) > 0:
+        queries = []
+        for type in OrgType:
+            if type.name in orgTypes:
+                queries.append(User.organization_type == type)
         
+        users = users.filter(or_(*queries))
+
+    tags = [role.name for role in Roles if role.name in filterTags]
+
+    if len(tags) > 0:
+        if Roles.Other.name in tags:
+            queries = []
+            for role in Roles:
+                if role.name not in tags:
+                    queries.append(func.lower(UserTag.name) !=  func.lower(role.name))
+            
+            if len(queries) > 0:
+                users = users.join(User.tags).filter(and_(*queries)) \
+
+        else:
+            queries = []
+            for role in Roles:
+                if role.name in tags:
+                    queries.append(func.lower(UserTag.name) == func.lower(role.name))
+            
+            users = users.join(User.tags).filter(or_(*queries))
+    
+    #TODO: Add support for filtering by user tags
     users = users.all()
 
     return json_response(200, f"{len(users)} users found.", users)
