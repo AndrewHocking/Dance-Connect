@@ -91,7 +91,7 @@ def read_users(searchName: str = None, sortOption: str = 'alpha-asc', filterTags
                     queries.append(func.lower(UserTag.name) !=  func.lower(role.name))
             
             if len(queries) > 0:
-                users = users.join(User.tags).filter(and_(*queries)) \
+                users = users.join(User.tags).filter(and_(*queries))
 
         else:
             queries = []

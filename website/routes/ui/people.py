@@ -11,14 +11,15 @@ def people_list(search, sort, filters):
     form = PeopleFilter()
 
     if request.method == 'POST':
-        if request.form['submit'] == 'Search':
+        print(request.form)
+        if request.form.get('search_button') != None:
             searchInput = request.form.get('search', '')
             if searchInput == '':
                 searchInput = '_'
 
             return redirect(url_for('people.people_list', search=searchInput, sort=sort, filters=filters))
         
-        elif request.form['submit'] == 'Apply Filters':
+        elif request.form.get('apply_filters') != None:
             sortMethod = request.form.get('sort', '')
             if sortMethod == '':
                 sortMethod = '_'
@@ -35,7 +36,7 @@ def people_list(search, sort, filters):
 
             return redirect(url_for('people.people_list', search=search, sort=sortMethod, filters=filterStr))
 
-        elif request.form['submit'] == 'Clear Filters':
+        elif request.form.get('clear_filters') != None:
             return redirect(url_for('people.people_list', search=search, sort='_', filters='_'))
 
     if search != '_':

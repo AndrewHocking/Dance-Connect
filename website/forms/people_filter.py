@@ -4,17 +4,17 @@ from wtforms.validators import InputRequired
 from ..models.user import OrgType, Roles
 
 class OrganizationCheckbox(FlaskForm):
-    individual = BooleanField(label="Individual", name="individual", render_kw={"class": "form-check-input"})
-    group = BooleanField(label="Group", name="group", render_kw={"class": "form-check-input"})
-    organization = BooleanField(label="Organization", name="organization", render_kw={"class": "form-check-input"})
+    individual = BooleanField(label="Individual", name="Individual", render_kw={"class": "form-check-input"})
+    group = BooleanField(label="Group", name="Group", render_kw={"class": "form-check-input"})
+    organization = BooleanField(label="Organization", name="Organization", render_kw={"class": "form-check-input"})
 
 class FiltersCheckbox(FlaskForm):
-    choreographer = BooleanField(label="Choreographer", name="choreographer", render_kw={"class": "form-check-input"})
-    designer = BooleanField(label="Designer", name="designer", render_kw={"class": "form-check-input"})
-    writer = BooleanField(label="Writer", name="writer", render_kw={"class": "form-check-input"})
-    producer = BooleanField(label="Producer", name="producer", render_kw={"class": "form-check-input"})
-    stageManager = BooleanField(label="Stage Manager", name="stageManager", render_kw={"class": "form-check-input"})
-    other = BooleanField(label="Other", name="other", render_kw={"class": "form-check-input"})
+    choreographer = BooleanField(label="Choreographer", name="Choreographer", render_kw={"class": "form-check-input"})
+    designer = BooleanField(label="Designer", name="Designer", render_kw={"class": "form-check-input"})
+    writer = BooleanField(label="Writer", name="Writer", render_kw={"class": "form-check-input"})
+    producer = BooleanField(label="Producer", name="Producer", render_kw={"class": "form-check-input"})
+    stageManager = BooleanField(label="Stage Manager", name="StageManager", render_kw={"class": "form-check-input"})
+    other = BooleanField(label="Other", name="Other", render_kw={"class": "form-check-input"})
 
 class PeopleFilter(FlaskForm):
     search = StringField(
@@ -34,22 +34,23 @@ class PeopleFilter(FlaskForm):
     filters = FormField(FiltersCheckbox, description="Role/Profession")
     search_button = SubmitField(
         label="Search",
-        name="submit",
+        name="search_button",
         render_kw={"class": "btn btn-primary", "value": "Search"}
     )
     apply_filters = SubmitField(
         label="Apply Filters",
-        name="submit",
+        name="apply_filters",
         render_kw={"class": "btn btn-primary form-control mb-2", "value": "Apply Filters"}
     )
     clear_filters = SubmitField(
-        label="Clear Filters",
-        name="submit",
+        label="Clear filters",
+        name="clear_filters",
         render_kw={"class": "btn btn-secondary form-control", "value": "Clear Filters"}
     )
 
 
 def fillOrganizationData(form: OrganizationCheckbox, tags: list[str]):
+    print(tags)
     if OrgType.Individual.name in tags:
         form.individual.data = True
     if OrgType.Group.name in tags:
