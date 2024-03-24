@@ -39,3 +39,8 @@ body {
 .nav-link:hover {
     color: #ed79b9;
 }
+
+.bg-icon-background {
+    background-color: #FE39A3;
+    color: white;
+}
