@@ -9,10 +9,10 @@ class SignUpForm(FlaskForm):
         name="email",
         render_kw={"placeholder": "name@example.com", "class" : "form-control"}
     )
-    name = StringField(
+    display_name = StringField(
         label="Display name",
         validators=[InputRequired()],
-        name="name",
+        name="display_name",
         render_kw={"placeholder": "Jane Doe", "class" : "form-control"}
     )
     password = PasswordField(

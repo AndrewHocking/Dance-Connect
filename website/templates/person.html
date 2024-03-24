@@ -6,7 +6,7 @@
 <div class="container m-1">
     <div class="row align-items-center mb-4">
         <div class="col-12">
-            <h1>{{ person.name }}</h1> {{person.pronouns}}
+            <h1>{{ person.display_name }}</h1> {{person.pronouns}}
             <h4>
                 {% if person.tags|length == 0 %}
                     DanceConnect User
@@ -61,7 +61,7 @@
                         <a class="flex-grow-1 p-5 mb-2 bg-primary rounded-lg text-light text-align-center text-decoration-none" href="{{ url_for('people.person', id=user.id) }}">
                             Affiliate Image
                         </a>
-                        <a href="{{ url_for('people.person', id=user.id) }}" class="h5 text-decoration-none">{{ user.name }}</a>
+                        <a href="{{ url_for('people.person', id=user.id) }}" class="h5 text-decoration-none">{{ user.display_name }}</a>
                         <div class="d-flex flex-row">
                             {% if user.tags|length == 0 %}
                             <div class="bg-light rounded-lg p-1 mr-1 mb-1">

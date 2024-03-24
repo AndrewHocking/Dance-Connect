@@ -21,7 +21,7 @@ def debug():
 def create_dummy_users():
     users = [
         {
-            "name": "Grace Turner",
+            "display_name": "Grace Turner",
             "username": "grace123",
             "email": "grace.turner@example.com",
             "password": "DancePass123",
@@ -30,7 +30,7 @@ def create_dummy_users():
             "tags": ["ballet", "dancer", "choreographer"]
         },
         {
-            "name": "Alex Rivera",
+            "display_name": "Alex Rivera",
             "username": "alex_r",
             "email": "alex.rivera@example.com",
             "password": "GrooveMaster",
@@ -39,7 +39,7 @@ def create_dummy_users():
             "tags": ["hip hop", "dancer"]
         },
         {
-            "name": "Luna Vega",
+            "display_name": "Luna Vega",
             "username": "lunavega",
             "email": "luna.vega@example.com",
             "password": "MoonDance1",
@@ -48,7 +48,7 @@ def create_dummy_users():
             "tags": ["contemporary", "dancer"]
         },
         {
-            "name": "Sophia Lee",
+            "display_name": "Sophia Lee",
             "username": "sophia_dance",
             "email": "sophia.lee@example.com",
             "password": "Dance1234",
@@ -57,7 +57,7 @@ def create_dummy_users():
             "tags": ["ballet", "dancer", "choreographer"]
         },
         {
-            "name": "Max Vega",
+            "display_name": "Max Vega",
             "username": "maxvega",
             "email": "max.vega@example.com",
             "password": "GrooveMaster123",
@@ -66,7 +66,7 @@ def create_dummy_users():
             "tags": ["hip hop", "contemporary", "salsa", "dancer", "choreographer"]
         },
         {
-            "name": "Elena Rodriguez",
+            "display_name": "Elena Rodriguez",
             "username": "elenarod",
             "email": "elena.rodriguez@example.com",
             "password": "DancePass2024",
@@ -75,7 +75,7 @@ def create_dummy_users():
             "tags": ["ballroom", "dancer", "competitor"]
         },
         {
-            "name": "Oliver Grant",
+            "display_name": "Oliver Grant",
             "username": "oliver_g",
             "email": "oliver.grant@example.com",
             "password": "JazzFunk1",
@@ -84,7 +84,7 @@ def create_dummy_users():
             "tags": ["jazz funk", "dancer", "choreographer"]
         },
         {
-            "name": "Maya Patel",
+            "display_name": "Maya Patel",
             "username": "mayadance",
             "email": "maya.patel@example.com",
             "password": "Rhythm123",
@@ -93,7 +93,7 @@ def create_dummy_users():
             "tags": ["Bharatanatyam", "dancer", "cultural"]
         },
         {
-            "name": "Lucas Martin",
+            "display_name": "Lucas Martin",
             "username": "lucas_m",
             "email": "lucas.martin@example.com",
             "password": "TapDance456",
@@ -102,7 +102,7 @@ def create_dummy_users():
             "tags": ["tap", "dancer"]
         },
         {
-            "name": "Isabella Wong",
+            "display_name": "Isabella Wong",
             "username": "isabellaw",
             "email": "isabella.wong@example.com",
             "password": "ContempFlow",
@@ -111,7 +111,7 @@ def create_dummy_users():
             "tags": ["contemporary", "dancer"]
         },
         {
-            "name": "David Foster",
+            "display_name": "David Foster",
             "username": "davidf",
             "email": "david.foster@example.com",
             "password": "StageCrew1",
@@ -120,7 +120,7 @@ def create_dummy_users():
             "tags": ["stage manager", "production"]
         },
         {
-            "name": "Nina Chen",
+            "display_name": "Nina Chen",
             "username": "ninac",
             "email": "nina.chen@example.com",
             "password": "WriterDance",
@@ -129,7 +129,7 @@ def create_dummy_users():
             "tags": ["writer", "journalist", "dance"]
         },
         {
-            "name": "Carlos Ramirez",
+            "display_name": "Carlos Ramirez",
             "username": "carlosr",
             "email": "carlos.ramirez@example.com",
             "password": "SalsaKing",
@@ -138,7 +138,7 @@ def create_dummy_users():
             "tags": ["salsa", "instructor", "performer"]
         },
         {
-            "name": "Emily Parker",
+            "display_name": "Emily Parker",
             "username": "emily_dance",
             "email": "emily.parker@example.com",
             "password": "DancePass2024",
@@ -147,7 +147,7 @@ def create_dummy_users():
             "tags": ["jazz", "contemporary", "ballroom", "dancer", "performer"]
         },
         {
-            "name": "Leo Kim",
+            "display_name": "Leo Kim",
             "username": "leok",
             "email": "leo.kim@example.com",
             "password": "LeoDance123",
@@ -156,7 +156,7 @@ def create_dummy_users():
             "tags": ["K-pop", "choreographer", "dancer"]
         },
         {
-            "name": "Aria Patel",
+            "display_name": "Aria Patel",
             "username": "ariadance",
             "email": "aria.patel@example.com",
             "password": "RhythmicMoves",
@@ -165,7 +165,7 @@ def create_dummy_users():
             "tags": ["salsa", "bachata", "tango", "fusion", "dancer"]
         },
         {
-            "name": "Evan Foster",
+            "display_name": "Evan Foster",
             "username": "evanf",
             "email": "evan.foster@example.com",
             "password": "StageTech123",
@@ -174,7 +174,7 @@ def create_dummy_users():
             "tags": ["stage manager", "technician", "production"]
         },
         {
-            "name": "Zara Liu",
+            "display_name": "Zara Liu",
             "username": "zaral",
             "email": "zara.liu@example.com",
             "password": "ZaraDance456",
@@ -183,7 +183,7 @@ def create_dummy_users():
             "tags": ["Bollywood", "dancer", "enthusiast"]
         },
         {
-            "name": "Samuel Rodriguez",
+            "display_name": "Samuel Rodriguez",
             "username": "samuelr",
             "email": "samuel.rodriguez@example.com",
             "password": "SamDancePass",
@@ -192,7 +192,7 @@ def create_dummy_users():
             "tags": ["breakdance", "b-boy", "dancer"]
         },
         {
-            "name": "Lila Chen",
+            "display_name": "Lila Chen",
             "username": "lilac",
             "email": "lila.chen@example.com",
             "password": "LilaMoves",
@@ -201,7 +201,7 @@ def create_dummy_users():
             "tags": ["experimental", "movement", "artist"]
         },
         {
-            "name": "Daniel Wong",
+            "display_name": "Daniel Wong",
             "username": "danielw",
             "email": "daniel.wong@example.com",
             "password": "WongDance2024",
@@ -210,7 +210,7 @@ def create_dummy_users():
             "tags": ["contemporary ballet", "dancer"]
         },
         {
-            "name": "Mia Johnson",
+            "display_name": "Mia Johnson",
             "username": "miaj",
             "email": "mia.johnson@example.com",
             "password": "MiaDancePass",
@@ -219,7 +219,7 @@ def create_dummy_users():
             "tags": ["hip hop", "urban", "advocate", "teacher"]
         },
         {
-            "name": "Oscar Morales",
+            "display_name": "Oscar Morales",
             "username": "oscarm",
             "email": "oscar.morales@example.com",
             "password": "SalsaRhythm",
@@ -234,7 +234,7 @@ def create_dummy_users():
             username=user["username"],
             email=user["email"],
             password=user["password"],
-            name=user["name"],
+            display_name=user["display_name"],
             pronouns=user["pronouns"],
             bio=user["bio"],
             tags=user["tags"]

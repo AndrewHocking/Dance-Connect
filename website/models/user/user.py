@@ -18,7 +18,7 @@ class User(db.Model, UserMixin):
     email: Mapped[str] = mapped_column(String, unique=True)
     password: Mapped[str]
     is_admin: Mapped[bool] = mapped_column(Boolean, default=False)
-    name: Mapped[str]
+    display_name: Mapped[str]
     pronouns: Mapped[str]
     bio: Mapped[str]
     tags: Mapped[List['UserTag']] = relationship('UserTag', secondary="user_tag_relationships", back_populates='users')

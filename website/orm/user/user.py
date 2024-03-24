@@ -10,7 +10,7 @@ from sqlalchemy import asc, desc;
 def create_user(
     email: str,
     password: str,
-    name: str,
+    display_name: str,
     username: str = "",
     pronouns: str = "",
     bio: str = "",
@@ -18,7 +18,7 @@ def create_user(
 ):
     if len(email) < 5:
         return json_response(400, 'Email must be greater than 5 characters.')
-    elif len(name) < 1:
+    elif len(display_name) < 1:
         return json_response(400, 'Display name must be at least 1 character.')
     elif len(password) < 8:
         return json_response(400, 'Password must be at least 7 characters.')
@@ -28,7 +28,7 @@ def create_user(
         return json_response(409, 'A user with this email address already exists.', conflict.email)
 
     if username == "":
-        username = ''.join(i for i in name if i in string.ascii_letters+'0123456789-_').lower()
+        username = ''.join(i for i in display_name if i in string.ascii_letters+'0123456789-_').lower()
         conflicts = db.session.query(User).filter_by(username=username).all()
         if conflicts is not None and len(conflicts) > 0:
             username = f"{username}_{len(conflicts)}"
@@ -38,7 +38,7 @@ def create_user(
         email=email,
         password=password,
         is_admin=False,
-        name=name,
+        display_name=display_name,
         pronouns=pronouns,
         bio=bio,
         tags=list(),
@@ -58,12 +58,12 @@ def create_user(
 def read_users(searchName: str = None, sortOption: str = 'alpha-asc', filterTags: list[str] = []):
     users = db.session.query(User)
     if searchName != None:
-        users = users.filter(User.name.icontains(searchName.lower()))
+        users = users.filter(User.display_name.icontains(searchName.lower()))
     
     if sortOption == 'alpha-asc':
-        users = users.order_by(asc(User.name))
+        users = users.order_by(asc(User.display_name))
     elif sortOption == 'alpha-desc':
-        users = users.order_by(desc(User.name))
+        users = users.order_by(desc(User.display_name))
 
     #TODO: Add support for filtering by user tags
         
@@ -78,4 +78,4 @@ def read_single_user(user_id: int):
     if user == None:
         return json_response(404, "No user found")
     
-    return json_response(200, f"User {user.name} found.", user)
+    return json_response(200, f"User {user.display_name} found.", user)
