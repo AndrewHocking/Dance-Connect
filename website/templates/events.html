@@ -1,24 +1,82 @@
-{% extends "base.html" %}
+{% extends "filtered-list-view.html" %}
 {% block title %}Events{% endblock %}
-{% block content %}
-<div class="page-header mb-3">
-    <h1>Events</h1>
+{% block header_text %}Events{% endblock %}
+{% block filters %}
+<div class="form-group mb-3">
+    {{ filters.sort.label() }}
+    {{ filters.sort() }}
 </div>
-<table class="table">
-    <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Organizer</th>
-        <th>Tags</th>
-    </tr>
-    {% for event in events %}
-    <tr>
-        <td>{{ event.id }}</td>
-        <td><a href="/events/{{event.id}}">{{ event.title }}</a></td>
-        <td>{{ event.organizer.display_name }}</td>
-        <td>{% for tag in event.tags %}{{ tag.name }}, {% endfor %}</td>
-    </tr>
+<label class="form-label">Accessibility</label>
+<div class="form-group mb-3">
+    <div class="form-check">
+        {{ filters.accessible_venue() }}
+        {{ filters.accessible_venue.label(class_="form-check-label") }}
+    </div>
+    <div class="form-check">
+        {{ filters.asl_interpreter() }}
+        {{ filters.asl_interpreter.label(class_="form-check-label") }}
+    </div>
+    <div class="form-check">
+        {{ filters.relaxed_performance() }}
+        {{ filters.relaxed_performance.label(class_="form-check-label") }}
+        <a href="https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed"
+            alt="Learn More">
+            <i class="bi bi-question-circle"></i>
+        </a>
+    </div>
+</div>
+<label class="form-label">Ticket prices</label>
+<div class="form-group mb-3">
+    <div class="input-group">
+        <span class="input-group-text">
+            <div class="text-center" style="width: 30px;">Min</div>
+        </span>
+        <span class="input-group-text">$</span>
+        {{ filters.min_ticket_price() }}
+    </div>
+    <div class="input-group">
+        <span class="input-group-text">
+            <div class="text-center" style="width: 30px;">Max</div>
+        </span>
+        <span class="input-group-text">$</span>
+        {{ filters.max_ticket_price() }}
+    </div>
+</div>
+<label class="form-label">Date range</label>
+<div class="form-group mb-3">
+    <div class="input-group">
+        <span class="input-group-text">
+            <div class="text-center" style="width: 40px;">Start</div>
+        </span>
+        {{ filters.start_date() }}
+    </div>
+    <div class="input-group">
+        <span class="input-group-text">
+            <div class="text-center" style="width: 40px;">End</div>
+        </span>
+        {{ filters.end_date() }}
+    </div>
+</div>
+<div class="form-group mb-3">
+    {{ filters.tags.label() }}
+    {% for choice in filters.match_all_tags %}
+    <div class = "form-check form-check-inline">
+        {{ choice(class_="form-check-input") }}
+        {{ choice.label(class_="form-check-label") }}
+    </div>
     {% endfor %}
-</table>
-<a class="btn btn-primary" href="/events/create">Create Event</a>
+    {{ filters.tags() }}
+    <div id="tags-help-block" class="form-text">{{ filters.tags.description }}</div>
+</div>
+{% endblock %}
+
+{% block items_to_list %}
+{% from 'grid-item.html' import grid_item %}
+{% for event in events %}
+<div class="col-auto">
+    {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title,
+    subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else
+    (event.occurrences[0].start_time.strftime("%A, %B %e"))), tags=event.tags, href="/events/"+(event.id|string)) }}
+</div>
+{% endfor %}
 {% endblock %}
