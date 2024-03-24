@@ -14,10 +14,10 @@ Base = declarative_base()
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-class OrgType(enum.Enum):
-    Individual: str = "Individual"
-    Group: str = "Group"
-    Organization: str = "Organization"
+class UserType(enum.Enum):
+    INDIVIDUAL = "Individual"
+    GROUP: str = "Group"
+    ORGANIZATION: str = "Organization"
 
 
 class Notification(db.Model):
@@ -64,7 +64,7 @@ class User(db.Model, UserMixin):
     display_name: Mapped[str]
     pronouns: Mapped[str]
     bio: Mapped[str]
-    organization_type: Mapped[OrgType]
+    user_type: Mapped['UserType']
     tags: Mapped[List['UserTag']] = relationship('UserTag', secondary="user_tag_relationships", back_populates='users')
     socials: Mapped[List['SocialMedia']] = relationship('SocialMedia')
     events_organized: Mapped[List['Event']] = relationship('Event', back_populates='organizer')

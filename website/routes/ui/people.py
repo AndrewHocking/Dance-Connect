@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
-from ...orm.user.user import read_users, read_single_user,  update_user, update_socials_link, User, OrgType, Roles
-from ...forms.people_filter import PeopleFilter, fillOrganizationData, fillFilterData
+from ...orm.user.user import read_users, read_single_user,  update_user, User, UserType
+from ...forms.people_filter import PeopleFilter, Roles, fillOrganizationData, fillFilterData
 
 people = Blueprint("people", __name__)
 
@@ -38,6 +38,12 @@ def people_list(search, sort, filters):
                 if request.form[key] == "y":
                     filters.append(key)
 
+            other_tags = request.form.get("other_tags", "")
+            tag_list = [tag.strip() for tag in other_tags.split(",")]
+            for tag in tag_list:
+                if tag != "":
+                    filters.append("others-" + tag)
+
             if len(filters) == 0:
                 filterStr = "_"
             else:
@@ -63,10 +69,12 @@ def people_list(search, sort, filters):
         form.sortOption.data = sort
     if filters != "_":
         filterArr = filters.split("+")
+        other_tags = [filter.split("-")[1] for filter in filterArr if filter.split("-")[0] == "others"]
         filterArr = [filter.split("-")[1] for filter in filterArr]
 
-        fillOrganizationData(form.organizationType.form, filterArr)
+        fillOrganizationData(form.userType.form, filterArr)
         fillFilterData(form.filters.form, filterArr)
+        form.other_tags.data = ', '.join(other_tags)
 
     query_params = dict()
     if search != "_":
@@ -74,13 +82,24 @@ def people_list(search, sort, filters):
     if sort != "_":
         query_params["sortOption"] = sort
     if filters != "_":
-        query_params["filterTags"] = filters.split("+")
+        all_filters = filters.split("+")
+        user_types, filter_tags = [], []
+
+        for filter in all_filters:
+            filter = filter.split("-")
+            if filter[0] == "userType":
+                user_types.append(filter[1])
+            elif filter[0] != "filters" or filter[1] != Roles.OTHER.value:
+                filter_tags.append(filter[1])
+
+        query_params["userTypes"] = user_types
+        query_params["filterTags"] = filter_tags
 
     response = read_users(**query_params)
     people = response["data"]
 
     return render_template(
-        "people.html", user=current_user, people=people, filters=form, orgType=OrgType, roles=Roles
+        "people.html", user=current_user, people=people, filters=form, orgType=UserType, roles=Roles
     )
 
 
@@ -89,7 +108,7 @@ def person(id):
     person: User = read_single_user(user_id=id)["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_participated))
-    
+
     edit = False
 
     bio = None

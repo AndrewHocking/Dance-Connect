@@ -1,5 +1,4 @@
 from ... import db
-import enum
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
@@ -16,11 +15,3 @@ class UserTagRelationship(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
     tag_id: Mapped[int] = mapped_column(Integer, ForeignKey('user_tags.id'))
-
-class Roles(enum.Enum):
-    Choreographer: str = "Choreographer"
-    Designer: str = "Designer"
-    Writer: str = "Writer"
-    Producer: str = "Producer"
-    StageManager: str = "Stage Manager"
-    Other: str = "Other"

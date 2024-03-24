@@ -1,2 +1,2 @@
-from .user import User, OrgType, SocialMedia, Notification, EventRequestNotification
-from .user_tag import UserTag, UserTagRelationship, Roles
+from .user import User, UserType, SocialMedia, Notification, EventRequestNotification
+from .user_tag import UserTag, UserTagRelationship

@@ -3,7 +3,7 @@ from typing import List
 
 from .user_tag import create_user_tag
 from ... import db, json_response
-from ...models.user import User, OrgType, Roles, UserTag, SocialMedia
+from ...models.user import User, UserType, UserTag, SocialMedia
 from sqlalchemy import asc, desc, or_, and_, func;
 
 # Creates a new User object
@@ -43,7 +43,7 @@ def create_user(
         password=password,
         is_admin=False,
         display_name=display_name,
-        organization_type=OrgType.Individual,
+        user_type=UserType.INDIVIDUAL,
         pronouns=pronouns,
         bio=bio,
         tags=list(),
@@ -65,10 +65,9 @@ def create_user(
 
 # Returns List[User] that pass the filter parameters
 def read_users(
-    searchName: str = None, sortOption: str = "alpha-asc", filterTags: list[str] = []
+    searchName: str = None, sortOption: str = "alpha-asc", userTypes: list[str] = [], filterTags: list[str] = []
 ):
     users = db.session.query(User)
-    filterTags = [tag.split('-')[1] for tag in filterTags]
 
     if searchName != None:
         users = users.filter(User.display_name.icontains(searchName.lower()))
@@ -78,35 +77,23 @@ def read_users(
     elif sortOption == "alpha-desc":
         users = users.order_by(desc(User.display_name))
 
-    orgTypes = [type.name for type in OrgType if type.name in filterTags]
-    
-    if len(orgTypes) > 0:
+    if len(userTypes) > 0:
         queries = []
-        for type in OrgType:
-            if type.name in orgTypes:
-                queries.append(User.organization_type == type)
+        for type in UserType:
+            if type.value in userTypes:
+                queries.append(User.user_type == type)
         
         users = users.filter(or_(*queries))
 
-    tags = [role.name for role in Roles if role.name in filterTags]
-
-    if len(tags) > 0:
-        if Roles.Other.name in tags:
-            queries = []
-            for role in Roles:
-                if role.name not in tags:
-                    queries.append(func.lower(UserTag.name) !=  func.lower(role.name))
-            
-            if len(queries) > 0:
-                users = users.join(User.tags).filter(and_(*queries))
-
-        else:
-            queries = []
-            for role in Roles:
-                if role.name in tags:
-                    queries.append(func.lower(UserTag.name) == func.lower(role.name))
-            
-            users = users.join(User.tags).filter(or_(*queries))
+    if len(filterTags) > 0:
+        queries = []
+        for tag in filterTags:
+            queries.append(func.lower(UserTag.name) == func.lower(tag))
+        
+        users = users.join(User.tags).filter(or_(*queries))
+    
+    print(userTypes, filterTags)
+    print(users)
     
     #TODO: Add support for filtering by user tags
     users = users.all()
@@ -135,7 +122,7 @@ def update_user(
     pronouns: str = None,
     bio: str = None,
     socials: List[SocialMedia] = None,
-    organizationType: OrgType = None,
+    user_type: UserType = None,
     tags: List[str] = None,
 ):
     user: User = db.session.query(User).get(user_id)
@@ -163,8 +150,8 @@ def update_user(
     if bio is not None:
         user.bio = bio
 
-    if organizationType is not None:
-        user.organization_type = organizationType
+    if user_type is not None:
+        user.user_type = user_type
 
     if socials is not None:
         user.socials.clear()
@@ -212,9 +199,7 @@ def update_socials_link(user_id: int, type: str, handle: str):
             SocialMedia.user == user_id,
             func.lower(SocialMedia.social_media) == func.lower(type)
         )) \
-    
-
-
+        
     if socials_link.first() is None:
         return json_response(200, f"User {user_id} does not have an existing handle on platform {type}")
     

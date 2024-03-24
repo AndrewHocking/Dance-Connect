@@ -10,7 +10,7 @@ from sqlalchemy import asc, desc, or_, and_, func;
 def add_event_request_notification(sender: User, event_id: Event, role: str = ""):
     associated_event: Event | None = db.session.query(Event).filter_by(id=event_id).first()
     if associated_event is None:
-        return json_response(400, f"No event was found for the given event_id: {event_id}")
+        return json_response(404, f"No event was found for the given event_id: {event_id}")
     
     new_notification = EventRequestNotification(
         recipient_id=associated_event.organizer_id,
@@ -38,11 +38,11 @@ def add_event_request_notification(sender: User, event_id: Event, role: str = ""
 def accept_event_request_notification(notification_id: int):
     notification = db.session.query(EventRequestNotification).filter_by(id=notification_id).first()
     if notification is None:
-        return json_response(400, f"Found no entry for notification {notification_id}")
+        return json_response(404, f"Found no entry for notification {notification_id}")
     
     requesting_user = db.session.query(User).filter_by(id=notification.sender_id).first()
     if requesting_user is None:
-        return json_response(400, f"Found no entry for the user requesting to join this event", notification.sender_id)
+        return json_response(404, f"Found no entry for the user requesting to join this event", notification.sender_id)
     
     notification.event.participants.append(requesting_user)
 
@@ -60,7 +60,7 @@ def accept_event_request_notification(notification_id: int):
 def deny_event_request_notification(notification_id: int):
     result = delete_notification(notification_id)
     if result == 0:
-        return json_response(400, f"Found no entry for notification {notification_id}")
+        return json_response(404, f"Found no entry for notification {notification_id}")
     
     db.session.commit()
     return json_response(200, f"Notification request successfully removed")

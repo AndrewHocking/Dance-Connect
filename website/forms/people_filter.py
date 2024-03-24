@@ -1,16 +1,26 @@
+import enum
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, BooleanField, FormField
+from wtforms import StringField, SubmitField, SelectField, BooleanField, FormField, TextAreaField
 from wtforms.validators import InputRequired
-from ..models.user import OrgType, Roles
+from ..models.user import UserType
+
+class Roles(enum.Enum):
+    CHOREOGRAPHER: str = "Choreographer"
+    DESIGNER: str = "Designer"
+    WRITER: str = "Writer"
+    PRODUCER: str = "Producer"
+    STAGE_MANAGER: str = "Stage Manager"
+    OTHER: str = "Other"
+
 
 class OrganizationCheckbox(FlaskForm):
     pass
 
-for type in OrgType:
+for type in UserType:
     setattr(
         OrganizationCheckbox, 
-        type.name.lower(),
-        BooleanField(label=type.name, name=type.name, render_kw={"class": "form-check-input"})
+        type.name,
+        BooleanField(label=type.value, name=type.value, render_kw={"class": "form-check-input"})
     )
 
 class FiltersCheckbox(FlaskForm):
@@ -19,8 +29,8 @@ class FiltersCheckbox(FlaskForm):
 for role in Roles:
     setattr(
         FiltersCheckbox,
-        role.name.lower(),
-        BooleanField(label=role.value, name=role.name, render_kw={"class": "form-check-input"})
+        role.name,
+        BooleanField(label=role.value, name=role.value, render_kw={"class": "form-check-input"})
     )
 
 class PeopleFilter(FlaskForm):
@@ -37,8 +47,14 @@ class PeopleFilter(FlaskForm):
         choices=[('alpha-asc', 'Name (A-Z)'), ('alpha-desc', 'Name (Z-A)')],
         render_kw={"placeholder": "", "class" : "form-select"}
     )
-    organizationType = FormField(OrganizationCheckbox, description="Organization Type")
+    userType = FormField(OrganizationCheckbox, description="User Type")
     filters = FormField(FiltersCheckbox, description="Role/Profession")
+    other_tags = TextAreaField(
+        label="Role Tags",
+        name="other_tags",
+        description="Separate tags by commas.",
+        render_kw={"placeholder": "e.g. set manager, costume designer", "class" : "form-control", "aria-describedby" : "tags-help-block"}
+    )
     search_button = SubmitField(
         label="Search",
         name="search_button",
@@ -57,11 +73,11 @@ class PeopleFilter(FlaskForm):
 
 
 def fillOrganizationData(form: OrganizationCheckbox, tags: list[str]):
-    for type in OrgType:
-        if type.name in tags:
-            form[type.name.lower()].data = True
+    for type in UserType:
+        if type.value in tags:
+            form[type.name].data = True
 
 def fillFilterData(form: FiltersCheckbox, tags: list[str]):
     for role in Roles:
-        if role.name in tags:
-            form[role.name.lower()].data = True
+        if role.value in tags:
+            form[role.name].data = True
