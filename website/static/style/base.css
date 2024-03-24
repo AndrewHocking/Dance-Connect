@@ -47,3 +47,8 @@ body {
 .tag {
     background-color: #D9EDF5;
 }
+
+.bg-icon-background {
+    background-color: #FE39A3;
+    color: white;
+}

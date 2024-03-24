@@ -1,86 +1,189 @@
 {% extends "base.html" %}
 
-{% block title %}Person{% endblock %} 
+{% block title %}Person{% endblock %}
 
 {% block content %}
 <div class="container m-1">
-    <div class="row align-items-center mb-4">
-        <div class="col-12">
-            <h1>{{ person.display_name }}</h1> {{person.pronouns}}
-            <h4>
-                {% if person.tags|length == 0 %}
+    {% if edit %}
+    <form action="{{ url_for('people.edit_person', id=person.id) }}" method="POST">
+        {% endif %}
+        <div class="row align-items-center mb-4 ">
+            <div class="col-5">
+                <h1>{{ person.display_name }}</h1> {{person.pronouns}}
+                <h4>
+                    {% if person.tags|length == 0 %}
                     DanceConnect User
-                {% else %}
+                    {% else %}
                     {{ person.tags }}
-                {% endif %}
-            </h4>
-        </div>
-    </div>  <!-- HEADER ROW END -->
+                    {% endif %}
+                </h4>
+            </div>
 
-    <div class="row mb-4">
-        <div class="col-12 col-md-5 col-xl-3">
-            <div class="p-5 mb-4 bg-primary rounded-lg text-light text-align-center text-decoration-none">
-                Profile Picture
-            </div>
-            <div class="p-3 bg-light rounded-lg">
-                <p class="h4">Contact</p>
-                <p><span class="font-weight-bold">Email:</span> {{ person.email }}</p>
-            </div>
-        </div> <!-- LEFT BLOCK END -->
+            {% if user.is_authenticated and user.id == person.id%}
 
-        <div class="col-12 col-md-7 col-xl-9 pl-xl-5 pl-3">
-            <div class="pb-4">
-                <p class="h4">Bio</p>
-                <p>
-                {% if bio == None %}
-                    This user has not added a bio to their profile yet. 
-                {% else %}
-                    {{ bio }}
-                {% endif %}
-                </p>
+            <div class="col d-flex justify-content-end p-0">
+                {% block edit_person_saveChanges %}
+                <a href="/people/{{ user.id }}/edit">
+                    <button class="btn bg-icon-background px-4"> Edit Profile </button>
+                </a>
+                {% endblock %}
             </div>
-            <div class="pb-4">
-                <p class="h4">Events</p>
-                <div class="row">
-                    {% for event in events %}
-                    <div class="col-12 col-md-6 col-xl-4">
-                        <a class="d-block p-5 mb-2 bg-primary rounded-lg text-light text-align-center text-decoration-none" href="">
-                            Event Image
-                        </a>
-                        <a href="" class="h5 text-decoration-none">{{ event.title }}</a>
-                        <p>Event Times</p>
-                    </div>
-                    {% endfor %}
+            {% endif %}
+
+        </div> <!-- HEADER ROW END -->
+
+
+        <div class="row mb-4">
+            <div class="col-12 col-md-5 col-xl-3">
+                <div class="p-5 mb-4 bg-primary rounded text-light text-align-center text-decoration-none">
+                    Profile Picture
                 </div>
+                <!-- CONTACTS BLOCK -->
+                <div class="p-3 bg-light rounded">
+                    <p class="h4">Contact</p>
+                    {% block edit_person_EditContacts %}
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
+                                style="width: 32px">
+                                <i class="bi bi-globe" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2">
+                            <span class="font-weight-bold">https://www.implementme.com</span> {{ person.website }}
+                        </div>
+                    </div>
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
+                                style="width: 32px">
+                                <i class="bi bi-instagram" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2">
+                            <span class="font-weight-bold">@implementme</span> {{ person.instagram }}
+                        </div>
+                    </div>
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
+                                style="width: 32px">
+                                <i class="bi-envelope-at" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2">
+                            <span class="font-weight-bold"></span> {{ person.email }}
+                        </div>
+                    </div>
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
+                                style="width: 32px">
+                                <i class="bi bi-threads" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2">
+                            <span class="font-weight-bold">@implementme</span> {{ person.threads }}
+                        </div>
+                    </div>
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
+                                style="width: 32px">
+                                <i class="bi bi-tiktok" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2">
+                            <span class="font-weight-bold">@implementme</span> {{ person.tiktok }}
+                        </div>
+                    </div>
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
+                                style="width: 32px">
+                                <i class="bi bi-twitter-x" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2">
+                            <span class="font-weight-bold">@implementme</span> {{ person.twitter }}
+                        </div>
+                    </div>
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
+                                style="width: 32px">
+                                <i class="bi bi-facebook" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2">
+                            <span class="font-weight-bold">ww.facebook.com/impleme</span> {{ person.facebook }}
+                        </div>
+                    </div>
+                    {% endblock %}
+                </div> <!-- LEFT BLOCK END -->
             </div>
-            <div class="pb-4">
-                <p class="h4">Affiliated</p>
-                <div class="row">
-                    <div class="col-12 col-md-6 col-xl-4 d-flex flex-column">
-                        {% for user in affiliations %}
-                        <a class="flex-grow-1 p-5 mb-2 bg-primary rounded-lg text-light text-align-center text-decoration-none" href="{{ url_for('people.person', id=user.id) }}">
-                            Affiliate Image
-                        </a>
-                        <a href="{{ url_for('people.person', id=user.id) }}" class="h5 text-decoration-none">{{ user.display_name }}</a>
-                        <div class="d-flex flex-row">
-                            {% if user.tags|length == 0 %}
-                            <div class="bg-light rounded-lg p-1 mr-1 mb-1">
-                                DanceConnect User
-                            </div>
-                            {% else %}
-                            {% for tag in user.tags %}
-                            <div class="bg-light rounded-lg p-1 mr-1 mb-1">
-                                {{ tag.name }}
-                            </div>
-                            {% endfor %}
-                            {% endif %}
+
+            <div class="col-12 col-md-7 col-xl-9 pl-xl-5 pl-3">
+                <div class="pb-4">
+                    <p class="h4">Bio</p>
+                    <p>
+                        {% block edit_person_bio %}
+                        {% if bio == None %}
+                        This user has not added a bio to their profile yet.
+                        {% else %}
+                        {{ bio }}
+                        {% endif %}
+                        {% endblock %}
+                    </p>
+                </div>
+                <div class="pb-4">
+                    <p class="h4">Events</p>
+                    <div class="row">
+                        {% for event in events %}
+                        <div class="col-12 col-md-6 col-xl-4">
+                            <a class="d-block p-5 mb-2 bg-primary rounded-lg text-light text-align-center text-decoration-none"
+                                href="">
+                                Event Image
+                            </a>
+                            <a href="" class="h5 text-decoration-none">{{ event.title }}</a>
+                            <p>Event Times</p>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
-            
-            </div>
-        </div> <!-- RIGHT BLOCK END -->
-    </div> <!-- BODY ROW END -->
+                <div class="pb-4">
+                    <p class="h4">Affiliated</p>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-xl-4 d-flex flex-column">
+                            {% for user in affiliations %}
+                            <a class="flex-grow-1 p-5 mb-2 bg-primary rounded-lg text-light text-align-center text-decoration-none"
+                                href="{{ url_for('people.person', id=user.id) }}">
+                                Affiliate Image
+                            </a>
+                            <a href="{{ url_for('people.person', id=user.id) }}" class="h5 text-decoration-none">{{
+                                user.display_name }}</a>
+                            <div class="d-flex flex-row">
+                                {% if user.tags|length == 0 %}
+                                <div class="bg-light rounded-lg p-1 mr-1 mb-1">
+                                    DanceConnect User
+                                </div>
+                                {% else %}
+                                {% for tag in user.tags %}
+                                <div class="bg-light rounded-lg p-1 mr-1 mb-1">
+                                    {{ tag.name }}
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+            </div> <!-- RIGHT BLOCK END -->
+        </div> <!-- BODY ROW END -->
+        {% if edit %}
+    </form>
+    {% endif %}
 </div>
 {% endblock %}
