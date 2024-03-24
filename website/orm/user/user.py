@@ -1,7 +1,10 @@
 import string
+from typing import List
+from sqlalchemy import asc, desc;
+
 from ... import db, json_response
 from ...models.user import User
-from sqlalchemy import asc, desc;
+from .user_tag import create_user_tag
 
 # Creates a new User object
 def create_user(email: str, password: str, display_name: str):
@@ -63,3 +66,40 @@ def read_single_user(user_id: int):
         return json_response(404, "No user found")
     
     return json_response(200, f"User {user.display_name} found.", user)
+
+# Updates a user with the given variables. Pass None to leave a variable unchanged.
+def update_user(user_id: int, username: str = None, email: str = None, password: str = None, is_admin: bool = None, display_name: str = None, pronouns: str = None, bio: str = None, tags: List[str] = None):
+    user: User = db.session.query(User).get(user_id)
+    if user is None:
+        return json_response(404, f"User not found.", user_id)
+    
+    if username is not None:
+        user.username = username
+    
+    if email is not None:
+        user.email = email
+    
+    if password is not None:
+        user.password = password
+    
+    if is_admin is not None:
+        user.is_admin = is_admin
+    
+    if display_name is not None:
+        user.display_name = display_name
+    
+    if pronouns is not None:
+        user.pronouns = pronouns
+    
+    if bio is not None:
+        user.bio = bio
+    
+    if tags is not None:
+        user.tags.clear()
+        for tag in tags:
+            create_user_tag(tag, User, False)
+            
+    db.session.add(user)
+    db.session.commit()
+    
+    return json_response(201, "User updated successfully.", user)
