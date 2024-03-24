@@ -8,15 +8,41 @@
     <form action="{{ url_for('people.edit_person', id=person.id) }}" method="POST">
         {% endif %}
         <div class="row align-items-center mb-4 ">
-            <div class="col-5">
-                <h1>{{ person.display_name }}</h1> {{person.pronouns}}
-                <h4>
+            <div class="col">
+
+                {% block edit_person_display_name_pronouns %}
+                <div class="row p-0 m-0 align-items-center">
+                    <div class="col-auto justify-content-start p-0 m-0">
+                        <h1>{{ person.display_name }}</h1>
+                    </div>
+                    {% if person.pronouns != "" %}
+                    <div class="col-auto justify-content-start p-0 m-2">
+                        {{person.pronouns}}
+                    </div>
+                    {% endif %}
+                    <div class="col-auto justify-content-start p-0 mt-2">
+                        <h5>@{{person.username}}</h5>
+                    </div>
+                </div>
+                {% endblock %}
+
+                {% block edit_person_tags %}
+                <h6>
                     {% if person.tags|length == 0 %}
                     DanceConnect User
                     {% else %}
-                    {{ person.tags }}
+                    <div class="row p-0 m-0 align-items-center">
+                        {% for tag in person.tags %}
+                        <div class="col-auto tag rounded p-1 mr-1 mb-1">
+                            {{ tag.name }}
+                        </div>
+                        <div class="col-auto p-1 rounded">
+                        </div>
+                        {% endfor %}
+                    </div>
                     {% endif %}
-                </h4>
+                </h6>
+                {% endblock %}
             </div>
 
             {% if user.is_authenticated and user.id == person.id%}
@@ -42,6 +68,7 @@
                 <div class="p-3 bg-light rounded">
                     <p class="h4">Contact</p>
                     {% block edit_person_EditContacts %}
+                    {% if person.website != "" %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
                             <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
@@ -50,9 +77,13 @@
                             </div>
                         </div>
                         <div class="col ps-2">
-                            <span class="font-weight-bold">https://www.implementme.com</span> {{ person.website }}
+                            <span class="font-weight-bold"><a
+                                    href="https://google.com">https://www.implementme.com</a></span>
+                            {{ person.website }}
                         </div>
                     </div>
+                    {% endif %} <!-- TODO Fix this! only show what is available -->
+                    {% if person.instagram != "" or person.instagram == None %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
                             <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
@@ -60,10 +91,16 @@
                                 <i class="bi bi-instagram" style="font-size: 1rem;"></i>
                             </div>
                         </div>
-                        <div class="col ps-2">
-                            <span class="font-weight-bold">@implementme</span> {{ person.instagram }}
+                        <div class="col-10 ps-2"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold"><a
+                                    href="https://www.instagram.com/{{ person.instagram }}/">@implementMePleaseNowPleaseThgisisTooOongaHandle</a></span>
+                            @{{
+                            person.instagram }}
                         </div>
                     </div>
+                    {% endif %}
+                    {% if person.email != "" %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
                             <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
@@ -71,10 +108,17 @@
                                 <i class="bi-envelope-at" style="font-size: 1rem;"></i>
                             </div>
                         </div>
-                        <div class="col ps-2">
-                            <span class="font-weight-bold"></span> {{ person.email }}
+                        <div class="col-10 ps-2"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold">
+                                <a href="mailto:{{ person.email }}">
+                                    {{ person.email }}
+                                </a>
+                            </span>
                         </div>
                     </div>
+                    {% endif %}
+                    {% if person.threads != "" %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
                             <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
@@ -83,9 +127,11 @@
                             </div>
                         </div>
                         <div class="col ps-2">
-                            <span class="font-weight-bold">@implementme</span> {{ person.threads }}
+                            <span class="font-weight-bold">@implementme</span> @{{ person.threads }}
                         </div>
                     </div>
+                    {% endif %}
+                    {% if person.tiktok != "" %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
                             <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
@@ -93,10 +139,16 @@
                                 <i class="bi bi-tiktok" style="font-size: 1rem;"></i>
                             </div>
                         </div>
-                        <div class="col ps-2">
-                            <span class="font-weight-bold">@implementme</span> {{ person.tiktok }}
+                        <div class="col-10 ps-2"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold"><a
+                                    href="https://www.tiktok.com/{{ person.tiktok }}/">@implementMePleaseNowPleaseThgisisTooOongaHandle</a></span>
+                            @{{
+                            person.tiktok }}
                         </div>
                     </div>
+                    {% endif %}
+                    {% if person.twitter != "" %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
                             <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
@@ -104,10 +156,16 @@
                                 <i class="bi bi-twitter-x" style="font-size: 1rem;"></i>
                             </div>
                         </div>
-                        <div class="col ps-2">
-                            <span class="font-weight-bold">@implementme</span> {{ person.twitter }}
+                        <div class="col-10 ps-2"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold"><a
+                                    href="https://twitter.com/{{ person.twitter }}/">@implementMePleaseNowPleaseThgisisTooOongaHandle</a></span>
+                            @{{
+                            person.twitter }}
                         </div>
                     </div>
+                    {% endif %}
+                    {% if person.facebook != "" %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
                             <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
@@ -119,8 +177,11 @@
                             <span class="font-weight-bold">ww.facebook.com/impleme</span> {{ person.facebook }}
                         </div>
                     </div>
+                    {% endif %}
                     {% endblock %}
                 </div> <!-- LEFT BLOCK END -->
+                {% block edit_person_password %}
+                {% endblock %}
             </div>
 
             <div class="col-12 col-md-7 col-xl-9 pl-xl-5 pl-3">

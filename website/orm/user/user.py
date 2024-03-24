@@ -133,7 +133,7 @@ def update_user(
     if tags is not None:
         user.tags.clear()
         for tag in tags:
-            create_user_tag(tag, User, False)
+            create_user_tag(tag, user, False)
 
     db.session.add(user)
     db.session.commit()

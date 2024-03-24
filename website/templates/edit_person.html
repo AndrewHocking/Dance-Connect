@@ -13,16 +13,34 @@
 <div class="form-floating">
     <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea"
         style="height: 100px"></textarea>
-    <label for="floatingTextarea2">Enter your bio</label>
+    <label for="bioTextArea">Enter your bio</label>
 </div>
 {% else %}
 <div class="form-floating">
     <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea"
         style="height: 100px">{{ bio|default('') }}</textarea>
-    <label for="floatingTextarea2">Your bio</label>
+    <label for="bioTextArea">Your bio</label>
 </div>
 {% endif %}
 {% endblock %}
+
+
+{% block edit_person_display_name_pronouns %}
+<div class="row p-0 m-0 align-items-center">
+    <div class="col-3 justify-content-start p-0 m-0">
+        <input type="text" class="form-control" name="display_name" placeholder="Enter your name here"
+            value="{{ person.display_name|default('NoName') }}">
+    </div>
+    <div class="col-3 justify-content-start p-0 m-2">
+        <input type="text" class="form-control" name="pronouns" placeholder="Pronouns" value="{{ person.pronouns }}">
+    </div>
+    <div class="col-auto justify-content-start p-0 mt-2">
+        <h5>@{{person.username}}</h5>
+    </div>
+</div>
+{% endblock %}
+
+
 
 {% block edit_person_EditContacts %}
 <div class="row align-items-center ps-3 py-1">
@@ -32,7 +50,8 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="website" value="{{ person.website|default('empty') }}">
+        <input type="text" class="form-control" name="website" placeholder="Website" id="website"
+            value="{{ person.website|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -42,7 +61,8 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="website" value="{{ person.instagram|default('empty') }}">
+        <input type="text" class="form-control" name="instagram" placeholder="Instagram handle"
+            value="{{ person.instagram|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -52,7 +72,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="website" value="{{ person.email|default('empty') }}">
+        <input type="text" class="form-control" name="email" value="{{ person.email|default('empty') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -62,7 +82,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="website" value="{{ person.threads|default('empty') }}">
+        <input type="text" class="form-control" name="threads" value="{{ person.threads|default('empty') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -72,7 +92,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="website" value="{{ person.tiktok|default('empty') }}">
+        <input type="text" class="form-control" name="tiktok" value="{{ person.tiktok|default('empty') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -82,7 +102,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="website" value="{{ person.twitter|default('empty') }}">
+        <input type="text" class="form-control" name="twitter" value="{{ person.twitter|default('empty') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -92,7 +112,26 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="website" value="{{ person.facebook|default('empty') }}">
+        <input type="text" class="form-control" name="facebook" value="{{ person.facebook|default('empty') }}">
     </div>
+</div>
+{% endblock %}
+
+{% block edit_person_password %}
+<div class="p-3 rounded pt-1">
+</div>
+<div class="p-3 bg-light rounded pt-1">
+    <p class="h4">Change Password</p>
+    <input type="password" class="form-control mb-2" name="current_password" placeholder="Current password">
+    <input type="password" class="form-control my-2" name="new_password" placeholder="Enter new password">
+    <input type="password" class="form-control bt-2" name="confirm_new_password" placeholder="Re-enter new password">
+</div>
+{% endblock %}
+
+{% block edit_person_tags %}
+<div class="form-floating">
+    <textarea class="form-control" placeholder="Enter tags here" name="tags" id="tags"
+        style="height: 35px">{{ tag_name_list|join(',')|default('') }}</textarea>
+    <label for="tags">Enter tags separated by commas here</label>
 </div>
 {% endblock %}

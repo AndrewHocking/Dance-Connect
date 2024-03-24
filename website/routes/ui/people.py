@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
 from ...orm.user.user import read_users, read_single_user, User, update_user
 from ...forms.people_filter import PeopleFilter, fillOrganizationData, fillFilterData
+from flask import flash
 
 people = Blueprint("people", __name__)
 
@@ -123,14 +124,69 @@ def edit_person(id):
     if person.bio != "":
         bio = person.bio
 
+    tag_name_list = [tag.name for tag in person.tags]
+    tag_name_list = [
+        " " + tag for tag in tag_name_list
+    ]  # add space to make tags look better
+
     affiliations: list[User] = read_users()["data"]
     if person in affiliations:
         affiliations.remove(person)
     if request.method == "POST":
         if request.form["submit"] == "Save":
+            display_name = request.form.get("display_name", "")
+            pronouns = request.form.get("pronouns", "")
+            website = request.form.get("website", "")
+            instagram = request.form.get("instagram", "")
+
+            if instagram.startswith("@"):  # url works without @
+                instagram = instagram[1:]
+
+            email = request.form.get("email", "")
+            threads = request.form.get("threads", "")
+            tiktok = request.form.get("tiktok", "")
+
+            if not tiktok.startswith("@"):  # url works with @
+                tiktok = "@" + tiktok
+
+            twitter = request.form.get("twitter", "")  # url works without @
+            if twitter.startswith("@"):
+                twitter = twitter[1:]
+
+            facebook = request.form.get("facebook", "")
+            current_pass = request.form.get("current_password", "")
+            new_pass = request.form.get("new_password", "")
+            confirm_pass = request.form.get("confirm_new_password", "")
+            tags = request.form.get("tags", "")
+            tag_list = tags.split(",")
+            tag_list = [tag.strip() for tag in tag_list]
+            tag_list = [tag for tag in tag_list if tag != ""]
+            # print(tag_list)
+            # print(person.password)
+            # print(current_pass[0])
+            # print(new_pass[0])
+            # print(confirm_pass[0])
+            if (person.password != current_pass or new_pass != confirm_pass) and (
+                current_pass != "" or new_pass != "" or confirm_pass != ""
+            ):
+                flash(
+                    "Password did not match or current password is incorrect", "error"
+                )
+                return redirect(url_for("people.edit_person", id=id))
+            else:
+                update_user(
+                    user_id=id,
+                    password=new_pass,
+                )
+
+            # TODO add error message for when the password is of invalid format
+
             update_user(
                 user_id=id,
+                display_name=display_name,
+                pronouns=pronouns,
                 bio=request.form.get("bioTextArea", ""),
+                tags=tag_list,
             )
             person.bio = request.form.get("bioTextArea", "")
             # person.save()
@@ -144,4 +200,5 @@ def edit_person(id):
         events=events,
         affiliations=affiliations,
         edit=edit,
+        tag_name_list=tag_name_list,
     )
