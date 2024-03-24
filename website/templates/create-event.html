@@ -52,13 +52,13 @@
         {% for event_occurrence_form in event_form.occurrences %}
         {% with occurrence_label=event_occurrence_form.date.id[:-5] %}
             {% if event_occurrence_form.date.id == "occurrences-0-date" %}
-                <div id="occurrences-0">
+                <div id="occurrences-0" class="occurrence">
                 {% with show_delete_button=false %}
                     {% include "create-event-occurrence.html" %}
                 {% endwith %}
                 </div>
             {% else %}
-                <div id="{{ occurrence_label }}" class="d-none">
+                <div id="{{ occurrence_label }}" class="d-none occurrence">
                 {% with show_delete_button=true %}
                     {% include "create-event-occurrence.html" %}
                 {% endwith %}
@@ -165,8 +165,23 @@
 
     let elements = document.getElementsByTagName("label");
     for (let i = 0; i < elements.length; i++) {
-        elements[i].classList.add("form-label");
+        if (!elements[i].classList.contains("form-check-label")) {
+            elements[i].classList.add("form-label");
+        }
     }
+    function setDateTimesAsRequired() {
+        let occurrences = document.getElementsByClassName("occurrence");
+        for (let i = 0; i < occurrences.length; i++) {
+            if (occurrences[i].classList.contains("d-none")) {
+                document.getElementById("occurrences-" + i + "-date").required = false;
+                document.getElementById("occurrences-" + i + "-start_time").required = false;
+            } else {
+                document.getElementById("occurrences-" + i + "-date").required = true;
+                document.getElementById("occurrences-" + i + "-start_time").required = true;
+            }
+        }
+    }
+    setDateTimesAsRequired();
 
 </script>
 {% endblock %}

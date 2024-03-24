@@ -4,45 +4,45 @@ from wtforms.validators import InputRequired
 from ..models.user import OrgType, Roles
 
 class OrganizationCheckbox(FlaskForm):
-    individual = BooleanField(label=OrgType.Individual.name, name=OrgType.Individual.name, render_kw={"class": ""})
-    group = BooleanField(label=OrgType.Group.name, name=OrgType.Group.name, render_kw={"class": ""})
-    organization = BooleanField(label=OrgType.Organization.name, name=OrgType.Organization.name, render_kw={"class": ""})
+    individual = BooleanField(label="Individual", name="individual", render_kw={"class": "form-check-input"})
+    group = BooleanField(label="Group", name="group", render_kw={"class": "form-check-input"})
+    organization = BooleanField(label="Organization", name="organization", render_kw={"class": "form-check-input"})
 
 class FiltersCheckbox(FlaskForm):
-    choreographer = BooleanField(label=Roles.Choreographer.name, name=Roles.Choreographer.name, render_kw={"class": ""})
-    designer = BooleanField(label=Roles.Designer.name, name=Roles.Designer.name, render_kw={"class": ""})
-    writer = BooleanField(label=Roles.Writer.name, name=Roles.Writer.name, render_kw={"class": ""})
-    producer = BooleanField(label=Roles.Producer.name, name=Roles.Producer.name, render_kw={"class": ""})
-    stageManager = BooleanField(label=Roles.StageManager.name, name=Roles.StageManager.name, render_kw={"class": ""})
-    other = BooleanField(label=Roles.Other.name, name=Roles.Other.name, render_kw={"class": ""})
+    choreographer = BooleanField(label="Choreographer", name="choreographer", render_kw={"class": "form-check-input"})
+    designer = BooleanField(label="Designer", name="designer", render_kw={"class": "form-check-input"})
+    writer = BooleanField(label="Writer", name="writer", render_kw={"class": "form-check-input"})
+    producer = BooleanField(label="Producer", name="producer", render_kw={"class": "form-check-input"})
+    stageManager = BooleanField(label="Stage Manager", name="stageManager", render_kw={"class": "form-check-input"})
+    other = BooleanField(label="Other", name="other", render_kw={"class": "form-check-input"})
 
 class PeopleFilter(FlaskForm):
-    searchName = StringField(
+    search = StringField(
         label="Search",
         validators=[],
         name="search",
-        render_kw={"placeholder": "Artist Name", "class" : "form-control"}
+        render_kw={"placeholder": "Search", "class" : "form-control"}
     )
     sortOption = SelectField(
         label="Sort",
         validators=[],
         name="sort",
         choices=[('alpha-asc', 'Name (A-Z)'), ('alpha-desc', 'Name (Z-A)')],
-        render_kw={"placeholder": "", "class" : "form-control"}
+        render_kw={"placeholder": "", "class" : "form-select"}
     )
     organizationType = FormField(OrganizationCheckbox, description="Organization Type")
     filters = FormField(FiltersCheckbox, description="Role/Profession")
-    searchSubmit = SubmitField(
+    search_button = SubmitField(
         label="Search",
         name="submit",
         render_kw={"class": "btn btn-primary", "value": "Search"}
     )
-    applyFilterSubmit = SubmitField(
+    apply_filters = SubmitField(
         label="Apply Filters",
         name="submit",
         render_kw={"class": "btn btn-primary form-control mb-2", "value": "Apply Filters"}
     )
-    clearFilterSubmit = SubmitField(
+    clear_filters = SubmitField(
         label="Clear Filters",
         name="submit",
         render_kw={"class": "btn btn-secondary form-control", "value": "Clear Filters"}

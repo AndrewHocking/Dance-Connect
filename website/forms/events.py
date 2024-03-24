@@ -4,19 +4,19 @@ from wtforms.validators import DataRequired, Length, NumberRange
 
 class CreateEventOccurrenceForm(FlaskForm):
     date = DateField(
-        label="Date",
+        label="Date ✽",
         name="date",
-        render_kw={"class": "form-control"}
+        render_kw={"class": "form-control date"}
     )
     start_time = TimeField(
-        label="Start Time",
+        label="Start Time ✽",
         name="start_time",
-        render_kw={"class": "form-control"}
+        render_kw={"class": "form-control time"}
     )
     end_time = TimeField(
         label="End Time",
         name="end_time",
-        render_kw={"class": "form-control"}
+        render_kw={"class": "form-control time"}
     )
     is_relaxed_performance = BooleanField(
         label="This is a \"relaxed performance\"",

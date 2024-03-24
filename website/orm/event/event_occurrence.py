@@ -1,7 +1,7 @@
 from ...models.event.event_occurrence import EventOccurrence
 from ... import db, json_response
 from ...models.event import Event
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def create_event_occurrence(
     event: Event,
@@ -11,6 +11,9 @@ def create_event_occurrence(
     has_asl_interpreter: bool,
     commit_db_after_creation: bool = True
 ):
+    if end_time < start_time:
+        end_time = end_time + timedelta(days = 1)
+        
     new_occurrence = EventOccurrence(
         event_id = event.id,
         event = event,
