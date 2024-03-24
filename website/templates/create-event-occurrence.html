@@ -1,4 +1,4 @@
-<div class="container border rounded mb-3 pb-3">
+<div class="container border rounded mb-3 pb-2">
     <div class = "row align-items-center mt-2">
         <div class = "col-auto form-group">
             {{ event_occurrence_form.date.label() }}
@@ -16,14 +16,14 @@
             <div class = "row mt-2">
                 <div class = "form-check">
                     {{ event_occurrence_form.is_relaxed_performance() }}
-                    {{ event_occurrence_form.is_relaxed_performance.label() }}
+                    {{ event_occurrence_form.is_relaxed_performance.label(class_="form-check-label") }}
                     <a href="https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed">(learn more)</a>.
                 </div>
             </div>
             <div class = "row">
                 <div class = "form-check">
                     {{ event_occurrence_form.has_asl_interpreter() }}
-                    {{ event_occurrence_form.has_asl_interpreter.label() }}
+                    {{ event_occurrence_form.has_asl_interpreter.label(class_="form-check-label") }}
                 </div>
             </div>
         </div>
@@ -32,5 +32,8 @@
             <button id="{{ occurrence_label }}-delete-btn" class="btn btn-danger delete-btn" type="button">Delete</button>
         </div>
         {% endif %}
+    </div>
+    <div class="row">
+        <div class="form-text">Leave "End time" blank to not specify an end time for this occurrence.</div>
     </div>
 </div>

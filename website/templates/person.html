@@ -126,13 +126,11 @@
                 <div class="pb-4">
                     <p class="h4">Bio</p>
                     <p>
-                        {% block edit_person_bio %}
                         {% if bio == None %}
                         This user has not added a bio to their profile yet.
                         {% else %}
                         {{ bio }}
                         {% endif %}
-                        {% endblock %}
                     </p>
                 </div>
                 <div class="pb-4">
@@ -160,7 +158,7 @@
                                 Affiliate Image
                             </a>
                             <a href="{{ url_for('people.person', id=user.id) }}" class="h5 text-decoration-none">{{
-                                user.name }}</a>
+                                user.display_name }}</a>
                             <div class="d-flex flex-row">
                                 {% if user.tags|length == 0 %}
                                 <div class="bg-light rounded-lg p-1 mr-1 mb-1">
@@ -181,5 +179,5 @@
                 </div>
             </div> <!-- RIGHT BLOCK END -->
         </div> <!-- BODY ROW END -->
-        {% if edit %} </form> {% else %} </div> {% endif %}
-{% endblock %}
+    </div>
+    {% endblock %}

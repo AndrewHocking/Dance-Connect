@@ -4,10 +4,10 @@ from ...models.user import User
 
 # Creates a new UserTag object, or finds one that already exists on the database with the same name
 def create_user_tag(name: str, user: User, commit_db_after_creation: bool = True):
-    name = name.lower
-    existing_tag = db.session.query(UserTag).filter_by(name = name).first()
-    if existing_tag is not None:
-        existing_tag.users.append(user)
+    name = name.lower()
+    new_tag = db.session.query(UserTag).filter_by(name = name).first()
+    if new_tag is not None:
+        new_tag.users.append(user)
     else:
         new_tag = UserTag(name = name, users = [user])
 

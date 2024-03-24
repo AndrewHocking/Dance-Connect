@@ -1,5 +1,8 @@
 import string
 from typing import List
+
+from .user_tag import create_user_tag
+from typing import List
 from sqlalchemy import asc, desc
 
 from ... import db, json_response
@@ -8,7 +11,15 @@ from .user_tag import create_user_tag
 
 
 # Creates a new User object
-def create_user(email: str, password: str, display_name: str):
+def create_user(
+    email: str,
+    password: str,
+    display_name: str,
+    username: str = "",
+    pronouns: str = "",
+    bio: str = "",
+    tags: List[str] = list(),
+):
     if len(email) < 5:
         return json_response(400, "Email must be greater than 5 characters.")
     elif len(display_name) < 1:
@@ -18,14 +29,17 @@ def create_user(email: str, password: str, display_name: str):
 
     conflict = db.session.query(User).filter_by(email=email).first()
     if conflict is not None:
-        return json_response(409, "A user with this email address already exists.")
+        return json_response(
+            409, "A user with this email address already exists.", conflict.email
+        )
 
-    username = "".join(
-        i for i in display_name if i in string.ascii_letters + "0123456789-_"
-    ).lower()
-    conflicts = db.session.query(User).filter_by(username=username).all()
-    if conflicts is not None and len(conflicts) > 0:
-        username = f"{username}_{len(conflicts)}"
+    if username == "":
+        username = "".join(
+            i for i in display_name if i in string.ascii_letters + "0123456789-_"
+        ).lower()
+        conflicts = db.session.query(User).filter_by(username=username).all()
+        if conflicts is not None and len(conflicts) > 0:
+            username = f"{username}_{len(conflicts)}"
 
     new_user = User(
         username=username,
@@ -33,13 +47,17 @@ def create_user(email: str, password: str, display_name: str):
         password=password,
         is_admin=False,
         display_name=display_name,
-        pronouns="",
-        bio="",
+        pronouns=pronouns,
+        bio=bio,
         tags=list(),
         events_organized=list(),
         events_participated=list(),
     )
     db.session.add(new_user)
+
+    for tag in tags:
+        create_user_tag(tag, new_user, False)
+
     db.session.commit()
 
     return json_response(201, "User created successfully.", new_user)
