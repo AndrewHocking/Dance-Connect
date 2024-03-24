@@ -1,4 +1,4 @@
-<div class="container border rounded mb-3 pb-3">
+<div class="container border rounded mb-3 pb-2">
     <div class = "row align-items-center mt-2">
         <div class = "col-auto form-group">
             {{ event_occurrence_form.date.label() }}
@@ -32,5 +32,8 @@
             <button id="{{ occurrence_label }}-delete-btn" class="btn btn-danger delete-btn" type="button">Delete</button>
         </div>
         {% endif %}
+    </div>
+    <div class="row">
+        <div class="form-text">Leave "End time" blank to not specify an end time for this occurrence.</div>
     </div>
 </div>

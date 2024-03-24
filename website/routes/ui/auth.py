@@ -48,7 +48,7 @@ def sign_up():
         if password1 != password2:
             flash('Passwords don\'t match.', category='error')
         else:
-            response = create_user(email, password1, name)
+            response = create_user(email=email, password=password1, name=name)
             if (response["status_code"] == 201):
                 new_user: User = response["data"]
                 login_user(new_user, remember=True)
