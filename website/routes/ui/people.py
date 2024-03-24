@@ -39,7 +39,7 @@ def people_list(search, sort, filters):
             return redirect(url_for('people.people_list', search=search, sort='_', filters='_'))
 
     if search != '_':
-        form.searchName.data = search
+        form.search.data = search
     if sort != '_':
         form.sortOption.data = sort
     if filters != '_':
@@ -60,7 +60,7 @@ def people_list(search, sort, filters):
     response = read_users(**query_params)
     people = response["data"]
 
-    return render_template("people.html", user=current_user, people=people, form=form)
+    return render_template("people.html", user=current_user, people=people, filters=form)
 
 
 @people.route('/people/<id>', methods=['GET'])

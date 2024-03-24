@@ -11,10 +11,10 @@ def create_user():
     #TODO: There probably should be some sort of verification of where this API request is coming from, so that not just anyone who discovers the link can just create infinite users.
     criteria = json.loads(request.json)
     email = criteria.get('email')
-    name = criteria.get('name')
+    display_name = criteria.get('display_name')
     password = criteria.get('password')
 
-    output = create_user(email=email, password=password, name=name)
+    output = create_user(email=email, password=password, display_name=display_name)
     if (output["status_code"] == 201):
         new_user: User = output["data"]
         output["data"] = new_user.id
