@@ -44,11 +44,12 @@ def sign_up():
         password1 = request.form.get('password')
         password2 = request.form.get('confirm_password')
 
-        #TODO: Hash passwords
+        # TODO: Hash passwords
         if password1 != password2:
             flash('Passwords don\'t match.', category='error')
         else:
-            response = create_user(email=email, password=password1, display_name=display_name)
+            response = create_user(
+                email=email, password=password1, display_name=display_name)
             if (response["status_code"] == 201):
                 new_user: User = response["data"]
                 login_user(new_user, remember=True)
