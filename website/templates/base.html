@@ -15,10 +15,11 @@
 </head>
 
 <body class="d-none">
-    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-5">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-md-5 px-3">
         <a id="logo" class="navbar-brand d-flex align-items-center" href="/">
             <img id="logo-img" class="rounded-circle p-1" src="{{url_for('static', filename='images/logo.png')}}"
                 alt="DanceConnect Logo" />
+            <div class="ps-2 pe-3 m-0 h3">DanceConnect</div>
         </a>
         <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
             aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,8 +69,8 @@
         {% endwith %}
     </div>
 
-    <div class="base container">
-        <div class="contentbox border p-5 my-2 shadow">{% block content %} {% endblock %}</div>
+    <div class="base container-lg">
+        <div class="contentbox border px-3 py-4 p-lg-5 my-2 shadow">{% block content %} {% endblock %}</div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
         integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous">
@@ -117,10 +118,13 @@
             }
 
             const navbar = document.getElementById("logo-img"); // Replace with your actual navbar ID
+            const logo = document.getElementById("logo");
             if (window.scrollY > 0) {
                 navbar.classList.add("shrink");
+                logo.classList.add("shrink");
             } else {
                 navbar.classList.remove("shrink");
+                logo.classList.remove("shrink");
             }
         });
 
