@@ -11,8 +11,9 @@ DB_NAME = "database.db"
 migrate = Migrate()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
-login_manager.login_view = "auth.login" # passed in function name of the route
+login_manager.login_view = "auth.login"  # passed in function name of the route
 login_manager.login_message_category = "info"
+
 
 def json_response(status_code: int, message: str, data: Any = None):
     if status_code < 200:
@@ -32,9 +33,10 @@ def json_response(status_code: int, message: str, data: Any = None):
     }
     return output
 
+
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs' #TODO: Change this
+    app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'  # TODO: Change this
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     db.init_app(app)
 
@@ -54,14 +56,13 @@ def create_app():
     app.register_blueprint(user_api, url_prefix='/api/')
     app.register_blueprint(event_api, url_prefix='/api/')
 
-    
     with app.app_context():
         db.create_all()
 
     login_manager.init_app(app)
 
     from .models.user import User
-    
+
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))
