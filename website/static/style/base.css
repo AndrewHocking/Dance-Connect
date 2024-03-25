@@ -1,5 +1,6 @@
 #logo {
     height: 40px;
+    margin: 0px;
 }
 #logo-img {
     height: 80px;
@@ -7,14 +8,13 @@
 }
 #logo-img.shrink {
     height: 50px;
+}
+#logo.shrink {
     margin-right: 30px;
 }
 
 nav {
     background-color: #01628B;
-}
-.navbar-collapse:not(.collapse) {
-    padding-bottom: 20px;
 }
 
 body {
@@ -65,5 +65,17 @@ body {
     /* For mobile phones: */
     #form-filter {
       background-color: #fff0f4;
+    }
+
+    .base {
+        padding: 10px;
+    }
+  }
+
+
+@media only screen and (max-width: 992px) {
+    /* For tablets: */
+    .navbar-collapse.show {
+        padding-bottom: 10px;
     }
   }
