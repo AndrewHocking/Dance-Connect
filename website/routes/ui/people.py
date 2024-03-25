@@ -134,6 +134,7 @@ def edit_person(id):
         affiliations.remove(person)
     if request.method == "POST":
         if request.form["submit"] == "Save":
+            newBio = request.form.get("bioTextArea", "")
             display_name = request.form.get("display_name", "")
             pronouns = request.form.get("pronouns", "")
             website = request.form.get("website", "")
@@ -172,7 +173,17 @@ def edit_person(id):
                 flash(
                     "Password did not match or current password is incorrect", "error"
                 )
-                return redirect(url_for("people.edit_person", id=id))
+                # return redirect(url_for("people.edit_person", id=id))
+                return render_template(
+                    "edit_person.html",
+                    user=current_user,
+                    person=person,
+                    bio=newBio,
+                    events=events,
+                    affiliations=affiliations,
+                    edit=edit,
+                    tag_name_list=tag_name_list,
+                )
             else:
                 update_user(
                     user_id=id,
