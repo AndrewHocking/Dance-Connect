@@ -46,7 +46,7 @@ class CDN:
                 self._key = data["cloudflare"]["cdn_key"]
                 self._account_hash = data["cloudflare"]["account_hash"]
                 file.close()
-        except Exception as e:
+        except Exception:
             pass
 
     def upload(self, path: str) -> dict:
@@ -102,7 +102,8 @@ class CDN:
             if "exif" in img.info:
                 del img.info["exif"]  # Strip just EXIF data
             img.save(path, quality="keep")
-            img = Image.open(path)  # reopen the image to update the image object
+            # reopen the image to update the image object
+            img = Image.open(path)
 
             # check file attributes
             width, height = img.size
@@ -297,7 +298,7 @@ class CDN:
                     print("Failed to delete %s. Reason: %s" % (file_path, e))
                     return False
             return True
-        except Exception as e:
+        except Exception:
             return False
 
     def _error_message(self, message: str) -> dict:

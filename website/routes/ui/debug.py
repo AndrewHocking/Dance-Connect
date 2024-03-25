@@ -13,9 +13,11 @@ from ...models.event.event import Event
 
 debug_route = Blueprint('debug', __name__)
 
+
 @debug_route.route('/debug', methods=['GET', 'POST'])
 def debug():
     return render_template("debug.html", user=current_user)
+
 
 @debug_route.route('/debug/create_dummy_users', methods=['GET', 'POST'])
 def create_dummy_users():
@@ -228,7 +230,7 @@ def create_dummy_users():
             "tags": ["salsa", "social dancer", "enthusiast"]
         }
     ]
-    
+
     for user in users:
         response = create_user(
             username=user["username"],
@@ -247,9 +249,10 @@ def create_dummy_users():
         else:
             db.session.add(response["data"])
             db.session.commit()
-    
+
     return redirect(url_for("people.people_list"))
-    
+
+
 @debug_route.route('/debug/create_dummy_events', methods=['GET', 'POST'])
 def create_dummy_events():
     events = [
@@ -501,31 +504,31 @@ def create_dummy_events():
             "max_ticket_price": 60.0
         }
     ]
-    
+
     users = db.session.query(User).all()
     for event in events:
         new_event: Event = create_event(
-            organizer = random.choice(users),
-            title = event["title"],
-            description = event["description"],
-            url = event["url"],
-            tags = event["tags"],
-            venue_name = event["venue_name"],
-            venue_address = event["venue_address"],
-            venue_is_wheelchair_accessible = event["venue_is_wheelchair_accessible"],
-            show_is_photosensitivity_friendly = event["show_is_photosensitivity_friendly"],
-            accessibility_notes = event["accessibility_notes"],
-            min_ticket_price = event["min_ticket_price"],
-            max_ticket_price = event["max_ticket_price"],
-            occurrences = list(),
-            participants = list(),
-            commit_db_after_creation = False
+            organizer=random.choice(users),
+            title=event["title"],
+            description=event["description"],
+            url=event["url"],
+            tags=event["tags"],
+            venue_name=event["venue_name"],
+            venue_address=event["venue_address"],
+            venue_is_wheelchair_accessible=event["venue_is_wheelchair_accessible"],
+            show_is_photosensitivity_friendly=event["show_is_photosensitivity_friendly"],
+            accessibility_notes=event["accessibility_notes"],
+            min_ticket_price=event["min_ticket_price"],
+            max_ticket_price=event["max_ticket_price"],
+            occurrences=list(),
+            participants=list(),
+            commit_db_after_creation=False
         )["data"]
         db.session.add(new_event)
-        
-        end_time = datetime.now() + timedelta(hours = random.randint(1, 4320))
+
+        end_time = datetime.now() + timedelta(hours=random.randint(1, 4320))
         for _ in range(1, random.randint(1, 10)):
-            start_time = end_time + timedelta(hours = random.randint(1, 168))
+            start_time = end_time + timedelta(hours=random.randint(1, 168))
             end_time = start_time + timedelta(minutes=random.randint(15, 180))
             is_relaxed_performance = bool(random.getrandbits(1))
             has_asl_interpreter = bool(random.getrandbits(1))
@@ -535,7 +538,7 @@ def create_dummy_events():
                 end_time=end_time,
                 is_relaxed_performance=is_relaxed_performance,
                 has_asl_interpreter=has_asl_interpreter,
-                commit_db_after_creation = False
+                commit_db_after_creation=False
             )
     db.session.commit()
     return redirect(url_for("events.events_list"))

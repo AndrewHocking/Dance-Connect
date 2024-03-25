@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
 from ...orm.user.user import read_users, read_single_user,  update_user, User, UserType
-from ...forms.people_filter import PeopleFilter, Roles, fillOrganizationData, fillFilterData
+from ...forms.people_filter import PeopleFilter, Roles, fill_organization_data, fill_filter_data
 
 people = Blueprint("people", __name__)
 
@@ -17,21 +17,21 @@ def people_list(search, sort, filters):
 
     if request.method == "POST":
         print(request.form)
-        if request.form.get("search_button") != None:
-            searchInput = request.form.get("search", "")
-            if searchInput == "":
-                searchInput = "_"
+        if request.form.get("search_button") is not None:
+            search_input = request.form.get("search", "")
+            if search_input == "":
+                search_input = "_"
 
             return redirect(
                 url_for(
-                    "people.people_list", search=searchInput, sort=sort, filters=filters
+                    "people.people_list", search=search_input, sort=sort, filters=filters
                 )
             )
-        
-        elif request.form.get("apply_filters") != None:
-            sortMethod = request.form.get("sort", "")
-            if sortMethod == "":
-                sortMethod = "_"
+
+        elif request.form.get("apply_filters") is not None:
+            sort_method = request.form.get("sort", "")
+            if sort_method == "":
+                sort_method = "_"
 
             filters = []
             for key in request.form:
@@ -45,55 +45,57 @@ def people_list(search, sort, filters):
                     filters.append("others-" + tag)
 
             if len(filters) == 0:
-                filterStr = "_"
+                filter_str = "_"
             else:
-                filterStr = "+".join(filters)
+                filter_str = "+".join(filters)
 
             return redirect(
                 url_for(
                     "people.people_list",
                     search=search,
-                    sort=sortMethod,
-                    filters=filterStr,
+                    sort=sort_method,
+                    filters=filter_str,
                 )
             )
 
-        elif request.form.get("clear_filters") != None:
+        elif request.form.get("clear_filters") is not None:
             return redirect(
-                url_for("people.people_list", search=search, sort="_", filters="_")
+                url_for("people.people_list", search=search,
+                        sort="_", filters="_")
             )
 
     if search != "_":
         form.search.data = search
     if sort != "_":
-        form.sortOption.data = sort
+        form.sort_option.data = sort
     if filters != "_":
-        filterArr = filters.split("+")
-        other_tags = [filter.split("-")[1] for filter in filterArr if filter.split("-")[0] == "others"]
-        filterArr = [filter.split("-")[1] for filter in filterArr]
+        filter_arr = filters.split("+")
+        other_tags = [filter.split(
+            "-")[1] for filter in filter_arr if filter.split("-")[0] == "others"]
+        filter_arr = [filter.split("-")[1] for filter in filter_arr]
 
-        fillOrganizationData(form.userType.form, filterArr)
-        fillFilterData(form.filters.form, filterArr)
+        fill_organization_data(form.user_type.form, filter_arr)
+        fill_filter_data(form.filters.form, filter_arr)
         form.other_tags.data = ', '.join(other_tags)
 
     query_params = dict()
     if search != "_":
-        query_params["searchName"] = search
+        query_params["search_name"] = search
     if sort != "_":
-        query_params["sortOption"] = sort
+        query_params["sort_option"] = sort
     if filters != "_":
         all_filters = filters.split("+")
         user_types, filter_tags = [], []
 
         for filter in all_filters:
             filter = filter.split("-")
-            if filter[0] == "userType":
+            if filter[0] == "user_type":
                 user_types.append(filter[1])
             elif filter[0] != "filters" or filter[1] != Roles.OTHER.value:
                 filter_tags.append(filter[1])
 
-        query_params["userTypes"] = user_types
-        query_params["filterTags"] = filter_tags
+        query_params["user_types"] = user_types
+        query_params["filter_tags"] = filter_tags
 
     response = read_users(**query_params)
     people = response["data"]

@@ -4,9 +4,11 @@ from typing import List
 from .user_tag import create_user_tag
 from ... import db, json_response
 from ...models.user import User, UserType, UserTag, SocialMedia
-from sqlalchemy import asc, desc, or_, and_, func;
+from sqlalchemy import asc, desc, or_, and_, func
 
 # Creates a new User object
+
+
 def create_user(
     email: str,
     password: str,
@@ -65,37 +67,37 @@ def create_user(
 
 # Returns List[User] that pass the filter parameters
 def read_users(
-    searchName: str = None, sortOption: str = "alpha-asc", userTypes: list[str] = [], filterTags: list[str] = []
+    search_name: str = None, sort_option: str = "alpha-asc", user_types: list[str] = [], filter_tags: list[str] = []
 ):
     users = db.session.query(User)
 
-    if searchName != None:
-        users = users.filter(User.display_name.icontains(searchName.lower()))
+    if search_name is not None:
+        users = users.filter(User.display_name.icontains(search_name.lower()))
 
-    if sortOption == "alpha-asc":
+    if sort_option == "alpha-asc":
         users = users.order_by(asc(User.display_name))
-    elif sortOption == "alpha-desc":
+    elif sort_option == "alpha-desc":
         users = users.order_by(desc(User.display_name))
 
-    if len(userTypes) > 0:
+    if len(user_types) > 0:
         queries = []
         for type in UserType:
-            if type.value in userTypes:
+            if type.value in user_types:
                 queries.append(User.user_type == type)
-        
+
         users = users.filter(or_(*queries))
 
-    if len(filterTags) > 0:
+    if len(filter_tags) > 0:
         queries = []
-        for tag in filterTags:
+        for tag in filter_tags:
             queries.append(func.lower(UserTag.name) == func.lower(tag))
-        
+
         users = users.join(User.tags).filter(or_(*queries))
-    
-    print(userTypes, filterTags)
+
+    print(user_types, filter_tags)
     print(users)
-    
-    #TODO: Add support for filtering by user tags
+
+    # TODO: Add support for filtering by user tags
     users = users.all()
 
     return json_response(200, f"{len(users)} users found.", users)
@@ -105,7 +107,7 @@ def read_users(
 def read_single_user(user_id: int):
     user = db.session.query(User).filter_by(id=user_id).first()
 
-    if user == None:
+    if user is None:
         return json_response(404, "No user found")
 
     return json_response(200, f"User {user.display_name} found.", user)
@@ -127,7 +129,7 @@ def update_user(
 ):
     user: User = db.session.query(User).get(user_id)
     if user is None:
-        return json_response(404, f"User not found.", user_id)
+        return json_response(404, "User not found.", user_id)
 
     if username is not None:
         user.username = username
@@ -156,7 +158,8 @@ def update_user(
     if socials is not None:
         user.socials.clear()
         for social_link in socials:
-            create_socials_link(user.id, social_link.social_media, social_link.handle)
+            create_socials_link(
+                user.id, social_link.social_media, social_link.handle)
 
     if tags is not None:
         user.tags.clear()
@@ -177,7 +180,7 @@ def create_socials_link(user_id: int, type: str, handle: str):
             func.lower(SocialMedia.social_media) == func.lower(type)
         )) \
         .first()
-    
+
     if conflict is not None:
         return json_response(400, f"User aleady has an existing social media handle <{conflict.handle}> for this platform.")
 
@@ -199,12 +202,11 @@ def update_socials_link(user_id: int, type: str, handle: str):
             SocialMedia.user == user_id,
             func.lower(SocialMedia.social_media) == func.lower(type)
         )) \
-        
+
     if socials_link.first() is None:
         return json_response(200, f"User {user_id} does not have an existing handle on platform {type}")
-    
+
     socials_link.update({"handle": handle})
     db.session.commit()
 
     return json_response(200, f"User {user_id}'s {type} handle has been updated to {handle}", socials_link.first())
-
