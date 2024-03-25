@@ -58,7 +58,7 @@
     </div>
 </div>
 <div class="form-group mb-3">
-    {{ filters.tags.label() }}
+    <div class="form-label">{{ filters.tags.label() }}</div>
     {% for choice in filters.match_all_tags %}
     <div class="form-check form-check-inline">
         {{ choice(class_="form-check-input") }}

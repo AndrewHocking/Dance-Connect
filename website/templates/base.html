@@ -24,7 +24,7 @@
             aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div id="navbar" class="navbar-collapse collapse justify-content-between">
+        <div id="navbar" class="navbar-collapse collapse justify-content-between mt-3 mt-lg-0">
             <div class="navbar-nav navbar-left">
                 <a class="nav-link" id="home" href="/">Home </a>
                 <a class="nav-link" id="events" href="/events">Events </a>
@@ -80,9 +80,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous">
         </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-        </script>
+
     <script>
         var element;
         if (window.location.pathname.startsWith("/events")) {
@@ -105,7 +103,19 @@
             element.appendChild(srSpan);
         }
 
+        var first_loaded = true;
+
         window.addEventListener("scroll", function () {
+            if (first_loaded) {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: "instant",
+                });
+                first_loaded = false;
+                return;
+            }
+
             const navbar = document.getElementById("logo-img"); // Replace with your actual navbar ID
             if (window.scrollY > 0) {
                 navbar.classList.add("shrink");

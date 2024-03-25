@@ -46,7 +46,8 @@ def create_event(
         min_ticket_price = min_ticket_price,
         max_ticket_price = max_ticket_price,
         occurrences = list(),
-        participants = participants
+        participants = participants,
+        request_notifications = list(),
     )
 
     db.session.add(new_event)

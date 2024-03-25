@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
-from ...orm.user.user import read_users, read_single_user, User, update_user
-from ...forms.people_filter import PeopleFilter, fillOrganizationData, fillFilterData
+from ...orm.user.user import read_users, read_single_user,  update_user, User, UserType
+from ...forms.people_filter import PeopleFilter, Roles, fillOrganizationData, fillFilterData
 
 people = Blueprint("people", __name__)
 
@@ -16,7 +16,8 @@ def people_list(search, sort, filters):
     form = PeopleFilter()
 
     if request.method == "POST":
-        if request.form["submit"] == "Search":
+        print(request.form)
+        if request.form.get("search_button") != None:
             searchInput = request.form.get("search", "")
             if searchInput == "":
                 searchInput = "_"
@@ -26,8 +27,8 @@ def people_list(search, sort, filters):
                     "people.people_list", search=searchInput, sort=sort, filters=filters
                 )
             )
-
-        elif request.form["submit"] == "Apply Filters":
+        
+        elif request.form.get("apply_filters") != None:
             sortMethod = request.form.get("sort", "")
             if sortMethod == "":
                 sortMethod = "_"
@@ -36,6 +37,12 @@ def people_list(search, sort, filters):
             for key in request.form:
                 if request.form[key] == "y":
                     filters.append(key)
+
+            other_tags = request.form.get("other_tags", "")
+            tag_list = [tag.strip() for tag in other_tags.split(",")]
+            for tag in tag_list:
+                if tag != "":
+                    filters.append("others-" + tag)
 
             if len(filters) == 0:
                 filterStr = "_"
@@ -51,7 +58,7 @@ def people_list(search, sort, filters):
                 )
             )
 
-        elif request.form["submit"] == "Clear Filters":
+        elif request.form.get("clear_filters") != None:
             return redirect(
                 url_for("people.people_list", search=search, sort="_", filters="_")
             )
@@ -62,10 +69,12 @@ def people_list(search, sort, filters):
         form.sortOption.data = sort
     if filters != "_":
         filterArr = filters.split("+")
+        other_tags = [filter.split("-")[1] for filter in filterArr if filter.split("-")[0] == "others"]
         filterArr = [filter.split("-")[1] for filter in filterArr]
 
-        fillOrganizationData(form.organizationType.form, filterArr)
+        fillOrganizationData(form.userType.form, filterArr)
         fillFilterData(form.filters.form, filterArr)
+        form.other_tags.data = ', '.join(other_tags)
 
     query_params = dict()
     if search != "_":
@@ -73,13 +82,24 @@ def people_list(search, sort, filters):
     if sort != "_":
         query_params["sortOption"] = sort
     if filters != "_":
-        query_params["filterTags"] = filters.split("+")
+        all_filters = filters.split("+")
+        user_types, filter_tags = [], []
+
+        for filter in all_filters:
+            filter = filter.split("-")
+            if filter[0] == "userType":
+                user_types.append(filter[1])
+            elif filter[0] != "filters" or filter[1] != Roles.OTHER.value:
+                filter_tags.append(filter[1])
+
+        query_params["userTypes"] = user_types
+        query_params["filterTags"] = filter_tags
 
     response = read_users(**query_params)
     people = response["data"]
 
     return render_template(
-        "people.html", user=current_user, people=people, filters=form
+        "people.html", user=current_user, people=people, filters=form, orgType=UserType, roles=Roles
     )
 
 

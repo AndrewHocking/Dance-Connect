@@ -7,45 +7,30 @@
     {{ filters.sortOption() }}
 </div>
 <div class="form-group mb-3">
-    <label class="form-label">{{ filters.organizationType.description }}</label>
+    <label class="form-label">{{ filters.userType.description }}</label>
+    {% for type in orgType %}
     <div class="form-check">
-        {{ filters.organizationType.form.individual }}
-        {{ filters.organizationType.form.individual.label(class_="form-check-label") }}
+        {{ filters.userType.form[type.name] }}
+        {{ filters.userType.form[type.name].label(class_="form-check-label") }}
     </div>
-    <div class="form-check">
-        {{ filters.organizationType.form.group }}
-        {{ filters.organizationType.form.group.label(class_="form-check-label") }}
-    </div>
-    <div class="form-check">
-        {{ filters.organizationType.form.organization }}
-        {{ filters.organizationType.form.organization.label(class_="form-check-label") }}
-    </div>
+    {% endfor %}
 </div>
 <div class="form-group mb-3">
     <label class="form-label">{{ filters.filters.description }}</label>
+    {% for role in roles %}
     <div class="form-check">
-        {{ filters.filters.form.choreographer }}
-        {{ filters.filters.form.choreographer.label(class_="form-check-label") }}
+        {{ filters.filters.form[role.name] }}
+        {{ filters.filters.form[role.name].label(class_="form-check-label") }}
     </div>
-    <div class="form-check">
-        {{ filters.filters.form.designer }}
-        {{ filters.filters.form.designer.label(class_="form-check-label") }}
-    </div>
-    <div class="form-check">
-        {{ filters.filters.form.writer }}
-        {{ filters.filters.form.writer.label(class_="form-check-label") }}
-    </div>
-    <div class="form-check">
-        {{ filters.filters.form.producer }}
-        {{ filters.filters.form.producer.label(class_="form-check-label") }}
-    </div>
-    <div class="form-check">
-        {{ filters.filters.form.stageManager }}
-        {{ filters.filters.form.stageManager.label(class_="form-check-label") }}
-    </div>
-    <div class="form-check">
-        {{ filters.filters.form.other }}
-        {{ filters.filters.form.other.label(class_="form-check-label") }}
+    {% endfor %}
+
+    {% if filters.filters.form[roles.OTHER.name].data %}
+    <div id="other_tags_wrapper">
+    {% else %}
+    <div id="other_tags_wrapper" class="d-none">
+    {% endif %}
+        {{ filters.other_tags }}
+        <div class="form-text">{{ filters.other_tags.description }}</div>
     </div>
 </div>
 <div class="col-12 ">
@@ -62,4 +47,16 @@
     tags=person.tags, href="/people/"+(person.id|string)) }}
 </div>
 {% endfor %}
+
+<script>
+    var other_tag_checkbox = document.getElementById("filters-Other")
+    other_tag_checkbox.addEventListener('change', (event) => {
+        var text_wrapper = document.getElementById("other_tags_wrapper");
+        if (event.target.checked)
+            text_wrapper.classList.remove("d-none")
+        else
+            text_wrapper.classList.add("d-none")
+    })
+</script>
+
 {% endblock %}

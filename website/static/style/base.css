@@ -52,3 +52,18 @@ body {
     background-color: #FE39A3;
     color: white;
 }
+
+.toggler-button[aria-expanded=false] .item-expanded {
+    display: none;
+}
+
+.toggler-button[aria-expanded=true] .item-collapsed {
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    #form-filter {
+      background-color: #fff0f4;
+    }
+  }
