@@ -34,6 +34,24 @@
             <div class="navbar-nav navbar-right">
                 <a class="nav-link" id="debug" href="/debug">Debug</a>
                 {% if user.is_authenticated %}
+                <a class="nav-link d-none d-md-block" id="notifications" href="/notifications">
+                    <i class="bi bi-bell p-1 position-relative">
+                    {% if user.received_notifications|length > 0 %}
+                        <div class="position-absolute top-0 start-100 translate-middle badge fst-normal rounded-pill btn-primary p-1">
+                            {{ user.received_notifications|length }}
+                        </div>
+                    {% endif %}
+                    </i>
+                </a>
+                <a class="nav-link d-md-none position-relative" id="notifications" href="/notifications">
+                    <span class="position-relative pe-3">Notifications
+                    {% if user.received_notifications|length > 0 %}
+                        <div class="position-absolute top-0 start-100 translate-middle badge fst-normal rounded-pill btn-primary p-1">
+                            {{ user.received_notifications|length }}
+                        </div>
+                    {% endif %}
+                    </span>
+                </a>
                 <a class="nav-link" id="profile" href="/people/{{user.id}}">Profile </a>
                 <a class="nav-link" id="logout" href="/logout">Logout</a>
                 {% else %}

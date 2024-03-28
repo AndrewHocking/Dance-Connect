@@ -28,7 +28,9 @@ class Event(db.Model):
     occurrences: Mapped[List['EventOccurrence']] = relationship(
         'EventOccurrence', back_populates='event')
     participants: Mapped[List['User']] = relationship(
-        'User', secondary='event_participants', back_populates='events_participated')
+        'User', secondary="event_participants", back_populates="events_participated", viewonly=True)
+    participants_association: Mapped[List['EventParticipant']] = relationship(
+        'EventParticipant', back_populates='event')
     request_notifications: Mapped[List['EventRequestNotification']] = relationship(
         'EventRequestNotification', back_populates="event")
     # TODO: add media gallery
@@ -39,3 +41,10 @@ class EventParticipant(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     event_id: Mapped[int] = mapped_column(Integer, ForeignKey('events.id'))
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
+
+    event: Mapped['Event'] = relationship(
+        'Event', back_populates="participants_association")
+    user: Mapped['User'] = relationship(
+        'User', back_populates="participants_association")
+
+    role: Mapped[str]

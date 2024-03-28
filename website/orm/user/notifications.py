@@ -1,6 +1,8 @@
 from ... import db, json_response
-from ...models.user import User, EventRequestNotification
-from ...models.event import Event
+from ...models.user import User, EventRequestNotification, Notification
+from ...models.event import Event, EventParticipant
+
+from sqlalchemy import and_
 
 
 def add_event_request_notification(sender: User, event_id: Event, role: str = ""):
@@ -8,6 +10,18 @@ def add_event_request_notification(sender: User, event_id: Event, role: str = ""
         Event).filter_by(id=event_id).first()
     if associated_event is None:
         return json_response(404, f"No event was found for the given event_id: {event_id}")
+
+    if associated_event.organizer_id == sender.id:
+        return json_response(404, f"A user can't request to join their own event.")
+
+    for participant in associated_event.participants_association:
+        if participant.user_id == sender.id:
+            return json_response(404, f"A user can't request to join an event their already a part of.", participant.role)
+
+    conflict = db.session.query(EventRequestNotification).filter(and_(
+        EventRequestNotification.event_id == event_id, EventRequestNotification.sender_id == sender.id)).first()
+    if conflict is not None:
+        return json_response(400, f"This user has already request to join this event.", conflict.role)
 
     new_notification = EventRequestNotification(
         recipient_id=associated_event.organizer_id,
@@ -43,9 +57,15 @@ def accept_event_request_notification(notification_id: int):
     if requesting_user is None:
         return json_response(404, "Found no entry for the user requesting to join this event", notification.sender_id)
 
-    notification.event.participants.append(requesting_user)
+    event = notification.event
+    role = notification.role
+    deleted = delete_notification(notification_id)
+    if not deleted:
+        return json_response(404, f"Found no entry for notification {notification_id}")
 
-    delete_notification(notification_id)
+    participation = EventParticipant(
+        role=role, event=event, user=requesting_user)
+    db.session.add(participation)
     db.session.commit()
 
     return json_response(
@@ -58,15 +78,21 @@ def accept_event_request_notification(notification_id: int):
 
 # declines the request to be added to event by deleting the notification
 def deny_event_request_notification(notification_id: int):
-    result = delete_notification(notification_id)
-    if result == 0:
+    deleted = delete_notification(notification_id)
+    if not deleted:
         return json_response(404, f"Found no entry for notification {notification_id}")
 
-    db.session.commit()
     return json_response(200, "Notification request successfully removed")
 
 
 def delete_notification(notification_id: int) -> int:
-    num_rows_deleted = db.session.query(
-        EventRequestNotification).filter_by(id=notification_id).delete()
-    return num_rows_deleted
+    notification = db.session.query(
+        EventRequestNotification).filter_by(id=notification_id).first()
+
+    if notification is None:
+        return False
+
+    db.session.delete(notification)
+    db.session.commit()
+
+    return True

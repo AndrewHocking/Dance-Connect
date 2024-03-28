@@ -165,4 +165,5 @@ def event_details(event_id: int):
     from ... import db
     from ...models.event import Event
     event: Event = db.session.query(Event).get(event_id)
+    print([el.display_name for el in event.participants])
     return render_template("event-details.html", user=current_user, event=event)
