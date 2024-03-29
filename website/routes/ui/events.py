@@ -1,9 +1,16 @@
 from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
-from ...orm.event.event import read_event, create_event, search_events
+
+from ...models.event.event import Event
+from ...models.event.event_contributor import EventContributor
+from ...models.user.user import EventRequestNotification
+from ...orm.event.event import all_events, get_event, create_event, search_events
+from ...orm.event.event_contributor import get_event_contributors, remove_user_from_event
+from ...orm.user.notifications import get_event_request_notification, add_event_request_notification, delete_notification
 from ...forms.events import CreateEventForm
 from ...forms.event_filter import EventFilterForm
+
 
 events = Blueprint('events', __name__)
 
@@ -83,9 +90,9 @@ def events_list():
         else:
             return redirect(url_for("events.events_list"))
     else:
-        response = read_event()
+        response = all_events()
 
-    events = response["data"]
+    events = response.get("data") or []
     return render_template("events.html", user=current_user, events=events, filters=filters)
 
 
@@ -104,8 +111,8 @@ def event_create():
         tags = request.form.get('tags')
         venue_name = request.form.get('venue_name')
         venue_address = request.form.get('venue_address')
-        venue_is_wheelchair_accessible = request.form.get(
-            'venue_is_wheelchair_accessible')
+        venue_is_physically_accessible = request.form.get(
+            'venue_is_physically_accessible')
         accessibility_notes = request.form.get('accessibility_notes')
         show_is_photosensitivity_friendly = request.form.get(
             "show_is_photosensitivity_friendly")
@@ -139,8 +146,8 @@ def event_create():
             tags=tag_list,
             venue_name=venue_name,
             venue_address=venue_address,
-            venue_is_wheelchair_accessible=bool(
-                venue_is_wheelchair_accessible),
+            venue_is_physically_accessible=bool(
+                venue_is_physically_accessible),
             show_is_photosensitivity_friendly=bool(
                 show_is_photosensitivity_friendly),
             accessibility_notes=accessibility_notes,
@@ -157,12 +164,51 @@ def event_create():
 
     return render_template("create-event.html", user=current_user, event_form=event_form)
 
-# TODO: rework this to use the orm methods
-
 
 @events.route('/events/<int:event_id>', methods=['GET'])
 def event_details(event_id: int):
-    from ... import db
-    from ...models.event import Event
-    event: Event = db.session.query(Event).get(event_id)
-    return render_template("event-details.html", user=current_user, event=event)
+    event: Event = get_event(event_id).get("data")
+    contributors: EventContributor = get_event_contributors(
+        event_id).get("data")
+    event_request_notification: EventRequestNotification = get_event_request_notification(
+        event_id=event_id, sender_id=current_user.id).get("data") if current_user.is_authenticated else None
+    return render_template("event-details.html", user=current_user, event=event, contributors=contributors, event_request_notification=event_request_notification)
+
+
+@events.route('/events/<int:event_id>/join', methods=['POST'])
+@login_required
+def join_event(event_id: int):
+    add_event_request_notification(
+        sender=current_user, event_id=event_id, role=request.form.get("role", ""))["data"]
+    flash('Request sent!', category='success')
+    return redirect(url_for('events.event_details', event_id=event_id))
+
+
+@events.route('/events/<int:event_id>/cancel-join-request', methods=['POST'])
+@login_required
+def cancel_event_join_request(event_id: int):
+    notification = get_event_request_notification(
+        event_id=event_id, sender_id=current_user.id).get("data")
+    delete_notification(notification.id)
+    flash('Request cancelled!', category='success')
+    return redirect(url_for('events.event_details', event_id=event_id))
+
+
+@events.route('/events/<int:event_id>/leave', methods=['POST'])
+@login_required
+def leave_event(event_id: int):
+    event: Event = get_event(event_id).get("data")
+    remove_user_from_event(event=event, user=current_user)
+    flash('You have left the event.', category='success')
+    return redirect(url_for('events.event_details', event_id=event_id))
+
+
+@events.route('/events/<int:event_id>/contributors', methods=['POST'])
+def event_contributors(event_id: int):
+    contributors: EventContributor = get_event_contributors(
+        event_id).get("data")
+
+    if contributors is None:
+        return {"message": "No contributors found for the event."}, 404
+
+    return render_template("event-contributors.html", user=current_user, contributors=contributors)

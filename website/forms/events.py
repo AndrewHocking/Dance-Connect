@@ -70,10 +70,10 @@ class CreateEventForm(FlaskForm):
         render_kw={
             "placeholder": "e.g. 4141 Sugarplum Dr., Toronto, M4Y 2E5", "class": "form-control"}
     )
-    venue_is_wheelchair_accessible = RadioField(
+    venue_is_physically_accessible = RadioField(
         label="Venue Accessibility ✽",
         validators=[DataRequired()],
-        name="venue_is_wheelchair_accessible",
+        name="venue_is_physically_accessible",
         choices=[('False', 'This venue is NOT fully accessible to users of wheelchairs and other mobility devices.'),
                  ('True', 'This venue is fully accessible to users of wheelchairs and other mobility devices.')],
         default="False"

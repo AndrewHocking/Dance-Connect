@@ -109,7 +109,7 @@ def people_list(search, sort, filters):
 def person(id):
     person: User = read_single_user(user_id=id)["data"]
     events = list(person.events_organized)
-    events.extend(list(person.events_participated))
+    events.extend(list(person.events_contributed))
 
     edit = False
 
@@ -136,7 +136,7 @@ def person(id):
 def edit_person(id):
     person: User = read_single_user(user_id=id)["data"]
     events = list(person.events_organized)
-    events.extend(list(person.events_participated))
+    events.extend(list(person.events_contributed))
     # form = PeopleFilter()
 
     edit = True

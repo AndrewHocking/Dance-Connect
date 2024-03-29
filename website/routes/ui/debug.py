@@ -3,13 +3,15 @@ import random
 from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user
 
+from ...models.event.event_contributor import EventContributor
+
 
 from ... import db
 from ...orm.user.user import create_user
 from ...orm.event.event import create_event
 from ...orm.event.event_occurrence import create_event_occurrence
-from ...models.user.user import User
-from ...models.event.event import Event
+from ...models.user import User
+from ...models.event import Event
 
 debug_route = Blueprint('debug', __name__)
 
@@ -263,7 +265,7 @@ def create_dummy_events():
             "tags": ["hip hop", "jazz", "contemporary", "dance"],
             "venue_name": "Toronto Dance Hub",
             "venue_address": "123 Groove Street, Toronto, ON M5V 2W6",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "The venue has ramps and an elevator for wheelchair access. No strobe lights during the performance.",
             "min_ticket_price": 20.0,
@@ -276,7 +278,7 @@ def create_dummy_events():
             "tags": ["salsa", "bachata", "Latin", "dance"],
             "venue_name": "Casa de Sabor",
             "venue_address": "456 Salsa Avenue, Toronto, ON M4X 1Y8",
-            "venue_is_wheelchair_accessible": False,
+            "venue_is_physically_accessible": False,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Please note that the venue has stairs and is not wheelchair accessible.",
             "min_ticket_price": 15.0,
@@ -289,7 +291,7 @@ def create_dummy_events():
             "tags": ["hip hop", "urban", "dance", "showcase"],
             "venue_name": "Metro Arts Center",
             "venue_address": "789 Beat Street, Mississauga, ON L5R 2T3",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": False,
             "accessibility_notes": "The venue has accessible entrances and seating. No strobe lights during the performance.",
             "min_ticket_price": 25.0,
@@ -302,7 +304,7 @@ def create_dummy_events():
             "tags": ["tango", "Argentine", "dance", "passion"],
             "venue_name": "Café Milonga",
             "venue_address": "567 Embrace Avenue, Toronto, ON M6G 1X2",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "The venue is wheelchair accessible. Dimmed lighting during performances.",
             "min_ticket_price": 30.0,
@@ -315,7 +317,7 @@ def create_dummy_events():
             "tags": ["Bollywood", "Indian", "dance", "festival"],
             "venue_name": "Rangoli Pavilion",
             "venue_address": "234 Sitar Lane, Brampton, ON L6P 3H5",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Accessible entrance on the west side of the venue. No strobes or intense flashing lights.",
             "min_ticket_price": 20.0,
@@ -328,7 +330,7 @@ def create_dummy_events():
             "tags": ["contemporary", "experimental", "dance", "art"],
             "venue_name": "Gallery X",
             "venue_address": "345 Canvas Avenue, Toronto, ON M4S 2W9",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Wheelchair ramps available. Minimal use of flashing lights.",
             "min_ticket_price": 25.0,
@@ -341,7 +343,7 @@ def create_dummy_events():
             "tags": ["salsa", "Latin", "dance", "social"],
             "venue_name": "Harbourview Pavilion",
             "venue_address": "123 Salsa Bay, Toronto, ON M5J 2T4",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": False,
             "accessibility_notes": "Accessible pathways to the venue. No strobe lights during the social dance.",
             "min_ticket_price": 15.0,
@@ -354,7 +356,7 @@ def create_dummy_events():
             "tags": ["Indian dance", "contemporary", "fire spinning", "spectacle"],
             "venue_name": "Firefly Gardens",
             "venue_address": "789 Flame Avenue, Markham, ON L3R 5T2",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Accessible pathways throughout the venue. Fire performance is outdoors.",
             "min_ticket_price": 25.0,
@@ -367,7 +369,7 @@ def create_dummy_events():
             "tags": ["swing", "jazz", "vintage", "dance party"],
             "venue_name": "Retro Ballroom",
             "venue_address": "567 Swing Street, Toronto, ON M6H 4R7",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": False,
             "accessibility_notes": "The venue has ramps and an accessible restroom. No strobe lights during the event.",
             "min_ticket_price": 20.0,
@@ -380,7 +382,7 @@ def create_dummy_events():
             "tags": ["ballet", "outdoor", "nature", "performance"],
             "venue_name": "Sunset Meadow",
             "venue_address": "123 Tutu Trail, Vaughan, ON L4J 8K9",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Accessible parking available. No sudden lighting changes during the show.",
             "min_ticket_price": 15.0,
@@ -393,7 +395,7 @@ def create_dummy_events():
             "tags": ["breakdance", "b-boy", "competition", "street dance"],
             "venue_name": "Concrete Arena",
             "venue_address": "456 Break Street, Scarborough, ON M1B 2C3",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Accessible seating available. No intense strobes during battles.",
             "min_ticket_price": 10.0,
@@ -406,7 +408,7 @@ def create_dummy_events():
             "tags": ["flamenco", "Spanish", "dance", "passion"],
             "venue_name": "Casa del Flamenco",
             "venue_address": "234 Sevillana Street, Richmond Hill, ON L4S 1T5",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Wheelchair ramps at the entrance. No sudden light changes during performances.",
             "min_ticket_price": 30.0,
@@ -419,7 +421,7 @@ def create_dummy_events():
             "tags": ["tap", "jazz", "spoken word", "performance"],
             "venue_name": "Harmony Hall",
             "venue_address": "789 Sync Street, Etobicoke, ON M9B 2T1",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Accessible seating available. No sudden light changes during performances.",
             "min_ticket_price": 20.0,
@@ -432,7 +434,7 @@ def create_dummy_events():
             "tags": ["contemporary", "flow arts", "dance", "fusion"],
             "venue_name": "Flowtopia Studio",
             "venue_address": "567 Flow Lane, North York, ON M3C 1R7",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Accessible entrance on the east side of the studio. Flow arts are performed with LED props.",
             "min_ticket_price": 25.0,
@@ -445,7 +447,7 @@ def create_dummy_events():
             "tags": ["ballet", "outdoor", "starry night", "performance"],
             "venue_name": "Celestial Park",
             "venue_address": "123 Starlight Avenue, Richmond Hill, ON L4E 5T6",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Accessible pathways throughout the park. No intense lighting changes during the show.",
             "min_ticket_price": 15.0,
@@ -458,7 +460,7 @@ def create_dummy_events():
             "tags": ["salsa", "merengue", "cumbia", "fiesta"],
             "venue_name": "Carnaval Ballroom",
             "venue_address": "456 Sabor Street, Vaughan, ON L6A 1T2",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": False,
             "accessibility_notes": "The venue has ramps and an accessible restroom. No strobe lights during the fiesta.",
             "min_ticket_price": 20.0,
@@ -471,7 +473,7 @@ def create_dummy_events():
             "tags": ["jazz", "improvisation", "music", "jam"],
             "venue_name": "Blue Note Lounge",
             "venue_address": "234 Jazz Avenue, Toronto, ON M5V 3R8",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Accessible seating available. No intense lighting changes during the session.",
             "min_ticket_price": 18.0,
@@ -484,7 +486,7 @@ def create_dummy_events():
             "tags": ["salsa", "Latin", "dance party"],
             "venue_name": "Salsa Yacht",
             "venue_address": "Pier 123, Toronto Harbor, ON M5J 1A7",
-            "venue_is_wheelchair_accessible": False,
+            "venue_is_physically_accessible": False,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "The yacht has stairs and is not wheelchair accessible. No strobe lights during the cruise.",
             "min_ticket_price": 30.0,
@@ -497,7 +499,7 @@ def create_dummy_events():
             "tags": ["flamenco", "contemporary", "fusion", "performance"],
             "venue_name": "Tablao Flamenco",
             "venue_address": "234 Flamenco Avenue, Vaughan, ON L6A 2S7",
-            "venue_is_wheelchair_accessible": True,
+            "venue_is_physically_accessible": True,
             "show_is_photosensitivity_friendly": True,
             "accessibility_notes": "Wheelchair ramps available. No intense strobes during the showcase.",
             "min_ticket_price": 25.0,
@@ -515,13 +517,13 @@ def create_dummy_events():
             tags=event["tags"],
             venue_name=event["venue_name"],
             venue_address=event["venue_address"],
-            venue_is_wheelchair_accessible=event["venue_is_wheelchair_accessible"],
+            venue_is_physically_accessible=event["venue_is_physically_accessible"],
             show_is_photosensitivity_friendly=event["show_is_photosensitivity_friendly"],
             accessibility_notes=event["accessibility_notes"],
             min_ticket_price=event["min_ticket_price"],
             max_ticket_price=event["max_ticket_price"],
             occurrences=list(),
-            participants=list(),
+            contributors=list(),
             commit_db_after_creation=False
         )["data"]
         db.session.add(new_event)
@@ -538,7 +540,13 @@ def create_dummy_events():
                 end_time=end_time,
                 is_relaxed_performance=is_relaxed_performance,
                 has_asl_interpreter=has_asl_interpreter,
-                commit_db_after_creation=False
-            )
+                commit_db_after_creation=False,
+            )["data"]
+
+        for _ in range(1, random.randint(0, 10)):
+            new_contributor = EventContributor(
+                event_id=new_event.id, user_id=random.choice(users).id, role="Contributor")
+            db.session.add(new_contributor)
+
     db.session.commit()
     return redirect(url_for("events.events_list"))

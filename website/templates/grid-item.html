@@ -1,6 +1,7 @@
 {% macro grid_item(image_src, title, subtitle, text, tags, href) %}
 <div class="card mb-2" style="width: 250px;">
-    <a href="{{ href }}"><img src="{{ image_src }}" class="card-img-top" alt="Image preview for {{ title }}"></a>
+    <a href="{{ href }}"><img src="{{ image_src }}" class="card-img-top" alt="Image preview for {{ title }}"
+            style="height: 175px; object-fit: cover;"></a>
     <div class="card-body">
         <div style="transform: rotate(0);">
             <h5 class="card-title text-truncate">{{ title }}</h5>

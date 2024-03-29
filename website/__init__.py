@@ -16,6 +16,18 @@ login_manager.login_message_category = "info"
 
 
 def json_response(status_code: int, message: str, data: Any = None):
+    """
+    Generate a JSON response object with the specified status code, message, and optional data.
+
+    Args:
+        status_code (int): The HTTP status code of the response.
+        message (str): The message associated with the response.
+        data (Any, optional): Additional data to include in the response. Defaults to None.
+
+    Returns:
+        dict: A dictionary representing the JSON response object. Use 'jsonify' to convert to JSON.
+
+    """
     if status_code < 200:
         response_type = "information"
     elif status_code < 300:

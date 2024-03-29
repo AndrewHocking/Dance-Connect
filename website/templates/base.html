@@ -43,7 +43,7 @@
         </div>
     </nav>
 
-    <div class="container d-flex justify-content-center">
+    <div id="flash-area" class="container d-flex justify-content-center">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
@@ -69,7 +69,7 @@
     </div>
 
     <div class="base container">
-        <div class="contentbox border p-5 my-2 shadow">{% block content %} {% endblock %}</div>
+        <div class="border p-5 my-2 shadow bg-body rounded-5">{% block content %} {% endblock %}</div>
     </div>
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
         integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous">

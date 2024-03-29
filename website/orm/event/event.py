@@ -23,13 +23,13 @@ def create_event(
     tags: List[str] = list(),
     venue_name: str = "",
     venue_address: str = "",
-    venue_is_wheelchair_accessible: bool = False,
+    venue_is_physically_accessible: bool = False,
     show_is_photosensitivity_friendly: bool = False,
     accessibility_notes: str = "",
     min_ticket_price: float = None,
     max_ticket_price: float = None,
     occurrences: List[dict] = list(),
-    participants: List[User] = list(),
+    contributors: List[User] = list(),
     commit_db_after_creation: bool = True
 ):
     new_event = Event(
@@ -41,13 +41,13 @@ def create_event(
         tags=list(),
         venue_name=venue_name,
         venue_address=venue_address,
-        venue_is_wheelchair_accessible=venue_is_wheelchair_accessible,
+        venue_is_physically_accessible=venue_is_physically_accessible,
         show_is_photosensitivity_friendly=show_is_photosensitivity_friendly,
         accessibility_notes=accessibility_notes,
         min_ticket_price=min_ticket_price,
         max_ticket_price=max_ticket_price,
         occurrences=list(),
-        participants=participants,
+        contributors=contributors,
         request_notifications=list(),
     )
 
@@ -71,10 +71,11 @@ def create_event(
     return json_response(201, "Event created successfully.", new_event)
 
 
-def read_event():
-    # TODO: Add filters
-    events = db.session.query(Event).all()
-    return json_response(200, f"{len(events)} events found.", events)
+def get_event(id: int):
+    event = db.session.query(Event).get(id)
+    if event is None:
+        return json_response(404, "Event not found.", None)
+    return json_response(200, "Event found.", event)
 
 
 def search_events(
@@ -93,7 +94,7 @@ def search_events(
     filtered_events = db.session.query(Event).join(Event.occurrences).join(Event.tags).filter(
         (Event.title.ilike(f"%{search}%") |
          Event.description.ilike(f"%{search}%")),
-        or_(Event.venue_is_wheelchair_accessible ==
+        or_(Event.venue_is_physically_accessible ==
             accessible_venue, not accessible_venue),
         or_(EventOccurrence.has_asl_interpreter ==
             asl_interpreter, not asl_interpreter),
@@ -136,3 +137,10 @@ def search_events(
         return json_response(404, "No events found that match the given search criteria.", results)
 
     return json_response(200, f"{len(results)} events found.", results)
+
+
+def all_events():
+    events = db.session.query(Event).all()
+    if events is None or len(events) == 0:
+        return json_response(404, "No events found.", None)
+    return json_response(200, f"{len(events)} events found.", events)

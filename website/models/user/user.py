@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from flask_login import UserMixin  # adds login_manager required methods
 from .user_tag import UserTag
-from ..event.event import Event
+from ..event import Event
 from ... import db, login_manager
 
 Base = declarative_base()
@@ -78,6 +78,6 @@ class User(db.Model, UserMixin):
     socials: Mapped[List['SocialMedia']] = relationship('SocialMedia')
     events_organized: Mapped[List['Event']] = relationship(
         'Event', back_populates='organizer')
-    events_participated: Mapped[List['Event']] = relationship(
-        'Event', secondary='event_participants', back_populates='participants')
+    events_contributed: Mapped[List['Event']] = relationship(
+        'Event', secondary='event_contributors', back_populates='contributors')
     # TODO: add profile_picture: Mapped[str] = mapped_column(String, nullable=False, default="default.jpg")

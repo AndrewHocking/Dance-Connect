@@ -51,19 +51,19 @@
         <legend>Event Occurrences</legend>
         {% for event_occurrence_form in event_form.occurrences %}
         {% with occurrence_label=event_occurrence_form.date.id[:-5] %}
-            {% if event_occurrence_form.date.id == "occurrences-0-date" %}
-                <div id="occurrences-0" class="occurrence">
-                {% with show_delete_button=false %}
-                    {% include "create-event-occurrence.html" %}
-                {% endwith %}
-                </div>
-            {% else %}
-                <div id="{{ occurrence_label }}" class="d-none occurrence">
-                {% with show_delete_button=true %}
-                    {% include "create-event-occurrence.html" %}
-                {% endwith %}
-                </div>
-            {% endif %}
+        {% if event_occurrence_form.date.id == "occurrences-0-date" %}
+        <div id="occurrences-0" class="occurrence">
+            {% with show_delete_button=false %}
+            {% include "create-event-occurrence.html" %}
+            {% endwith %}
+        </div>
+        {% else %}
+        <div id="{{ occurrence_label }}" class="d-none occurrence">
+            {% with show_delete_button=true %}
+            {% include "create-event-occurrence.html" %}
+            {% endwith %}
+        </div>
+        {% endif %}
         {% endwith %}
         {% endfor %}
     </fieldset>
@@ -88,21 +88,21 @@
     <fieldset class="form-group mb-3">
         <legend>Accessibility Information</legend>
         <div class="form-group mb-3">
-            {{ event_form.venue_is_wheelchair_accessible.label() }}
-            {% for radio_option in event_form.venue_is_wheelchair_accessible %}
-                <div class="form-check">
-                    {{ radio_option(class_="form-check-input") }}
-                    {{ radio_option.label(class_="form-check-label") }}
-                </div>
+            {{ event_form.venue_is_physically_accessible.label() }}
+            {% for radio_option in event_form.venue_is_physically_accessible %}
+            <div class="form-check">
+                {{ radio_option(class_="form-check-input") }}
+                {{ radio_option.label(class_="form-check-label") }}
+            </div>
             {% endfor %}
         </div>
         <div class="form-group mb-3">
             {{ event_form.show_is_photosensitivity_friendly.label() }}
             {% for radio_option in event_form.show_is_photosensitivity_friendly %}
-                <div class="form-check">
-                    {{ radio_option(class_="form-check-input") }}
-                    {{ radio_option.label(class_="form-check-label") }}
-                </div>
+            <div class="form-check">
+                {{ radio_option(class_="form-check-input") }}
+                {{ radio_option.label(class_="form-check-label") }}
+            </div>
             {% endfor %}
         </div>
         <div class="form-group mb-3">
@@ -122,7 +122,7 @@
     let buttons = document.getElementsByClassName("delete-btn");
     for (let i = 0; i < buttons.length; i++) {
         buttons[i].addEventListener("click", event => {
-            deleteOccurrence(i+1);
+            deleteOccurrence(i + 1);
         });
     }
 

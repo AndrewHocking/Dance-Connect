@@ -2,30 +2,298 @@
 {% block title %}{{ event.title }}{% endblock %}
 {% block content %}
 <h1>{{ event.title }}</h1>
-<div>
-    <p>Tags: {% for tag in event.tags %}{{tag.name}}{{ ", " if not loop.last else "" }}{% endfor %}</p>
-    <h4>Overview</h4>
-    <p>{{event.description}}</p>
-    <h4>Ticket Prices</h4>
-    <p>Min: {{event.min_ticket_price}}</p>
-    <p>Max: {{event.max_ticket_price}}</p>
-    <a class="btn btn-primary" href="{{event.url}}">Learn More</a>
-    <br/>
-    <br/>
-    <h4>Location</h4>
-    <p>{{event.venue_name}}</p>
-    <p>{{event.venue_address}}</p>
-    <h4>Accessibility Information</h4>
-    <p>{{ "Venue is wheelchair accessible" if event.venue_is_wheelchair_accessible else "Venue is not wheelchair accessible" }}</p>
-    <p>{{ "Show is photosensitivity friendly" if event.show_is_photosensitivity_friendly else "Show is not photosensitivity friendly" }}</p>
-    <h5>Accessibility Notes</h5>
-    <p>{{event.accessibility_notes}}</p>
-    <h4>Occurrences</h4>
-    
-    <ul>
-    {% for occurrence in event.occurrences %}
-        <li>{{occurrence.start_time.strftime("%Y-%m-%d %H:%M")}} to {{occurrence.end_time.strftime("%Y-%m-%d %H:%M")}} {{ "Relaxed performance." if occurrence.is_relaxed_performance else "" }} {{ "Has ASL interpreter." if occurrence.has_asl_interpreter else "" }}</li>
-    {% endfor %}
-    </ul>
+<div class="col">
+    <div class="row d-flex flex-wrap gx-1 pb-3">
+        {% for tag in event.tags %}
+        <div class="col-auto">
+            <div class="me-1 mb-1 px-2 text-dark bg-opacity-25 rounded text-nowrap tag">{{ tag.name }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        <div class="container">
+            <div class="row g-4 d-flex flex-wrap d-lg-block">
+                <div id="image" class="col-lg-5 float-start order-1">
+                    <div class="rounded image-container overflow-hidden position-relative">
+                        <img src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                            class="img-fluid rounded position-absolute top-50 start-50 translate-middle" alt="{{event.title}}"
+                            style="height:300px; width:100%; object-fit: cover;" />
+                    </div>
+                </div>
+                <div id="right-column" class="col-lg-7 float-end order-last order-lg-2">
+                    <div class="row g-4">
+                        <div id="description" class="col-12 d-none d-lg-block">
+                            <h3>Description</h3>
+                            <p>{{event.description}}</p>
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <a class="btn btn-primary" href="{{event.url}}">Learn More</a>
+                                </div>
+                                <div class="col-auto rotate-n45 m-0 p-0">
+                                    <div class="sr-only">Ticket Prices</div>
+                                    <i class="bi bi-ticket-perforated-fill"></i>
+                                </div>
+                                <div class="col-auto px-1">
+                                    {% if event.min_ticket_price != None %}
+                                    {% if event.max_ticket_price == None %}
+                                    From {{ ("${:,.2f}".format(event.min_ticket_price)).rstrip('0').rstrip('.') }}
+                                    {% else %}
+                                    {{ ("${:,.2f}".format(event.min_ticket_price)).rstrip('0').rstrip('.') }} – {{
+                                                                    ("${:,.2f}".format(event.max_ticket_price)).rstrip('0').rstrip('.')}}
+                                    {% endif %}
+                                    {% elif event.max_ticket_price != None %}
+                                    Up to {{ ("${:,.2f}".format(event.max_ticket_price)).rstrip('0').rstrip('.') }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div id="location" class="col-12">
+                            <h3>Location</h3>
+                            <div class="fw-semibold">{{event.venue_name}}</div>
+                            <div class="pb-1">{{event.venue_address}}</div>
+                            <div class="dropdown pb-3">
+                                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Get directions
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="https://www.google.com/maps/dir/{{(event.venue_address)|urlencode}}">Google
+                                            Maps</a>
+                                    </li>
+                                    <li><a class="dropdown-item" href="http://maps.apple.com/?q={{(event.venue_address)|urlencode}}">Apple Maps</a>
+                                    </li>
+                                    <li><a class="dropdown-item"
+                                            href="https://www.waze.com/ul?q={{(event.venue_address)|urlencode}}&navigate=yes">Waze</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <ul class="list-group">
+                                <li class="list-group-item d-inline-flex align-items-center">
+                                    <div class="col-auto position-relative text-bg-{{'primary' if event.venue_is_physically_accessible else 'danger'}} rounded-circle me-3"
+                                        style="width: 30px; height: 30px;">
+                                        <i class="bi bi-person-wheelchair position-absolute top-50 start-50 translate-middle p-2"></i>
+                                    </div>
+                                    <div class="col">
+                                        This venue is {{'not' if not event.venue_is_physically_accessible }} fully accessible for individuals who use
+                                        mobility
+                                        aids, such as wheelchairs.
+                                    </div>
+                                </li>
+                                <li class="list-group-item bg-secondary-subtle" style="height: 300px;">
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="accessibility" class="col-12">
+                            <h3>Accessibility Information</h3>
+                            <ul class="list-group m-2">
+                                <li class="list-group-item d-inline-flex align-items-center">
+                                    <div class="col-auto position-relative text-bg-primary rounded-circle me-3" style="width: 30px; height: 30px;">
+                                        <i class="bi bi-lightbulb-fill position-absolute top-50 start-50 translate-middle p-2"></i>
+                                    </div>
+                                    <div class="col">
+                                        Lighting effects used during this event
+                                        {{'will be safe' if event.show_is_photosensitivity_friendly else 'may be unsafe'}} for those who experience
+                                        photosensitivity.
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-inline-flex align-items-center">
+                                    <div class="col-auto position-relative text-bg-danger rounded-circle me-3" style="width: 30px; height: 30px;">
+                                        <i class="bi bi-lightbulb-off-fill position-absolute top-50 start-50 translate-middle p-2"></i>
+                                    </div>
+                                    <div class="col">
+                                        Lighting effects used during this event may be unsafe for those who experience photosensitivity.
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-inline-flex align-items-center">
+                                    <div class="col-auto position-relative text-bg-primary rounded-circle me-3" style="width: 30px; height: 30px;">
+                                        <i class="bi bi-ear-fill position-absolute top-50 start-50 translate-middle p-2"></i>
+                                    </div>
+                                    <div class="col">
+                                        This event {{'is, or has been modified to be,' if event.show_is_photosensitivity_friendly else 'is not'}}
+                                        accessible for individuals who are deaf or hard of hearing.
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-inline-flex align-items-center">
+                                    <div class="col-auto position-relative text-bg-primary rounded-circle me-3" style="width: 30px; height: 30px;">
+                                        <i class="bi bi-eye-fill position-absolute top-50 start-50 translate-middle p-2"></i>
+                                    </div>
+                                    <div class="col">
+                                        This event {{'is, or has been modified to be,' if event.show_is_photosensitivity_friendly else 'is not'}}
+                                        accessible for individuals who are blind or visually impaired.
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-inline-flex align-items-center">
+                                    <div class="col-auto position-relative text-bg-primary rounded-circle me-3" style="width: 30px; height: 30px;">
+                                        <i class="bi bi-infinity position-absolute top-50 start-50 translate-middle p-2"></i>
+                                    </div>
+                                    <div class="col">
+                                        This event is a relaxed performance.
+                                    </div>
+                                </li>
+                            </ul>
+                            <h5>Accessibility Notes</h5>
+                            <div>{{event.accessibility_notes}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="description2" class="d-block d-lg-none order-2">
+                    <h3>Description</h3>
+                    <p>{{event.description}}</p>
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <a class="btn btn-primary" href="{{event.url}}">Learn More</a>
+                        </div>
+                        <div class="col-auto rotate-n45 m-0 p-0">
+                            <div class="sr-only">Ticket Prices</div>
+                            <i class="bi bi-ticket-perforated-fill"></i>
+                        </div>
+                        <div class="col-auto px-1">
+                            {% if event.min_ticket_price != None %}
+                            {% if event.max_ticket_price == None %}
+                            From {{ ("${:,.2f}".format(event.min_ticket_price)).rstrip('0').rstrip('.') }}
+                            {% else %}
+                            {{ ("${:,.2f}".format(event.min_ticket_price)).rstrip('0').rstrip('.') }} – {{
+                                                                                                    ("${:,.2f}".format(event.max_ticket_price)).rstrip('0').rstrip('.')}}
+                            {% endif %}
+                            {% elif event.max_ticket_price != None %}
+                            Up to {{ ("${:,.2f}".format(event.max_ticket_price)).rstrip('0').rstrip('.') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div id="contributors" class="col-lg-5 float-start order-3">
+                    <div class="row bg-body-tertiary rounded mx-0 justify-content-center py-3">
+                        <div class="row">
+                            <h3>Contributors</h3>
+                        </div>
+                        {% if contributors|length > 0 %}
+                        <div class="row justify-content-center">
+                            {% from 'event-contributors.html' import event_contributors %}
+                            {{ event_contributors(contributors=contributors, limit=8) }}
+                            {% if contributors|length > 8 %}
+                            <div id="btn-view-all" class="col-auto align-items-center justify-content-center my-2 text-decoration-none text-body"
+                                data-bs-toggle="modal" data-bs-target="#view-all-modal" style="width: 140px;">
+                                <div class="rounded-circle mx-auto btn-primary" style="height: 100px; width: 100px; object-fit: cover;">
+                                    <i class="bi bi-people-fill text-white d-flex align-items-center justify-content-center fs-1"
+                                        style="height: 100%;"></i>
+                                </div>
+                                <div class="text-center text-truncate w-100 fw-medium pt-2">View all</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        <div class="row justify-content-center">
+                            {% if user.is_authenticated %}
+                            <div id="join-request-buttons" class="col-auto">
+                                {% if event in current_user.events_contributed %}
+                                <button id="btn-leave-event" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#leave-modal">
+                                    <i class="bi bi-person-fill-dash"></i>
+                                    Leave event
+                                </button>
+                                {% elif event_request_notification == None %}
+                                <button id="btn-join-event" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#join-modal">
+                                    <i class="bi bi-person-fill-add"></i>
+                                    Request to join event
+                                </button>
+                                {% else %}
+                                <form method="post" action="/events/{{event.id}}/cancel-join-request">
+                                    <button id="btn-cancel-join-request" class="btn btn-primary mt-2">
+                                        <i class="bi bi-person-fill-x"></i>
+                                        Cancel join request
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<div class="modal fade" id="view-all-modal" tabindex="-1" aria-labelledby="view-all-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="view-all-modal-label">Contributors</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="view-all-modal-content" class="row justify-content-center">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="join-modal" tabindex="-1" aria-labelledby="join-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post" action="/events/{{event.id}}/join">
+            <div class="modal-header">
+                <h5 class="modal-title" id="join-modal-label">Request to join event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="role" class="form-label">What role will you be playing in this event?</label>
+                    <input type="text" class="form-control" id="role" name="role" aria-describedby="role-description" required>
+                    <div class="form-text" id="role-description" name="role">
+                        Your role in the production, the name of your character, etc.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="btn-confirm-join-event" type="submit" class="btn btn-primary">Request to join</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="leave-modal" tabindex="-1" aria-labelledby="leave-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" method="post" action="/events/{{event.id}}/leave">
+            <div class="modal-header">
+                <h5 class="modal-title" id="leave-modal-label">Leave event</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to leave this event?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="btn-confirm-leave-event" type="submit" class="btn btn-primary">Leave event</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+    document.getElementById("btn-view-all").addEventListener("click", function () {
+        if (!document.getElementById("view-all-modal-content").innerHTML.includes("spinner-border")) {
+            return;
+        }
+        fetch("/events/{{event.id}}/contributors", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }).then(function (response) {
+            if (response.ok) {
+                response.text().then(function (content) {
+                    document.getElementById("view-all-modal-content").innerHTML = content;
+                });
+            } else {
+                console.error("Error: " + response.status + " – Failed to load contributors.");
+            }
+        });
+    });
+</script>
 {% endblock %}
