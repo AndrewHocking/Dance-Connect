@@ -74,9 +74,18 @@ body {
     }
 }
 
+.user-circle .rounded-circle {
+    width: 100px;
+    height: 100px;
+
+    >img {
+        object-fit: cover;
+    }
+}
+
 .user-circle:hover {
     >.rounded-circle img {
-        opacity: 0.8;
+        filter: brightness(0.8);
     }
 }
 
@@ -94,4 +103,9 @@ body {
 
 .rotate-n45 {
     transform: rotate(-45deg);
+}
+
+.accessibility-icon {
+    width: 30px !important;
+    height: 30px !important;
 }

@@ -172,7 +172,15 @@ def event_details(event_id: int):
         event_id).get("data")
     event_request_notification: EventRequestNotification = get_event_request_notification(
         event_id=event_id, sender_id=current_user.id).get("data") if current_user.is_authenticated else None
-    return render_template("event-details.html", user=current_user, event=event, contributors=contributors, event_request_notification=event_request_notification)
+
+    occurrences = {}
+    for occurrence in event.occurrences:
+        date = occurrence.start_time.strftime("%A, %B %d")
+        if date not in occurrences:
+            occurrences[date] = []
+        occurrences[date].append(occurrence)
+
+    return render_template("event-details.html", user=current_user, event=event, occurrences=occurrences, contributors=contributors, event_request_notification=event_request_notification)
 
 
 @events.route('/events/<int:event_id>/join', methods=['POST'])
