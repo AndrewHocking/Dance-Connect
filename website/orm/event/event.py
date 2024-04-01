@@ -1,14 +1,12 @@
 from typing import List
-
 from sqlalchemy import and_, or_
-
-from website.models.event.event_occurrence import EventOccurrence
-
-from ... import db, json_response
-from ...models.event import Event
-from ...models.user import User
 from flask_login import current_user
 from datetime import datetime
+
+from ... import db, json_response
+from ...models.event import Event, EventOccurrence
+from ...models.user import User
+from .event_contributor import connect_user_to_event
 from .event_tag import create_event_tag
 from .event_occurrence import create_event_occurrence
 
@@ -23,13 +21,12 @@ def create_event(
     tags: List[str] = list(),
     venue_name: str = "",
     venue_address: str = "",
-    venue_is_wheelchair_accessible: bool = False,
-    show_is_photosensitivity_friendly: bool = False,
+    venue_is_mobility_aid_accessible: bool = False,
     accessibility_notes: str = "",
     min_ticket_price: float = None,
     max_ticket_price: float = None,
     occurrences: List[dict] = list(),
-    participants: List[User] = list(),
+    contributors: List[User] = list(),
     commit_db_after_creation: bool = True
 ):
     new_event = Event(
@@ -41,29 +38,37 @@ def create_event(
         tags=list(),
         venue_name=venue_name,
         venue_address=venue_address,
-        venue_is_wheelchair_accessible=venue_is_wheelchair_accessible,
-        show_is_photosensitivity_friendly=show_is_photosensitivity_friendly,
+        venue_is_mobility_aid_accessible=venue_is_mobility_aid_accessible,
         accessibility_notes=accessibility_notes,
         min_ticket_price=min_ticket_price,
         max_ticket_price=max_ticket_price,
         occurrences=list(),
-        participants=participants,
+        contributors=contributors,
         request_notifications=list(),
     )
 
     db.session.add(new_event)
     db.session.commit()
 
+    connect_user_to_event(user=organizer, event=new_event, role="Organizer")
+
     for tag in tags:
         create_event_tag(tag, new_event, False)
 
     for occurrence in occurrences:
-        start_time = datetime.strptime(f"{occurrence.get("date")} {
-                                       occurrence.get("start_time")}", "%Y-%m-%d %H:%M")
-        end_time = datetime.strptime(f"{occurrence.get("date")} {
-                                     occurrence.get("end_time")}", "%Y-%m-%d %H:%M")
-        create_event_occurrence(event=new_event, start_time=start_time, end_time=end_time, is_relaxed_performance=bool(
-            occurrence.get("is_relaxed_performance")) or False, has_asl_interpreter=bool(occurrence.get("has_asl_interpreter")) or False)
+        create_event_occurrence(
+            event=new_event,
+            start_time=occurrence.get("start_time"),
+            end_time=occurrence.get("end_time"),
+            is_relaxed_performance=bool(occurrence.get(
+                "is_relaxed_performance")) or False,
+            is_photosensitivity_friendly=bool(occurrence.get(
+                "is_photosensitivity_friendly")) or False,
+            is_hearing_accessible=bool(occurrence.get(
+                "is_hearing_accessible")) or False,
+            is_visually_accessible=bool(occurrence.get(
+                "is_visually_accessible")) or False,
+        )
 
     if commit_db_after_creation:
         db.session.commit()
@@ -71,10 +76,11 @@ def create_event(
     return json_response(201, "Event created successfully.", new_event)
 
 
-def read_event():
-    # TODO: Add filters
-    events = db.session.query(Event).all()
-    return json_response(200, f"{len(events)} events found.", events)
+def get_event(id: int):
+    event = db.session.query(Event).get(id)
+    if event is None:
+        return json_response(404, "Event not found.", None)
+    return json_response(200, "Event found.", event)
 
 
 def search_events(
@@ -93,9 +99,9 @@ def search_events(
     filtered_events = db.session.query(Event).join(Event.occurrences).join(Event.tags).filter(
         (Event.title.ilike(f"%{search}%") |
          Event.description.ilike(f"%{search}%")),
-        or_(Event.venue_is_wheelchair_accessible ==
+        or_(Event.venue_is_mobility_aid_accessible ==
             accessible_venue, not accessible_venue),
-        or_(EventOccurrence.has_asl_interpreter ==
+        or_(EventOccurrence.is_visually_accessible ==
             asl_interpreter, not asl_interpreter),
         or_(EventOccurrence.is_relaxed_performance ==
             relaxed_performance, not relaxed_performance)
@@ -136,3 +142,10 @@ def search_events(
         return json_response(404, "No events found that match the given search criteria.", results)
 
     return json_response(200, f"{len(results)} events found.", results)
+
+
+def all_events():
+    events = db.session.query(Event).all()
+    if events is None or len(events) == 0:
+        return json_response(404, "No events found.", None)
+    return json_response(200, f"{len(events)} events found.", events)

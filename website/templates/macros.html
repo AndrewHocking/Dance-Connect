@@ -1,0 +1,137 @@
+{% macro accessibility_icon(icon, danger, extra_classes="") %}
+{% if icon == "photosensitivity" %}
+{% set title = "photosensitivity friendly" %}
+{% if danger %}
+{% set icon_name = "lightbulb-off-fill" %}
+{% else %}
+{% set icon_name = "lightbulb-fill" %}
+{% endif %}
+{% elif icon == "hearing" %}
+{% set icon_name = "ear-fill" %}
+{% set title = "hearing accessible" %}
+{% elif icon == "vision" %}
+{% set icon_name = "eye-fill" %}
+{% set title = "visually accessible" %}
+{% elif icon == "relaxed performance" %}
+{% set icon_name = "infinity" %}
+{% set title = "relaxed performance" %}
+{% elif icon == "mobility aid" %}
+{% set icon_name = "person-wheelchair" %}
+{% set title = "mobility aid accessible" %}
+{% else %}
+{% set icon_name = "question" %}
+{% set title = "Congratulations! You've found a bug. This state should not exist." %}
+{% endif %}
+<li class="list-inline-item position-relative text-bg-{{ 'danger' if danger else 'primary' }} rounded-circle p-0 m-0 accessibility-icon {{extra_classes}}"
+    title="{{ 'Not ' if danger }}{{ title|title }}">
+    <i class="bi bi-{{ icon_name }} position-absolute top-50 start-50 translate-middle p-2"></i>
+</li>
+{% endmacro %}
+
+
+{% macro create_event_occurrence_helper(occurrence) %}
+<div class="border rounded mb-2 py-3 px-2 mx-1 row align-items-center justify-content-between">
+    <div class="col-auto">
+        <div class="row justify-content-center justify-content-xl-start">
+            <div class="col-lg-auto form-group">
+                {{ occurrence.date.label(class_="form-label") }}
+                {{ occurrence.date() }}
+            </div>
+            <div class="col-lg-auto form-group mt-lg-0 mt-2">
+                {{ occurrence.start_time.label(class_="form-label") }}
+                {{ occurrence.start_time() }}
+            </div>
+            <div class="col-lg-auto form-group mt-lg-0 mt-2">
+                {{ occurrence.end_time.label(class_="form-label") }}
+                {{ occurrence.end_time() }}
+            </div>
+        </div>
+        <div class="form-text text-start text-lg-center text-xl-start">Leave "End time" blank to not specify an end time for this occurrence.</div>
+        <div id="accessibility-info" class="form-group mt-3">
+            <div class="form-check">
+                {{ occurrence.is_relaxed_performance() }}
+                {{ occurrence.is_relaxed_performance.label(class_="form-check-label") }}
+                <a href="https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed"
+                    title="What is a relaxed performance?" target="_blank" rel="noopener noreferrer">
+                    <i class="bi bi-question-circle"></i>
+                </a>
+            </div>
+            <div class="form-check">
+                {{ occurrence.is_photosensitivity_friendly() }}
+                {{ occurrence.is_photosensitivity_friendly.label(class_="form-check-label") }}
+            </div>
+            <div class="form-check">
+                {{ occurrence.is_hearing_accessible() }}
+                {{ occurrence.is_hearing_accessible.label(class_="form-check-label") }}
+            </div>
+            <div class="form-check">
+                {{ occurrence.is_visually_accessible() }}
+                {{ occurrence.is_visually_accessible.label(class_="form-check-label") }}
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-auto col d-flex justify-content-center justify-content-xl-end form-group mt-xl-0 mt-2">
+        <button class="btn btn-danger delete-btn" type="button">
+            <i class="bi bi-trash3-fill"></i>
+            Delete
+        </button>
+    </div>
+</div>
+{% endmacro %}
+
+
+{% macro create_event_occurrence(occurrence, occurrence_number) %}
+{{ create_event_occurrence_helper(occurrence) | replace("occurrence-occurrence_number", "occurrence-" + occurrence_number|string) }}
+{% endmacro %}
+
+
+{% macro contributor_item(contributor, role) %}
+<a href="/people/{{contributor.user.id}}"
+    class="col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body user-circle"
+    style="width: 140px;">
+    <div class="rounded-circle mx-auto overflow-hidden position-relative">
+        <img src="{{url_for('static', filename='images/placeholder.jpg')}}"
+            class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle" alt="{{contributor.user.display_name}}" />
+    </div>
+    <div class="text-center text-truncate w-100 fw-medium">{{contributor.user.display_name}}</div>
+    <div class="text-center text-truncate w-100 fw-light text-body-tertiary">{{contributor.role}}</div>
+</a>
+{% endmacro %}
+
+
+{% macro event_contributors(contributors, limit) %}
+{% if limit %}
+{% for contributor in contributors[:limit] %}
+{{ contributor_item(contributor) }}
+{% endfor %}
+{% else %}
+{% for contributor in contributors %}
+{{ contributor_item(contributor) }}
+{% endfor %}
+{% endif %}
+{% endmacro %}
+
+
+{% macro grid_item(image_src, title, subtitle, text, tags, href) %}
+<div class="card mb-2" style="width: 250px;">
+    <a href="{{ href }}"><img src="{{ image_src }}" class="card-img-top" alt="Image preview for {{ title }}"
+            style="height: 175px; object-fit: cover;"></a>
+    <div class="card-body">
+        <div style="transform: rotate(0);">
+            <h5 class="card-title text-truncate">{{ title }}</h5>
+            {% if subtitle %}
+            <h6 class="card-subtitle mb-2 text-muted text-truncate">{{ subtitle }}</h6>
+            {% endif %}
+            {% if text %}
+            <p class="card-text text-truncate">{{ text }}</p>
+            {% endif %}
+            <a href="{{ href }}" class="stretched-link"></a>
+        </div>
+        <div class="d-flex flex-no-wrap overflow-x-scroll">
+            {% for tag in tags %}
+            <div class="me-1 mb-1 px-2 text-dark bg-opacity-25 rounded text-nowrap tag">{{ tag.name }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endmacro %}

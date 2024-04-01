@@ -20,22 +20,14 @@ class Event(db.Model):
         'EventTag', secondary="event_tag_relationships", back_populates='events')
     venue_name: Mapped[str]
     venue_address: Mapped[str]
-    venue_is_wheelchair_accessible: Mapped[bool] = mapped_column(Boolean)
-    show_is_photosensitivity_friendly: Mapped[bool] = mapped_column(Boolean)
+    venue_is_mobility_aid_accessible: Mapped[bool] = mapped_column(Boolean)
     accessibility_notes: Mapped[str]
     min_ticket_price: Mapped[Optional[float]]
     max_ticket_price: Mapped[Optional[float]]
     occurrences: Mapped[List['EventOccurrence']] = relationship(
         'EventOccurrence', back_populates='event')
-    participants: Mapped[List['User']] = relationship(
-        'User', secondary='event_participants', back_populates='events_participated')
+    contributors: Mapped[List['User']] = relationship(
+        'User', secondary='event_contributors', back_populates='events_contributed')
     request_notifications: Mapped[List['EventRequestNotification']] = relationship(
         'EventRequestNotification', back_populates="event")
     # TODO: add media gallery
-
-
-class EventParticipant(db.Model):
-    __tablename__ = "event_participants"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    event_id: Mapped[int] = mapped_column(Integer, ForeignKey('events.id'))
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
