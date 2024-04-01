@@ -131,8 +131,12 @@ def update_user(
     if user is None:
         return json_response(404, "User not found.", user_id)
 
-    if username is not None:
-        user.username = username
+    if username is not None and username != user.username:
+        conflict = db.session.query(User).filter_by(username=username).first()
+        if conflict is None:
+            user.username = username
+        else:
+            return json_response(400, "Username already taken.", username)
 
     if email is not None:
         user.email = email
@@ -164,7 +168,7 @@ def update_user(
     if tags is not None:
         user.tags.clear()
         for tag in tags:
-            create_user_tag(tag, User, False)
+            create_user_tag(tag, user, False)
 
     db.session.add(user)
     db.session.commit()
@@ -204,7 +208,12 @@ def update_socials_link(user_id: int, type: str, handle: str):
         )) \
 
     if socials_link.first() is None:
-        return json_response(200, f"User {user_id} does not have an existing handle on platform {type}")
+        return json_response(404, f"User {user_id} does not have an existing handle on platform {type}")
+
+    if handle == "":
+        db.session.delete(socials_link.first())
+        db.session.commit()
+        return json_response(200, f"User {user_id}'s {type} handle has been removed.")
 
     socials_link.update({"handle": handle})
     db.session.commit()
