@@ -53,7 +53,7 @@ def create_user(
         received_notifications=list(),
         sent_notifications=list(),
         events_organized=list(),
-        events_participated=list(),
+        events_contributed=list(),
     )
     db.session.add(new_user)
 

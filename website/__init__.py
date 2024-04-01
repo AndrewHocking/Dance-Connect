@@ -16,6 +16,18 @@ login_manager.login_message_category = "info"
 
 
 def json_response(status_code: int, message: str, data: Any = None):
+    """
+    Generate a JSON response object with the specified status code, message, and optional data.
+
+    Args:
+        status_code (int): The HTTP status code of the response.
+        message (str): The message associated with the response.
+        data (Any, optional): Additional data to include in the response. Defaults to None.
+
+    Returns:
+        dict: A dictionary representing the JSON response object. Use 'jsonify' to convert to JSON.
+
+    """
     if status_code < 200:
         response_type = "information"
     elif status_code < 300:
@@ -45,18 +57,13 @@ def create_app():
     from .routes.ui.people import people
     from .routes.ui.events import events
     from .routes.ui.debug import debug_route
-    from .routes.ui.notifications import notifications
-    from .routes.api.user import user_api
-    from .routes.api.event import event_api
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(people, url_prefix='/')
-    app.register_blueprint(events, url_prefix='/')
+    app.register_blueprint(events, url_prefix='/events')
     app.register_blueprint(debug_route, url_prefix='/')
     app.register_blueprint(notifications, url_prefix='/')
-    app.register_blueprint(user_api, url_prefix='/api/')
-    app.register_blueprint(event_api, url_prefix='/api/')
 
     with app.app_context():
         db.create_all()

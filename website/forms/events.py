@@ -1,31 +1,44 @@
 from flask_wtf import FlaskForm
-from wtforms import FieldList, FormField, StringField, BooleanField, SubmitField, DecimalField, TextAreaField, URLField, RadioField, DateField, TimeField, HiddenField
+from wtforms import StringField, BooleanField, SubmitField, DecimalField, TextAreaField, URLField, RadioField, DateField, TimeField, HiddenField
 from wtforms.validators import DataRequired, Length, NumberRange
 
 
 class CreateEventOccurrenceForm(FlaskForm):
     date = DateField(
         label="Date ✽",
-        name="date",
+        name="occurrence-occurrence_number-date",
         render_kw={"class": "form-control date"}
     )
     start_time = TimeField(
         label="Start Time ✽",
-        name="start_time",
+        name="occurrence-occurrence_number-start-time",
         render_kw={"class": "form-control time"}
     )
     end_time = TimeField(
         label="End Time",
-        name="end_time",
+        name="occurrence-occurrence_number-end-time",
         render_kw={"class": "form-control time"}
     )
     is_relaxed_performance = BooleanField(
-        label="This is a \"relaxed performance\"",
-        name="is_relaxed_performance"
+        label="This is a relaxed performance ",
+        name="occurrence-occurrence_number-is-relaxed-performance",
+        render_kw={"class": "form-check-input"}
     )
-    has_asl_interpreter = BooleanField(
-        label="An ASL (American Sign Language) interpreter will be present.",
-        name="has_asl_interpreter"
+    is_photosensitivity_friendly = BooleanField(
+        label="Some lighting effects used during this event may pose risks for individuals who experience photosensitivity.",
+        name="occurrence-occurrence_number-is-photosensitivity-friendly",
+        default="y",
+        render_kw={"class": "form-check-input"}
+    )
+    is_hearing_accessible = BooleanField(
+        label="This event is, or has been modified to be, accessible for individuals who are deaf or hard of hearing.",
+        name="occurrence-occurrence_number-is-hearing-accessible",
+        render_kw={"class": "form-check-input"}
+    )
+    is_visually_accessible = BooleanField(
+        label="This event is, or has been modified to be, accessible for individuals who are blind or have low vision.",
+        name="occurrence-occurrence_number-is-visually-accessible",
+        render_kw={"class": "form-check-input"}
     )
 
 
@@ -70,20 +83,12 @@ class CreateEventForm(FlaskForm):
         render_kw={
             "placeholder": "e.g. 4141 Sugarplum Dr., Toronto, M4Y 2E5", "class": "form-control"}
     )
-    venue_is_wheelchair_accessible = RadioField(
+    venue_is_mobility_aid_accessible = RadioField(
         label="Venue Accessibility ✽",
         validators=[DataRequired()],
-        name="venue_is_wheelchair_accessible",
+        name="venue_is_mobility_aid_accessible",
         choices=[('False', 'This venue is NOT fully accessible to users of wheelchairs and other mobility devices.'),
                  ('True', 'This venue is fully accessible to users of wheelchairs and other mobility devices.')],
-        default="False"
-    )
-    show_is_photosensitivity_friendly = RadioField(
-        label="Photosensitivity ✽",
-        validators=[DataRequired()],
-        name="show_is_photosensitivity_friendly",
-        choices=[('False', 'Some lighting effects used during this event may be unsafe for those who experience photosensitivity.'),
-                 ('True', 'No lighting effects used during this event may be unsafe for those who experience photosensitivity.')],
         default="False"
     )
     accessibility_notes = TextAreaField(
@@ -111,8 +116,6 @@ class CreateEventForm(FlaskForm):
         name="num_occurrences",
         default="1"
     )
-    occurrences = FieldList(
-        FormField(CreateEventOccurrenceForm), min_entries=50)
     submit = SubmitField(
         label="Submit",
         name="submit",

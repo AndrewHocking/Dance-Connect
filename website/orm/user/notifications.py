@@ -1,3 +1,4 @@
+from website.orm.event.event_contributor import connect_user_to_event
 from ... import db, json_response
 from ...models.user import User, EventRequestNotification, Notification
 from ...models.event import Event, EventParticipant
@@ -63,6 +64,9 @@ def accept_event_request_notification(notification_id: int):
     if not deleted:
         return json_response(404, f"Found no entry for notification {notification_id}")
 
+    connect_user_to_event(user=requesting_user,
+                          event=event, role=role)
+
     participation = EventParticipant(
         role=role, event=event, user=requesting_user)
     db.session.add(participation)
@@ -96,3 +100,12 @@ def delete_notification(notification_id: int) -> int:
     db.session.commit()
 
     return True
+
+
+def get_event_request_notification(event_id: int, sender_id: int):
+    notification = db.session.query(
+        EventRequestNotification).filter_by(event_id=event_id).filter_by(sender_id=sender_id).first()
+
+    if notification is None:
+        return json_response(404, "No notification found for the given event_id and sender_id")
+    return json_response(200, "Notification found.", notification)
