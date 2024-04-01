@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Person{% endblock %}
+
+{% block content %}
+<div class="container m-1">
+    {% if edit %}
+    <form action="{{ url_for('people.edit_person', id=person.id) }}" method="POST">
+        {% endif %}
+        <div class="row align-items-center mb-4 ">
+            <div class="col">
+
+                {% block edit_person_display_name_pronouns %}
+                <div class="row p-0 m-0 align-items-center">
+                    <div class="col-auto justify-content-start p-0 m-0">
+                        <h1>{{ person.display_name }}</h1>
+                    </div>
+                    {% if person.pronouns != "" %}
+                    <div class="col-auto justify-content-start p-0 m-2">
+                        {{person.pronouns}}
+                    </div>
+                    {% endif %}
+                    <div class="col-auto justify-content-start p-0 mt-2">
+                        <h5>@{{person.username}}</h5>
+                    </div>
+                </div>
+                {% endblock %}
+
+                {% block edit_person_tags %}
+                <h6>
+                    {% if person.tags|length == 0 %}
+                    DanceConnect User
+                    {% else %}
+                    <div class="row p-0 m-0 align-items-center">
+                        {% for tag in person.tags %}
+                        <div class="col-auto tag rounded p-1 mr-1 mb-1">
+                            {{ tag.name }}
+                        </div>
+                        <div class="col-auto p-1 rounded">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </h6>
+                {% endblock %}
+            </div>
+
+            {% if user.is_authenticated and user.id == person.id%}
+
+            <div class="col d-flex justify-content-end p-0">
+                {% block edit_person_saveChanges %}
+                <a href="/people/{{ user.id }}/edit">
+                    <button class="btn btn-primary px-4"> Edit Profile </button>
+                </a>
+                {% endblock %}
+            </div>
+            {% endif %}
+
+        </div> <!-- HEADER ROW END -->
+
+
+        <div class="row mb-4">
+            <div class="col-12 col-md-5 col-xl-3">
+                <div class="p-5 mb-4 bg-primary rounded text-light text-align-center text-decoration-none">
+                    Profile Picture
+                </div>
+                <!-- CONTACTS BLOCK -->
+                <div class="p-3 bg-light rounded">
+                    <p class="h4">Contact</p>
+                    {% block edit_person_EditContacts %}
+                    {% if "website" in socials %}
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+                                <i class="bi bi-globe" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+
+                            <span class="font-weight-bold"><a href="https://{{ socials['website'] }}">{{
+                                    socials["website"]
+                                    }}</a></span>
+                        </div>
+                    </div>
+                    {% endif %} <!-- TODO Fix this! only show what is available -->
+                    {% if "instagram" in socials %}
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+                                <i class="bi bi-instagram" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold"><a href="https://www.instagram.com/{{ socials['instagram'] }}/">@{{
+                                    socials['instagram'] }}</a></span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if "email" in socials %}
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+                                <i class="bi-envelope-at" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold">
+                                <a href="mailto:{{ socials['email'] }}">
+                                    {{ socials['email'] }}
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if "threads" in socials %}
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+                                <i class="bi bi-threads" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2">
+                            <span class="font-weight-bold"><a href="https://www.threads.net/@{{ socials['threads'] }}">
+                                    @{{ socials['threads'] }}
+                                </a></span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if "tiktok" in socials %}
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+                                <i class="bi bi-tiktok" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold"><a href="https://www.tiktok.com/@{{ socials['tiktok'] }}/">@{{
+                                    socials['tiktok'] }}</a></span>
+                            {{
+                            person.tiktok }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if "twitter" in socials %}
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+                                <i class="bi bi-twitter-x" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold"><a href="https://twitter.com/{{ person.twitter }}/">@{{
+                                    socials['twitter'] }}</a></span>
+
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if "facebook" in socials %}
+                    <div class="row align-items-center ps-3 py-1">
+                        <div class="col-auto p-0">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
+                                <i class="bi bi-facebook" style="font-size: 1rem;"></i>
+                            </div>
+                        </div>
+                        <div class="col ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold"><a href="{{socials['facebook'] }}">{{socials['facebook'] }}</a></span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endblock %}
+                </div> <!-- LEFT BLOCK END -->
+                {% block edit_person_password %}
+                {% endblock %}
+            </div>
+
+            <div class="col-12 col-md-7 col-xl-9 pl-xl-5 pl-3">
+                <div class="pb-4">
+                    <p class="h4">Bio</p>
+                    <p>
+                        {% block edit_person_bio %}
+                        {% if bio == None %}
+                        This user has not added a bio to their profile yet.
+                        {% else %}
+                        {{ bio }}
+                        {% endif %}
+                        {% endblock %}
+                    </p>
+                </div>
+                <div class="pb-4">
+                    <p class="h4">Events</p>
+                    <div class="row overflow-x-scroll">
+                        {% from 'macros.html' import grid_item %}
+                        {% for event in events %}
+                        <div class="col-auto">
+                            <div class="col-auto">
+                                {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'),
+                                title=event.title,
+                                subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length
+                                != 1 else
+                                (event.occurrences[0].start_time.strftime("%A, %B %e"))), tags=event.tags,
+                                href="/events/"+(event.id|string)) }}
+                            </div>
+                            <p>Event Times</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="pb-4">
+                    <p class="h4">Affiliated</p>
+                    <div class="row-10 d-flex flex-no-wrap overflow-x-scroll ">
+                        {% for user in affiliations %}
+                        <div class="col-auto">
+                            {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'),
+                            title=user.display_name,
+                            subtitle="@" + user.username, tags=user.tags,
+                            href="/people/"+(user.id|string)) }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div> <!-- RIGHT BLOCK END -->
+        </div> <!-- BODY ROW END -->
+        {% if edit %}
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

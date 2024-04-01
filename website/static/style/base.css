@@ -1,0 +1,167 @@
+#logo {
+    height: 40px;
+    margin: 0px;
+}
+
+#logo-img {
+    height: 80px;
+    background-color: #01628B;
+}
+
+#logo-img.shrink {
+    height: 50px;
+}
+#logo.shrink {
+    margin-right: 30px;
+}
+
+nav {
+    background-color: #01628B;
+}
+
+body {
+    background-color: #D9EDF5;
+}
+
+.base {
+    padding: 20px;
+}
+
+.btn-primary {
+    background-color: #FD41A7;
+    border-color: #FD41A7;
+}
+
+.btn-primary:hover,
+.btn-primary:active:hover,
+.btn.show {
+    background-color: #ab274f;
+    border-color: #ab274f;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8)
+}
+
+.nav-link:hover {
+    color: #ed79b9;
+}
+
+.tag {
+    background-color: #D9EDF5;
+}
+
+.btn.tag:hover {
+    background-color: #d9edf5a0;
+}
+
+.bg-icon-background {
+    background-color: #FE39A3;
+    color: white;
+}
+
+.toggler-button[aria-expanded=false] .item-expanded {
+    display: none;
+}
+
+.toggler-button[aria-expanded=true] .item-collapsed {
+    display: none;
+}
+
+.nav-link.nav-notification {
+    color: black
+}
+.nav-link.nav-notification:hover{
+    background-color: #43a5cf;
+    border-color: #43a5cf;
+    color: white;
+}
+.nav-link.nav-notification.selected {
+    background-color: #01628B;
+    font-weight: bold;
+    color: white;
+}
+.nav-link.nav-notification.selected:hover {
+    border-color: #01628B;
+}
+
+.notification-button {
+    width: 65px;
+    padding: 5px;
+}
+
+.notification-img {
+    width: 45px;
+    height: 45px;
+}
+
+.notification-title {
+    min-width: 105px;
+    max-width: 105px;
+}
+
+.notification-item {
+    background-color: #d6eef8;
+}
+
+.bg-grey {
+    background-color: #bec4c6;
+}
+
+
+@media only screen and (max-width: 768px) {
+
+    /* For mobile phones: */
+    #form-filter {
+        background-color: #f8f9fa;
+        /* equivalent to .bg-body-tertiary */
+    }
+
+    .base {
+        padding: 10px;
+    }
+}
+
+
+@media only screen and (max-width: 992px) {
+    /* For tablets: */
+    .navbar-collapse.show {
+        padding-bottom: 10px;
+    }
+}
+
+.user-circle .rounded-circle {
+    width: 100px;
+    height: 100px;
+
+    >img {
+        object-fit: cover;
+    }
+}
+
+.user-circle:hover {
+    >.rounded-circle img {
+        filter: brightness(0.8);
+    }
+}
+
+#btn-view-all:hover {
+    cursor: pointer;
+
+    >div.rounded-circle {
+        background-color: #ab274f;
+    }
+}
+
+.image-container {
+    padding-top: 56.25%;
+}
+
+.rotate-n45 {
+    transform: rotate(-45deg);
+}
+
+.accessibility-icon {
+    width: 30px !important;
+    height: 30px !important;
+}

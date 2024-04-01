@@ -1,0 +1,66 @@
+{% extends "filtered-list-view.html" %}
+{% block title %}People{% endblock %}
+{% block header_text %}People{% endblock %}
+{% block filters %}
+<div class="form-group mb-3">
+    {{ filters.sort_option.label() }}
+    {{ filters.sort_option() }}
+</div>
+<div class="form-group mb-3">
+    <label class="form-label">{{ filters.user_type.description }}</label>
+    {% for type in orgType %}
+    <div class="form-check">
+        {{ filters.user_type.form[type.name] }}
+        {{ filters.user_type.form[type.name].label(class_="form-check-label") }}
+    </div>
+    {% endfor %}
+</div>
+<div class="form-group mb-3">
+    <label class="form-label">{{ filters.filters.description }}</label>
+    {% for role in roles %}
+    <div class="form-check">
+        {{ filters.filters.form[role.name] }}
+        {{ filters.filters.form[role.name].label(class_="form-check-label") }}
+    </div>
+    {% endfor %}
+
+    {% if filters.filters.form[roles.OTHER.name].data %}
+    <div id="other_tags_wrapper">
+        {% else %}
+        <div id="other_tags_wrapper" class="d-none">
+            {% endif %}
+            {{ filters.other_tags }}
+            <div class="form-text">{{ filters.other_tags.description }}</div>
+        </div>
+    </div>
+    <div class="col-12 ">
+        {{ filters.applyFilterSubmit }}
+        {{ filters.clearFilterSubmit }}
+    </div>
+    {% endblock %}
+
+    {% block items_to_list %}
+    {% from "macros.html" import grid_item %}
+    {% for person in people %}
+    <div class="col-auto">
+        {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=person.display_name,
+    tags=person.tags, href="/people/"+(person.id|string)) }}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+    var other_tag_checkbox = document.getElementById("filters-Other")
+    other_tag_checkbox.addEventListener('change', (event) => {
+        var text_wrapper = document.getElementById("other_tags_wrapper");
+        if (event.target.checked)
+            text_wrapper.classList.remove("d-none")
+        else
+            text_wrapper.classList.add("d-none")
+    })
+</script>
+
+{% endblock %}

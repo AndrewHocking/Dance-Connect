@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="page-header mb-3">
+    <h1>Debug</h1>
+    <form action="/debug/create_dummy_users">
+        <button class="btn btn-primary mb-3" type="Submit">Create dummy users</button>
+    </form>
+    <form action="/debug/create_dummy_events">
+        <button class="btn btn-primary mb-3" type="Submit">Create dummy events</button>
+    </form>
+</div>
+{% endblock %}
