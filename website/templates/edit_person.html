@@ -34,8 +34,9 @@
     <div class="col-3 justify-content-start p-0 m-2">
         <input type="text" class="form-control" name="pronouns" placeholder="Pronouns" value="{{ person.pronouns }}">
     </div>
-    <div class="col-auto justify-content-start p-0 mt-2">
-        <h5>@{{person.username}}</h5>
+    <div class="col-auto justify-content-start p-0 m-2">
+        <input type="text" class="form-control" name="uniqueUsername" placeholder="Unique username"
+            value="{{ person.username }}">
     </div>
 </div>
 {% endblock %}
@@ -51,7 +52,7 @@
     </div>
     <div class="col ps-2">
         <input type="text" class="form-control" name="website" placeholder="Website" id="website"
-            value="{{ person.website|default('') }}">
+            value="{{ socials['website']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -62,7 +63,7 @@
     </div>
     <div class="col ps-2">
         <input type="text" class="form-control" name="instagram" placeholder="Instagram handle"
-            value="{{ person.instagram|default('') }}">
+            value="{{ socials['instagram']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -72,7 +73,8 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="email" value="{{ person.email|default('empty') }}">
+        <input type="text" class="form-control" name="email" placeholder="email"
+            value="{{ socials['email']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -82,7 +84,8 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="threads" value="{{ person.threads|default('empty') }}">
+        <input type="text" class="form-control" name="threads" placeholder="Threads handle"
+            value="{{ socials['threads']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -92,7 +95,8 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="tiktok" value="{{ person.tiktok|default('empty') }}">
+        <input type="text" class="form-control" name="tiktok" placeholder="Tiktok handle"
+            value="{{ socials['tiktok']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -102,7 +106,8 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="twitter" value="{{ person.twitter|default('empty') }}">
+        <input type="text" class="form-control" name="twitter" placeholder="Twitter handle"
+            value="{{ socials['twitter']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -112,19 +117,26 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="facebook" value="{{ person.facebook|default('empty') }}">
+        <input type="text" class="form-control" name="facebook" placeholder="Facebook URL"
+            value="{{ socials['facebook']|default('') }}">
     </div>
 </div>
 {% endblock %}
 
 {% block edit_person_password %}
+{# TODO add change emails #}
 <div class="p-3 rounded pt-1">
 </div>
 <div class="p-3 bg-light rounded pt-1">
-    <p class="h4">Change Password</p>
+    <p class="h4">Edit Account Info</p>
+    <p class="h5">Password</p>
     <input type="password" class="form-control mb-2" name="current_password" placeholder="Current password">
     <input type="password" class="form-control my-2" name="new_password" placeholder="Enter new password">
     <input type="password" class="form-control bt-2" name="confirm_new_password" placeholder="Re-enter new password">
+    <p class="h5 pt-3">Account Email</p>
+    <input type="text" class="form-control mb-2" name="current_login_email" placeholder="Current login email">
+    <input type="text" class="form-control mb-2" name="new_login_email" placeholder="New login email">
+    <input type="text" class="form-control my-2" name="confirm_new_login_email" placeholder="Re-type new login email">
 </div>
 {% endblock %}
 

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
-from ...orm.user.user import read_users, read_single_user, update_user, User, UserType
+from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link
 from ...forms.people_filter import (
     PeopleFilter,
     Roles,
@@ -8,6 +8,7 @@ from ...forms.people_filter import (
     fill_filter_data,
 )
 from flask import flash
+
 
 people = Blueprint("people", __name__)
 
@@ -22,7 +23,7 @@ def people_list(search, sort, filters):
     form = PeopleFilter()
 
     if request.method == "POST":
-        print(request.form)
+        # print(request.form)
         if request.form.get("search_button") is not None:
             search_input = request.form.get("search", "")
             if search_input == "":
@@ -69,7 +70,8 @@ def people_list(search, sort, filters):
 
         elif request.form.get("clear_filters") is not None:
             return redirect(
-                url_for("people.people_list", search=search, sort="_", filters="_")
+                url_for("people.people_list", search=search,
+                        sort="_", filters="_")
             )
 
     if search != "_":
@@ -127,6 +129,12 @@ def person(id):
     events = list(person.events_organized)
     events.extend(list(person.events_participated))
 
+    socialMediaDic = {}
+    for social in person.socials:
+        socialMediaDic[social.social_media] = social.handle
+
+    print(socialMediaDic)
+
     edit = False
 
     bio = None
@@ -145,6 +153,7 @@ def person(id):
         events=events,
         affiliations=affiliations,
         edit=edit,
+        socials=socialMediaDic,
     )
 
 
@@ -154,6 +163,10 @@ def edit_person(id):
     events = list(person.events_organized)
     events.extend(list(person.events_participated))
     # form = PeopleFilter()
+
+    socialMediaDic = {}
+    for social in person.socials:
+        socialMediaDic[social.social_media] = social.handle
 
     edit = True
 
@@ -174,36 +187,59 @@ def edit_person(id):
             newBio = request.form.get("bioTextArea", "")
             display_name = request.form.get("display_name", "")
             pronouns = request.form.get("pronouns", "")
+            uniqueUsername = request.form.get("uniqueUsername", "")
+
             website = request.form.get("website", "")
+            if website.startswith("http://") or website.startswith("https://"):
+                website = website[website.find("://") + 3:]
+
             instagram = request.form.get("instagram", "")
 
             if instagram.startswith("@"):  # url works without @
                 instagram = instagram[1:]
 
             email = request.form.get("email", "")
-            threads = request.form.get("threads", "")
+
+            threads = request.form.get("threads", "")  # url works with @
+            if threads.startswith("@"):
+                threads = threads[1:]
+
+            if threads.find("@") != -1:
+                threads = threads[0:threads.find("@")]
+
             tiktok = request.form.get("tiktok", "")
 
-            if not tiktok.startswith("@"):  # url works with @
-                tiktok = "@" + tiktok
+            if tiktok.startswith("@"):  # url works with @
+                tiktok = tiktok[1:]
 
             twitter = request.form.get("twitter", "")  # url works without @
             if twitter.startswith("@"):
                 twitter = twitter[1:]
 
             facebook = request.form.get("facebook", "")
+
             current_pass = request.form.get("current_password", "")
             new_pass = request.form.get("new_password", "")
             confirm_pass = request.form.get("confirm_new_password", "")
+
+            current_login_email = request.form.get("current_login_email", "")
+            new_email = request.form.get("new_login_email", "")
+            confirm_email = request.form.get("confirm_new_login_email", "")
+
             tags = request.form.get("tags", "")
             tag_list = tags.split(",")
             tag_list = [tag.strip() for tag in tag_list]
             tag_list = [tag for tag in tag_list if tag != ""]
-            # print(tag_list)
-            # print(person.password)
-            # print(current_pass[0])
-            # print(new_pass[0])
-            # print(confirm_pass[0])
+
+            # list of handle and social media types
+            socialListofList = [[website, "website"], [instagram, "instagram"], [email, "email"], [
+                threads, "threads"], [tiktok, "tiktok"], [twitter, "twitter"], [facebook, "facebook"], ]
+
+            for social in socialListofList:
+                if update_socials_link(id, social[1], social[0])["status_code"] == 404 and social[0] != "":
+                    create_socials_link(id, social[1], social[0])
+
+            # check password and update if all good
             if (person.password != current_pass or new_pass != confirm_pass) and (
                 current_pass != "" or new_pass != "" or confirm_pass != ""
             ):
@@ -220,6 +256,7 @@ def edit_person(id):
                     affiliations=affiliations,
                     edit=edit,
                     tag_name_list=tag_name_list,
+                    socials=socialMediaDic,
                 )
             else:
                 update_user(
@@ -227,8 +264,49 @@ def edit_person(id):
                     password=new_pass,
                 )
 
+             # check new account login email and update if all good
+            if (socialMediaDic.get("email") != current_login_email or new_email != confirm_email) and (
+                current_login_email != "" or new_email != "" or confirm_email != ""
+            ):
+                flash(
+                    "Emails did not match or current email verification is incorrect", "error"
+                )
+                # return redirect(url_for("people.edit_person", id=id))
+                return render_template(
+                    "edit_person.html",
+                    user=current_user,
+                    person=person,
+                    bio=newBio,
+                    events=events,
+                    affiliations=affiliations,
+                    edit=edit,
+                    tag_name_list=tag_name_list,
+                    socials=socialMediaDic,
+                )
+            else:
+                update_user(
+                    user_id=id,
+                    password=new_pass,
+                )
+
+            # Check for unique username
+            if update_user(user_id=id, username=uniqueUsername)["status_code"] == 400:
+                flash("Username already taken", "error")
+                return render_template(
+                    "edit_person.html",
+                    user=current_user,
+                    person=person,
+                    bio=newBio,
+                    events=events,
+                    affiliations=affiliations,
+                    edit=edit,
+                    tag_name_list=tag_name_list,
+                    socials=socialMediaDic,
+                )
+
             # TODO add error message for when the password is of invalid format
 
+            # if all okay, then update everyone
             update_user(
                 user_id=id,
                 display_name=display_name,
@@ -236,7 +314,7 @@ def edit_person(id):
                 bio=request.form.get("bioTextArea", ""),
                 tags=tag_list,
             )
-            person.bio = request.form.get("bioTextArea", "")
+            # person.bio = request.form.get("bioTextArea", "")
             # person.save()
             return redirect(url_for("people.person", id=id))
 
@@ -249,4 +327,5 @@ def edit_person(id):
         affiliations=affiliations,
         edit=edit,
         tag_name_list=tag_name_list,
+        socials=socialMediaDic,
     )
