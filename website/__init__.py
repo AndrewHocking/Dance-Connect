@@ -57,6 +57,7 @@ def create_app():
     from .routes.ui.people import people
     from .routes.ui.events import events
     from .routes.ui.debug import debug_route
+    from .routes.ui.notifications import notifications
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')

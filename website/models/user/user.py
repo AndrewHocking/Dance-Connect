@@ -80,6 +80,6 @@ class User(db.Model, UserMixin):
         'Event', back_populates='organizer')
     events_contributed: Mapped[List['Event']] = relationship(
         'Event', secondary="event_contributors", back_populates="contributors", viewonly=True)
-    participants_association: Mapped[List['EventContributor']] = relationship(
+    contributor_association: Mapped[List['EventContributor']] = relationship(
         'EventContributor', back_populates='user')
     # TODO: add profile_picture: Mapped[str] = mapped_column(String, nullable=False, default="default.jpg")

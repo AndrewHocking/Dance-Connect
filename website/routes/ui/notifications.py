@@ -3,9 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user, login_required
 from random import randrange
 
-from ...orm.user.notifications import add_event_request_notification, accept_event_request_notification, deny_event_request_notification
-from ...orm.user.user import read_users, read_single_user
-from ...orm.event.event import read_event
+from ...orm.user.notifications import accept_event_request_notification, deny_event_request_notification
 from ...models.user import EventRequestNotification, User
 from ...models.event import Event
 
