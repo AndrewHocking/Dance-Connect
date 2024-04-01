@@ -9,10 +9,12 @@ def create_event_occurrence(
     start_time: datetime,
     end_time: datetime,
     is_relaxed_performance: bool,
-    has_asl_interpreter: bool,
+    is_photosensitivity_friendly: bool,
+    is_hearing_accessible: bool,
+    is_visually_accessible: bool,
     commit_db_after_creation: bool = True
 ):
-    if end_time < start_time:
+    while end_time < start_time:
         end_time = end_time + timedelta(days=1)
 
     new_occurrence = EventOccurrence(
@@ -21,7 +23,9 @@ def create_event_occurrence(
         start_time=start_time,
         end_time=end_time,
         is_relaxed_performance=is_relaxed_performance,
-        has_asl_interpreter=has_asl_interpreter
+        is_photosensitivity_friendly=is_photosensitivity_friendly,
+        is_hearing_accessible=is_hearing_accessible,
+        is_visually_accessible=is_visually_accessible
     )
 
     db.session.add(new_occurrence)

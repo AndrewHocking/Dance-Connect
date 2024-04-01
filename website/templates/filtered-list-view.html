@@ -13,7 +13,8 @@
                         {{ filters.search() }}
                         {{ filters.search.label() }}
                     </div>
-                    <button class="btn btn-primary" id="search_button" name="search_button" type="submit" style="min-width: 58px;">
+                    <button class="btn btn-primary" id="search_button" name="search_button" type="submit"
+                        style="min-width: 58px;">
                         <i class="bi bi-search"></i>
                     </button>
                 </div>
@@ -26,12 +27,13 @@
             <div id="form-filter" class="row p-2 pt-3 pb-1 p-md-0 rounded">
                 <div id="filter-header" class="d-flex d-md-none align-items-center mb-3">
                     <div class="h4 mb-0">Filters</div>
-                    <button class="btn btn-primary toggler-button ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
+                    <button class="btn btn-primary toggler-button ms-auto" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
                         <i class="bi bi-chevron-down item-collapsed"></i>
                         <i class="bi bi-chevron-up item-expanded"></i>
                     </button>
                 </div>
-                
+
                 <div id="filter-collapse" class="collapse d-md-block mb-3">
                     {% block filters %}{% endblock %}
                     {{ filters.apply_filters(class_="btn btn-primary w-100 mb-1") }}
@@ -40,7 +42,7 @@
             </div>
         </div>
         <div class="col-12 col-md-8 col-xl-9">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center gy-3">
                 {% block items_to_list %}{% endblock %}
             </div>
         </div> <!-- ITEM LIST END -->

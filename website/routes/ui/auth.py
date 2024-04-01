@@ -7,7 +7,7 @@ from ...orm.user.user import create_user
 auth = Blueprint('auth', __name__)
 
 
-@auth.route('/login', methods=['GET', 'POST'])
+@auth.route('/login/', methods=['GET', 'POST'])
 def login():
     form = LogInForm()
     if request.method == 'POST':
@@ -28,14 +28,14 @@ def login():
     return render_template("login.html", user=current_user, form=form)
 
 
-@auth.route('/logout')
+@auth.route('/logout/')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
 
 
-@auth.route('/sign-up', methods=['GET', 'POST'])
+@auth.route('/sign-up/', methods=['GET', 'POST'])
 def sign_up():
     form = SignUpForm()
     if request.method == 'POST':
