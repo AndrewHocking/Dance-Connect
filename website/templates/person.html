@@ -71,8 +71,7 @@
                     {% if "website" in socials %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
-                                style="width: 32px">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
                                 <i class="bi bi-globe" style="font-size: 1rem;"></i>
                             </div>
                         </div>
@@ -87,15 +86,12 @@
                     {% if "instagram" in socials %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
-                                style="width: 32px">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
                                 <i class="bi bi-instagram" style="font-size: 1rem;"></i>
                             </div>
                         </div>
-                        <div class="col-10 ps-2"
-                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <span class="font-weight-bold"><a
-                                    href="https://www.instagram.com/{{ socials['instagram'] }}/">@{{
+                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold"><a href="https://www.instagram.com/{{ socials['instagram'] }}/">@{{
                                     socials['instagram'] }}</a></span>
                         </div>
                     </div>
@@ -103,13 +99,11 @@
                     {% if "email" in socials %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
-                                style="width: 32px">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
                                 <i class="bi-envelope-at" style="font-size: 1rem;"></i>
                             </div>
                         </div>
-                        <div class="col-10 ps-2"
-                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             <span class="font-weight-bold">
                                 <a href="mailto:{{ socials['email'] }}">
                                     {{ socials['email'] }}
@@ -121,8 +115,7 @@
                     {% if "threads" in socials %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
-                                style="width: 32px">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
                                 <i class="bi bi-threads" style="font-size: 1rem;"></i>
                             </div>
                         </div>
@@ -136,15 +129,12 @@
                     {% if "tiktok" in socials %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
-                                style="width: 32px">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
                                 <i class="bi bi-tiktok" style="font-size: 1rem;"></i>
                             </div>
                         </div>
-                        <div class="col-10 ps-2"
-                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <span class="font-weight-bold"><a
-                                    href="https://www.tiktok.com/@{{ socials['tiktok'] }}/">@{{
+                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <span class="font-weight-bold"><a href="https://www.tiktok.com/@{{ socials['tiktok'] }}/">@{{
                                     socials['tiktok'] }}</a></span>
                             {{
                             person.tiktok }}
@@ -154,13 +144,11 @@
                     {% if "twitter" in socials %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
-                                style="width: 32px">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
                                 <i class="bi bi-twitter-x" style="font-size: 1rem;"></i>
                             </div>
                         </div>
-                        <div class="col-10 ps-2"
-                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             <span class="font-weight-bold"><a href="https://twitter.com/{{ person.twitter }}/">@{{
                                     socials['twitter'] }}</a></span>
 
@@ -170,14 +158,12 @@
                     {% if "facebook" in socials %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center"
-                                style="width: 32px">
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
                                 <i class="bi bi-facebook" style="font-size: 1rem;"></i>
                             </div>
                         </div>
                         <div class="col ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <span class="font-weight-bold"><a href="{{socials['facebook'] }}">{{socials['facebook']
-                                    }}</a></span>
+                            <span class="font-weight-bold"><a href="{{socials['facebook'] }}">{{socials['facebook'] }}</a></span>
                         </div>
                     </div>
                     {% endif %}
@@ -203,7 +189,7 @@
                 <div class="pb-4">
                     <p class="h4">Events</p>
                     <div class="row overflow-x-scroll">
-                        {% from 'grid-item.html' import grid_item %}
+                        {% from 'macros.html' import grid_item %}
                         {% for event in events %}
                         <div class="col-auto">
                             <div class="col-auto">
