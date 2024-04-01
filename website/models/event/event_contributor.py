@@ -8,6 +8,10 @@ class EventContributor(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     event_id: Mapped[int] = mapped_column(Integer, ForeignKey('events.id'))
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
-    event = relationship('Event', backref='user_roles')
-    user = relationship('User', backref='event_roles')
+
+    event: Mapped['Event'] = relationship(
+        'Event', back_populates="contributor_association")
+    user: Mapped['User'] = relationship(
+        'User', back_populates="contributor_association")
+
     role: Mapped[str]
