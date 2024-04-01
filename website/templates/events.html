@@ -2,6 +2,9 @@
 {% block title %}Events{% endblock %}
 {% block header_text %}Events{% endblock %}
 {% block filters %}
+{% if user.is_authenticated %}
+<a href="{{ url_for('events.event_create') }}" class="btn btn-primary mb-3 w-100">Create a new event</a>
+{% endif %}
 <div class="form-group mb-3">
     {{ filters.sort.label() }}
     {{ filters.sort() }}
@@ -19,7 +22,8 @@
     <div class="form-check">
         {{ filters.relaxed_performance() }}
         {{ filters.relaxed_performance.label(class_="form-check-label") }}
-        <a href="https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed" alt="Learn More">
+        <a href="https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed"
+            title="What is a relaxed performance?" target="_blank" rel="noopener noreferrer">
             <i class="bi bi-question-circle"></i>
         </a>
     </div>
@@ -70,7 +74,7 @@
 {% endblock %}
 
 {% block items_to_list %}
-{% from 'grid-item.html' import grid_item %}
+{% from "macros.html" import grid_item %}
 {% for event in events %}
 <div class="col-auto">
     {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title,

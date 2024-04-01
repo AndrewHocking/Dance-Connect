@@ -20,8 +20,7 @@ class Event(db.Model):
         'EventTag', secondary="event_tag_relationships", back_populates='events')
     venue_name: Mapped[str]
     venue_address: Mapped[str]
-    venue_is_physically_accessible: Mapped[bool] = mapped_column(Boolean)
-    show_is_photosensitivity_friendly: Mapped[bool] = mapped_column(Boolean)
+    venue_is_mobility_aid_accessible: Mapped[bool] = mapped_column(Boolean)
     accessibility_notes: Mapped[str]
     min_ticket_price: Mapped[Optional[float]]
     max_ticket_price: Mapped[Optional[float]]

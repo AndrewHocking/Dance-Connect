@@ -1,118 +1,109 @@
 {% extends "base.html" %}
 {% block title %}Create Event{% endblock %}
 {% block content %}
-<div class="page-header mb-3">
-    <h1>Create Event</h1>
-    <div class="form-text">Fields labelled <strong>✽</strong> are required</div>
-</div>
-<form method="POST">
-    {{ event_form.num_occurrences() }}
-    <fieldset class="form-group mb-3">
-        <legend>Event Information</legend>
-        <div class="form-group mb-3">
-            {{ event_form.title.label() }}
-            {{ event_form.title() }}
-        </div>
-        <div class="form-group mb-3">
-            {{ event_form.description.label() }}
-            {{ event_form.description() }}
-        </div>
-        <div class="form-group mb-3">
-            {{ event_form.url.label() }}
-            {{ event_form.url() }}
-        </div>
-        <div class="form-group mb-3">
-            {{ event_form.tags.label() }}
-            {{ event_form.tags() }}
-            <div id="tags-help-block" class="form-text">{{ event_form.tags.description }}</div>
-        </div>
-        <div class="form-group mb-3">
-            <div class="row">
-                <div class="col-md-6">
-                    {{ event_form.min_ticket_price.label() }}
-                    <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        {{ event_form.min_ticket_price() }}
-                    </div>
-                    <div id="min-ticket-price-help-block" class="form-text">{{ event_form.min_ticket_price.description }}</div>
-                </div>
-                <div class="col-md-6">
-                    {{ event_form.max_ticket_price.label() }}
-                    <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        {{ event_form.max_ticket_price() }}
-                    </div>
-                    <div id="max-ticket-price-help-block" class="form-text">{{ event_form.max_ticket_price.description }}</div>
-                </div>
-            </div>
-        </div>
-    </fieldset>
-    <fieldset class="form-group mb-3">
-        <legend>Event Occurrences</legend>
-        {% for event_occurrence_form in event_form.occurrences %}
-        {% with occurrence_label=event_occurrence_form.date.id[:-5] %}
-        {% if event_occurrence_form.date.id == "occurrences-0-date" %}
-        <div id="occurrences-0" class="occurrence">
-            {% with show_delete_button=false %}
-            {% include "create-event-occurrence.html" %}
-            {% endwith %}
-        </div>
-        {% else %}
-        <div id="{{ occurrence_label }}" class="d-none occurrence">
-            {% with show_delete_button=true %}
-            {% include "create-event-occurrence.html" %}
-            {% endwith %}
-        </div>
-        {% endif %}
-        {% endwith %}
-        {% endfor %}
-    </fieldset>
-    <div class="form-group mb-3">
-        <button type="button" id="add_occurrence_btn" class="btn btn-secondary">Add Another Occurrence</button>
+<div class="container">
+    <div class="page-header mb-3">
+        <h1>Create Event</h1>
+        <div class="form-text">Fields labelled <strong>✽</strong> are required</div>
     </div>
-    <fieldset class="form-group mb-3">
-        <legend>Venue Information</legend>
-        <div class="form-group mb-3">
-            <div class="row">
-                <div class="col-md-6">
-                    {{ event_form.venue_name.label() }}
-                    {{ event_form.venue_name() }}
+    <form method="POST" action="{{url_for('events.create_event_submit') }}">
+        {{ event_form.num_occurrences() }}
+        <fieldset class="form-group mb-3">
+            <legend>Event Information</legend>
+            <div class="form-group mb-3">
+                {{ event_form.title.label() }}
+                {{ event_form.title() }}
+            </div>
+            <div class="form-group mb-3">
+                {{ event_form.description.label() }}
+                {{ event_form.description() }}
+            </div>
+            <div class="form-group mb-3">
+                {{ event_form.accessibility_notes.label() }}
+                {{ event_form.accessibility_notes() }}
+            </div>
+            <div class="form-group mb-3">
+                {{ event_form.url.label() }}
+                {{ event_form.url() }}
+            </div>
+            <div class="form-group mb-3">
+                {{ event_form.tags.label() }}
+                {{ event_form.tags() }}
+                <div id="tags-help-block" class="form-text">{{ event_form.tags.description }}</div>
+            </div>
+            <div class="form-group mb-3">
+                <div class="row">
+                    <div class="col-lg-6">
+                        {{ event_form.min_ticket_price.label() }}
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            {{ event_form.min_ticket_price() }}
+                        </div>
+                        <div id="min-ticket-price-help-block" class="form-text">{{ event_form.min_ticket_price.description }}</div>
+                    </div>
+                    <div class="col-lg-6">
+                        {{ event_form.max_ticket_price.label() }}
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            {{ event_form.max_ticket_price() }}
+                        </div>
+                        <div id="max-ticket-price-help-block" class="form-text">{{ event_form.max_ticket_price.description }}</div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    {{ event_form.venue_address.label() }}
-                    {{ event_form.venue_address() }}
+            </div>
+        </fieldset>
+        <fieldset class="form-group mb-3">
+            <legend>Event Occurrences</legend>
+            <div id="occurrences" class="form-group mb-3"> {# TODO: Fix alignment #}
+                {% from "macros.html" import create_event_occurrence %}
+                {% for occurrence in occurrences %}
+                <div id="occurrence-{{ loop.index0 }}" class="occurrence">
+                    {{ create_event_occurrence(occurrence=occurrence, occurrence_number=loop.index0) }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="form-group row justify-content-center">
+                <div class="col-auto">
+                    <button type="button" id="add_occurrence_btn" class="btn btn-secondary">
+                        <i class="bi bi-plus-lg"></i>
+                        Add Another Occurrence
+                    </button>
                 </div>
             </div>
-        </div>
-    </fieldset>
-    <fieldset class="form-group mb-3">
-        <legend>Accessibility Information</legend>
-        <div class="form-group mb-3">
-            {{ event_form.venue_is_physically_accessible.label() }}
-            {% for radio_option in event_form.venue_is_physically_accessible %}
-            <div class="form-check">
-                {{ radio_option(class_="form-check-input") }}
-                {{ radio_option.label(class_="form-check-label") }}
+        </fieldset>
+        <fieldset class="form-group mb-3">
+            <legend>Venue Information</legend>
+            <div class="form-group mb-3">
+                <div class="row">
+                    <div class="col-lg-6">
+                        {{ event_form.venue_name.label() }}
+                        {{ event_form.venue_name() }}
+                    </div>
+                    <div class="col-lg-6 mt-lg-0 mt-2">
+                        {{ event_form.venue_address.label() }}
+                        {{ event_form.venue_address() }}
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="form-group mb-3">
+                        {{ event_form.venue_is_mobility_aid_accessible.label() }}
+                        {% for radio_option in event_form.venue_is_mobility_aid_accessible %}
+                        <div class="form-check">
+                            {{ radio_option(class_="form-check-input") }}
+                            {{ radio_option.label(class_="form-check-label") }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-            {% endfor %}
-        </div>
-        <div class="form-group mb-3">
-            {{ event_form.show_is_photosensitivity_friendly.label() }}
-            {% for radio_option in event_form.show_is_photosensitivity_friendly %}
-            <div class="form-check">
-                {{ radio_option(class_="form-check-input") }}
-                {{ radio_option.label(class_="form-check-label") }}
+        </fieldset>
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                {{ event_form.submit(class_="btn btn-primary") }}
             </div>
-            {% endfor %}
         </div>
-        <div class="form-group mb-3">
-            {{ event_form.accessibility_notes.label() }}
-            {{ event_form.accessibility_notes() }}
-        </div>
-    </fieldset>
-    <br />
-    {{ event_form.submit(class_="btn btn-primary") }}
-</form>
+    </form>
+</div>
 {% endblock %}
 
 {% block javascript %}
@@ -127,14 +118,33 @@
     }
 
     function addOccurrence() {
+        let data = new FormData();
+        data.append("previous_date", document.getElementById(`occurrence-${numOccurrences}-date`).value);
+        data.append("previous_start_time", document.getElementById(`occurrence-${numOccurrences}-start-time`).value);
+        data.append("previous_end_time", document.getElementById(`occurrence-${numOccurrences}-end-time`).value);
+        data.append("previous_is_relaxed_performance", document.getElementById(`occurrence-${numOccurrences}-is-relaxed-performance`).checked);
+        data.append("previous_is_hearing_accessible", document.getElementById(`occurrence-${numOccurrences}-is-hearing-accessible`).checked);
+        data.append("previous_is_visually_accessible", document.getElementById(`occurrence-${numOccurrences}-is-visually-accessible`).checked);
+
         numOccurrences++;
-        document.getElementById("occurrences-" + numOccurrences).classList.remove(["d-none"]);
-        document.getElementById("occurrences-" + numOccurrences + "-date").value = document.getElementById("occurrences-" + (numOccurrences - 1) + "-date").value;
-        document.getElementById("occurrences-" + numOccurrences + "-start_time").value = document.getElementById("occurrences-" + (numOccurrences - 1) + "-start_time").value;
-        document.getElementById("occurrences-" + numOccurrences + "-end_time").value = document.getElementById("occurrences-" + (numOccurrences - 1) + "-end_time").value;
-        document.getElementById("occurrences-" + numOccurrences + "-is_relaxed_performance").checked = document.getElementById("occurrences-" + (numOccurrences - 1) + "-is_relaxed_performance").checked;
-        document.getElementById("occurrences-" + numOccurrences + "-has_asl_interpreter").checked = document.getElementById("occurrences-" + (numOccurrences - 1) + "-has_asl_interpreter").checked;
-        document.getElementById("num_occurrences").value = numOccurrences + 1;
+        data.append("occurrence_number", numOccurrences);
+        fetch("{{ url_for("events.create_event_occurrence") }}", {
+            method: "POST",
+            body: data,
+        }).then(function (response) {
+            if (response.ok) {
+                response.text().then(function (content) {
+                    new_element = document.createElement("div");
+                    new_element.innerHTML = content.replace(/occurrence-occurrence_number/g, `occurrence-${numOccurrences}`);
+                    new_element.id = `occurrence-${numOccurrences}`;
+                    new_element.classList.add("occurrence");
+                    document.getElementById(`occurrence-${numOccurrences - 1}`).insertAdjacentElement("afterend", new_element);
+                    document.getElementById("num_occurrences").value = numOccurrences + 1;
+                });
+            } else {
+                console.error("Error: " + response.status + " – Failed to create a new occurrence form block.");
+            }
+        });
     }
 
     function deleteOccurrence(occurrenceNum) {
@@ -144,7 +154,7 @@
             document.getElementById("occurrences-" + (i - 1) + "-start_time").value = i == numOccurrences ? null : document.getElementById("occurrences-" + i + "-start_time").value;
             document.getElementById("occurrences-" + (i - 1) + "-end_time").value = i == numOccurrences ? null : document.getElementById("occurrences-" + i + "-end_time").value;
             document.getElementById("occurrences-" + (i - 1) + "-is_relaxed_performance").checked = i == numOccurrences ? false : document.getElementById("occurrences-" + i + "-is_relaxed_performance").checked;
-            document.getElementById("occurrences-" + (i - 1) + "-has_asl_interpreter").checked = i == numOccurrences ? false : document.getElementById("occurrences-" + i + "-has_asl_interpreter").checked;
+            document.getElementById("occurrences-" + (i - 1) + "-is_visually_accessible").checked = i == numOccurrences ? false : document.getElementById("occurrences-" + i + "-is_visually_accessible").checked;
         }
         document.getElementById("occurrences-" + numOccurrences).classList.add(["d-none"]);
         document.getElementById("num_occurrences").value = numOccurrences;

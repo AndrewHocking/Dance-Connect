@@ -13,4 +13,6 @@ class EventOccurrence(db.Model):
     start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     end_time: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     is_relaxed_performance: Mapped[bool]
-    has_asl_interpreter: Mapped[bool]
+    is_photosensitivity_friendly: Mapped[bool]
+    is_hearing_accessible: Mapped[bool]
+    is_visually_accessible: Mapped[bool]

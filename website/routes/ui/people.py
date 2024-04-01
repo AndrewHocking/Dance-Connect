@@ -7,11 +7,11 @@ people = Blueprint("people", __name__)
 
 
 @people.route(
-    "/people",
+    "/people/",
     defaults={"search": "_", "sort": "_", "filters": "_"},
     methods=["GET", "POST"],
 )
-@people.route("/people/<search>/<sort>/<filters>", methods=["GET", "POST"])
+@people.route("/people/<search>/<sort>/<filters>/", methods=["GET", "POST"])
 def people_list(search, sort, filters):
     form = PeopleFilter()
 
@@ -105,7 +105,7 @@ def people_list(search, sort, filters):
     )
 
 
-@people.route("/people/<id>", methods=["GET"])
+@people.route("/people/<id>/", methods=["GET"])
 def person(id):
     person: User = read_single_user(user_id=id)["data"]
     events = list(person.events_organized)
@@ -132,7 +132,7 @@ def person(id):
     )
 
 
-@people.route("/people/<id>/edit", methods=["GET", "POST"])
+@people.route("/people/<id>/edit/", methods=["GET", "POST"])
 def edit_person(id):
     person: User = read_single_user(user_id=id)["data"]
     events = list(person.events_organized)
