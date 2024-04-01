@@ -1,5 +1,6 @@
 #logo {
     height: 40px;
+    margin: 0px;
 }
 
 #logo-img {
@@ -9,15 +10,13 @@
 
 #logo-img.shrink {
     height: 50px;
+}
+#logo.shrink {
     margin-right: 30px;
 }
 
 nav {
     background-color: #01628B;
-}
-
-.navbar-collapse:not(.collapse) {
-    padding-bottom: 20px;
 }
 
 body {
@@ -69,12 +68,65 @@ body {
     display: none;
 }
 
+.nav-link.nav-notification {
+    color: black
+}
+.nav-link.nav-notification:hover{
+    background-color: #43a5cf;
+    border-color: #43a5cf;
+    color: white;
+}
+.nav-link.nav-notification.selected {
+    background-color: #01628B;
+    font-weight: bold;
+    color: white;
+}
+.nav-link.nav-notification.selected:hover {
+    border-color: #01628B;
+}
+
+.notification-button {
+    width: 65px;
+    padding: 5px;
+}
+
+.notification-img {
+    width: 45px;
+    height: 45px;
+}
+
+.notification-title {
+    min-width: 105px;
+    max-width: 105px;
+}
+
+.notification-item {
+    background-color: #d6eef8;
+}
+
+.bg-grey {
+    background-color: #bec4c6;
+}
+
+
 @media only screen and (max-width: 768px) {
 
     /* For mobile phones: */
     #form-filter {
         background-color: #f8f9fa;
         /* equivalent to .bg-body-tertiary */
+    }
+
+    .base {
+        padding: 10px;
+    }
+}
+
+
+@media only screen and (max-width: 992px) {
+    /* For tablets: */
+    .navbar-collapse.show {
+        padding-bottom: 10px;
     }
 }
 

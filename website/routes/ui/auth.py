@@ -14,7 +14,7 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        user = User.query.filter_by(email=email).first()
+        user: User = User.query.filter_by(email=email).first()
         if user:
             if user.password == password:
                 flash('Logged in successfully!', category='success')

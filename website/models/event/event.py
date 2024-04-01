@@ -4,6 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List, Optional
 from .event_tag import EventTag
 from .event_occurrence import EventOccurrence
+from .event_contributor import EventContributor
 
 
 class Event(db.Model):
@@ -27,7 +28,9 @@ class Event(db.Model):
     occurrences: Mapped[List['EventOccurrence']] = relationship(
         'EventOccurrence', back_populates='event')
     contributors: Mapped[List['User']] = relationship(
-        'User', secondary='event_contributors', back_populates='events_contributed')
+        'User', secondary="event_contributors", back_populates="events_contributed", viewonly=True)
+    contributor_association: Mapped[List['EventContributor']] = relationship(
+        'EventContributor', back_populates='event')
     request_notifications: Mapped[List['EventRequestNotification']] = relationship(
         'EventRequestNotification', back_populates="event")
     # TODO: add media gallery

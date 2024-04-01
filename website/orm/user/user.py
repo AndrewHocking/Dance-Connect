@@ -94,9 +94,6 @@ def read_users(
 
         users = users.join(User.tags).filter(or_(*queries))
 
-    print(user_types, filter_tags)
-    print(users)
-
     # TODO: Add support for filtering by user tags
     users = users.all()
 

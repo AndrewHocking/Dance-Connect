@@ -57,12 +57,14 @@ def create_app():
     from .routes.ui.people import people
     from .routes.ui.events import events
     from .routes.ui.debug import debug_route
+    from .routes.ui.notifications import notifications
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(people, url_prefix='/')
     app.register_blueprint(events, url_prefix='/events')
     app.register_blueprint(debug_route, url_prefix='/')
+    app.register_blueprint(notifications, url_prefix='/')
 
     with app.app_context():
         db.create_all()

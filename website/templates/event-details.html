@@ -136,8 +136,7 @@
                                                 {% for occurrence in occurrences[date] %}
                                                 <tr class="align-middle {{ 'border-top' if not loop.first }}">
                                                     <td>
-                                                        {{ occurrence.start_time.strftime(
-                                                        "%l:%M %p") + ((" - " + occurrence.end_time.strftime("%l:%M %p")) if occurrence.end_time else "") }}
+                                                        {{ occurrence.start_time.strftime("%l:%M %p") + ((" - " + occurrence.end_time.strftime("%l:%M %p")) if occurrence.end_time else "") }}
                                                     </td>
                                                     <td class="text-end">
                                                         <ul class="list-inline m-0 d-inline-flex align-middle">
