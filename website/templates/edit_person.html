@@ -11,8 +11,7 @@
 {% block edit_person_bio %}
 {% if bio == None %}
 <div class="form-floating">
-    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea"
-        style="height: 100px"></textarea>
+    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea" style="height: 100px"></textarea>
     <label for="bioTextArea">Enter your bio</label>
 </div>
 {% else %}
@@ -35,8 +34,7 @@
         <input type="text" class="form-control" name="pronouns" placeholder="Pronouns" value="{{ person.pronouns }}">
     </div>
     <div class="col-auto justify-content-start p-0 m-2">
-        <input type="text" class="form-control" name="uniqueUsername" placeholder="Unique username"
-            value="{{ person.username }}">
+        <input type="text" class="form-control" name="uniqueUsername" placeholder="Unique username" value="{{ person.username }}">
     </div>
 </div>
 {% endblock %}
@@ -51,8 +49,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="website" placeholder="Website" id="website"
-            value="{{ socials['website']|default('') }}">
+        <input type="text" class="form-control" name="website" placeholder="Website" id="website" value="{{ socials['website']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -62,8 +59,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="instagram" placeholder="Instagram handle"
-            value="{{ socials['instagram']|default('') }}">
+        <input type="text" class="form-control" name="instagram" placeholder="Instagram handle" value="{{ socials['instagram']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -73,8 +69,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="email" placeholder="email"
-            value="{{ socials['email']|default('') }}">
+        <input type="text" class="form-control" name="email" placeholder="email" value="{{ socials['email']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -84,8 +79,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="threads" placeholder="Threads handle"
-            value="{{ socials['threads']|default('') }}">
+        <input type="text" class="form-control" name="threads" placeholder="Threads handle" value="{{ socials['threads']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -95,8 +89,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="tiktok" placeholder="Tiktok handle"
-            value="{{ socials['tiktok']|default('') }}">
+        <input type="text" class="form-control" name="tiktok" placeholder="Tiktok handle" value="{{ socials['tiktok']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -106,8 +99,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="twitter" placeholder="Twitter handle"
-            value="{{ socials['twitter']|default('') }}">
+        <input type="text" class="form-control" name="twitter" placeholder="Twitter handle" value="{{ socials['twitter']|default('') }}">
     </div>
 </div>
 <div class="row align-items-center ps-3 py-1">
@@ -117,8 +109,7 @@
         </div>
     </div>
     <div class="col ps-2">
-        <input type="text" class="form-control" name="facebook" placeholder="Facebook URL"
-            value="{{ socials['facebook']|default('') }}">
+        <input type="text" class="form-control" name="facebook" placeholder="Facebook URL" value="{{ socials['facebook']|default('') }}">
     </div>
 </div>
 {% endblock %}
@@ -127,7 +118,7 @@
 {# TODO add change emails #}
 <div class="p-3 rounded pt-1">
 </div>
-<div class="p-3 bg-light rounded pt-1">
+<div class="p-3 bg-body-tertiary rounded pt-1">
     <p class="h4">Edit Account Info</p>
     <p class="h5">Password</p>
     <input type="password" class="form-control mb-2" name="current_password" placeholder="Current password">

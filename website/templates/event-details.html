@@ -13,7 +13,7 @@
             {% for tag in event.tags %}
             <form class="col-auto" action="{{ url_for('events.events_list') }}" method="POST">
                 <button name="tags" value="{{ tag.name }}"
-                    class="me-1 mb-1 px-2 py-0 text-dark bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name }}</button>
+                    class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name }}</button>
             </form>
             {% endfor %}
         </div>

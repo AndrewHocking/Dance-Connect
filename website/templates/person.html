@@ -3,51 +3,45 @@
 {% block title %}Person{% endblock %}
 
 {% block content %}
-<div class="container m-1">
+<div class="container">
     {% if edit %}
     <form action="{{ url_for('people.edit_person', id=person.id) }}" method="POST">
         {% endif %}
-        <div class="row align-items-center mb-4 ">
+        <div class="row align-items-center mb-4">
             <div class="col">
-
                 {% block edit_person_display_name_pronouns %}
                 <div class="row p-0 m-0 align-items-center">
-                    <div class="col-auto justify-content-start p-0 m-0">
+                    <div class="col-auto justify-content-start p-0 pe-2 m-0">
                         <h1>{{ person.display_name }}</h1>
                     </div>
                     {% if person.pronouns != "" %}
-                    <div class="col-auto justify-content-start p-0 m-2">
+                    <div class="col-auto justify-content-start p-0 text-muted">
                         {{person.pronouns}}
                     </div>
                     {% endif %}
-                    <div class="col-auto justify-content-start p-0 mt-2">
-                        <h5>@{{person.username}}</h5>
-                    </div>
+                </div>
+                <div class="col-auto justify-content-start mb-3 text-muted">
+                    <h5>@{{person.username}}</h5>
                 </div>
                 {% endblock %}
 
                 {% block edit_person_tags %}
-                <h6>
-                    {% if person.tags|length == 0 %}
-                    DanceConnect User
-                    {% else %}
-                    <div class="row p-0 m-0 align-items-center">
-                        {% for tag in person.tags %}
-                        <div class="col-auto tag rounded p-1 mr-1 mb-1">
-                            {{ tag.name }}
-                        </div>
-                        <div class="col-auto p-1 rounded">
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                </h6>
+                {% if person.tags|length > 0 %}
+                <div class="row d-flex flex-wrap gx-1">
+                    {% for tag in person.tags %}
+                    <form class="col-auto" action="{{ url_for('people.people_list') }}" method="POST">
+                        <button name="tags" value="{{ tag.name }}"
+                            class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name }}</button>
+                    </form>
+                    {% endfor %}
+                </div>
+                {% endif %}
                 {% endblock %}
             </div>
 
             {% if user.is_authenticated and user.id == person.id%}
 
-            <div class="col d-flex justify-content-end p-0">
+            <div class="col d-flex justify-content-end">
                 {% block edit_person_saveChanges %}
                 <a href="/people/{{ user.id }}/edit">
                     <button class="btn btn-primary px-4"> Edit Profile </button>
@@ -61,112 +55,45 @@
 
         <div class="row mb-4">
             <div class="col-12 col-md-5 col-xl-3">
-                <div class="p-5 mb-4 bg-primary rounded text-light text-align-center text-decoration-none">
-                    Profile Picture
+                <div class="rounded mb-4 overflow-hidden ratio ratio-1x1">
+                    <img src="{{url_for('static', filename='images/placeholder.jpg')}}" class="img-fluid" alt="{{person.display_name}}" />
                 </div>
                 <!-- CONTACTS BLOCK -->
-                <div class="p-3 bg-light rounded">
+                <div class="p-3 bg-body-tertiary rounded text-decoration-none">
                     <p class="h4">Contact</p>
                     {% block edit_person_EditContacts %}
-                    {% if "website" in socials %}
-                    <div class="row align-items-center ps-3 py-1">
-                        <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-                                <i class="bi bi-globe" style="font-size: 1rem;"></i>
-                            </div>
-                        </div>
-                        <div class="col ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-
-                            <span class="font-weight-bold"><a href="https://{{ socials['website'] }}">{{
-                                    socials["website"]
-                                    }}</a></span>
-                        </div>
-                    </div>
-                    {% endif %} <!-- TODO Fix this! only show what is available -->
-                    {% if "instagram" in socials %}
-                    <div class="row align-items-center ps-3 py-1">
-                        <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-                                <i class="bi bi-instagram" style="font-size: 1rem;"></i>
-                            </div>
-                        </div>
-                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <span class="font-weight-bold"><a href="https://www.instagram.com/{{ socials['instagram'] }}/">@{{
-                                    socials['instagram'] }}</a></span>
-                        </div>
-                    </div>
+                    {% for site in socials %}
+                    {% set icon_name = site %}
+                    {% set url_prefix = "https://" %}
+                    {% set handle = socials[site] %}
+                    {% if site == "website" %}
+                    {% set icon_name = "globe" %}
+                    {% elif site == "instagram" %}
+                    {% set url_prefix = "https://www.instagram.com/" %}
+                    {% elif site == "email" %}
+                    {% set icon_name = "envelope-at" %}
+                    {% set url_prefix = "mailto:" %}
+                    {% elif site == "threads" %}
+                    {% set url_prefix = "https://www.threads.net/@" %}
+                    {% elif site == "tiktok" %}
+                    {% set url_prefix = "https://www.tiktok.com/@" %}
+                    {% elif site == "twitter" %}
+                    {% set icon_name = "twitter-x" %}
+                    {% set url_prefix = "https://twitter.com/" %}
+                    {% elif site == "facebook" %}
+                    {% set url_prefix = "https://facebook.com/" %}
                     {% endif %}
-                    {% if "email" in socials %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
                             <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-                                <i class="bi-envelope-at" style="font-size: 1rem;"></i>
+                                <i class="bi bi-{{ icon_name }}" style="font-size: 1rem;"></i>
                             </div>
                         </div>
-                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <span class="font-weight-bold">
-                                <a href="mailto:{{ socials['email'] }}">
-                                    {{ socials['email'] }}
-                                </a>
-                            </span>
+                        <div class="col-10 ps-2 text-no-wrap text-truncate">
+                            <a href="{{ url_prefix }}{{ handle.replace('https://', '', 1).replace('http://', '', 1) }}">{{ handle }}</a>
                         </div>
                     </div>
-                    {% endif %}
-                    {% if "threads" in socials %}
-                    <div class="row align-items-center ps-3 py-1">
-                        <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-                                <i class="bi bi-threads" style="font-size: 1rem;"></i>
-                            </div>
-                        </div>
-                        <div class="col ps-2">
-                            <span class="font-weight-bold"><a href="https://www.threads.net/@{{ socials['threads'] }}">
-                                    @{{ socials['threads'] }}
-                                </a></span>
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% if "tiktok" in socials %}
-                    <div class="row align-items-center ps-3 py-1">
-                        <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-                                <i class="bi bi-tiktok" style="font-size: 1rem;"></i>
-                            </div>
-                        </div>
-                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <span class="font-weight-bold"><a href="https://www.tiktok.com/@{{ socials['tiktok'] }}/">@{{
-                                    socials['tiktok'] }}</a></span>
-                            {{
-                            person.tiktok }}
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% if "twitter" in socials %}
-                    <div class="row align-items-center ps-3 py-1">
-                        <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-                                <i class="bi bi-twitter-x" style="font-size: 1rem;"></i>
-                            </div>
-                        </div>
-                        <div class="col-10 ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <span class="font-weight-bold"><a href="https://twitter.com/{{ person.twitter }}/">@{{
-                                    socials['twitter'] }}</a></span>
-
-                        </div>
-                    </div>
-                    {% endif %}
-                    {% if "facebook" in socials %}
-                    <div class="row align-items-center ps-3 py-1">
-                        <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-                                <i class="bi bi-facebook" style="font-size: 1rem;"></i>
-                            </div>
-                        </div>
-                        <div class="col ps-2" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <span class="font-weight-bold"><a href="{{socials['facebook'] }}">{{socials['facebook'] }}</a></span>
-                        </div>
-                    </div>
-                    {% endif %}
+                    {% endfor %}
                     {% endblock %}
                 </div> <!-- LEFT BLOCK END -->
                 {% block edit_person_password %}
