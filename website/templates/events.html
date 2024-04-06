@@ -32,14 +32,14 @@
 <div class="form-group mb-3">
     <div class="input-group">
         <span class="input-group-text">
-            <div class="text-center" style="width: 30px;">Min</div>
+            <div class="text-center price-prefix">Min</div>
         </span>
         <span class="input-group-text">$</span>
         {{ filters.min_ticket_price() }}
     </div>
     <div class="input-group">
         <span class="input-group-text">
-            <div class="text-center" style="width: 30px;">Max</div>
+            <div class="text-center price-prefix">Max</div>
         </span>
         <span class="input-group-text">$</span>
         {{ filters.max_ticket_price() }}
@@ -49,13 +49,13 @@
 <div class="form-group mb-3">
     <div class="input-group">
         <span class="input-group-text">
-            <div class="text-center" style="width: 40px;">Start</div>
+            <div class="text-center date-prefix">Start</div>
         </span>
         {{ filters.start_date() }}
     </div>
     <div class="input-group">
         <span class="input-group-text">
-            <div class="text-center" style="width: 40px;">End</div>
+            <div class="text-center date-prefix">End</div>
         </span>
         {{ filters.end_date() }}
     </div>
@@ -79,7 +79,7 @@
 <div class="col-auto">
     {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title,
     subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else
-    (event.occurrences[0].start_time.strftime("%A, %B %e"))), tags=event.tags, href="/events/"+(event.id|string)) }}
+    (event.occurrences[0].start_time.strftime("%A, %B %e"))), tags=event.tags, href=url_for('events.event_details', event_id=event.id)) }}
 </div>
 {% endfor %}
 {% endblock %}

@@ -16,7 +16,7 @@
 
     <body class="d-none">
         <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-md-5 px-3">
-            <a id="logo" class="navbar-brand d-flex align-items-center" href="/">
+            <a id="logo" class="navbar-brand d-flex align-items-center" href="{{ url_for('views.home') }}">
                 <img id="logo-img" class="rounded-circle p-1" src="{{url_for('static', filename='images/logo.png')}}" alt="DanceConnect Logo" />
                 <div class="ps-2 pe-3 m-0 h3">DanceConnect</div>
             </a>
@@ -26,81 +26,78 @@
             </button>
             <div id="navbar" class="navbar-collapse collapse justify-content-between mt-3 mt-lg-0">
                 <div class="navbar-nav navbar-left">
-                    <a class="nav-link" id="home" href="/">
-                        <i id="home-icon" class="me-1 bi bi-house"></i>
+                    <a class="nav-link" id="home" href="{{ url_for('views.home') }}" title="Home">
+                        <i id="home-icon" class="nav-icon me-1 bi bi-house"></i>
                         Home
                     </a>
-                    <a class="nav-link" id="events" href="/events">
-                        <i id="events-icon" class="me-1 bi bi-calendar"></i>
+                    <a class="nav-link" id="events" href="{{ url_for('events.events_list') }}" title="Events">
+                        <i id="events-icon" class="nav-icon me-1 bi bi-calendar-week"></i>
                         Events
                     </a>
-                    <a class="nav-link" id="people" href="/people">
-                        <i id="people-icon" class="me-1 bi bi-people"></i>
+                    <a class="nav-link" id="people" href="{{ url_for('people.people_list') }}" title="People">
+                        <i id="people-icon" class="nav-icon me-1 bi bi-people"></i>
                         People
                     </a>
                 </div>
                 <div class="navbar-nav navbar-right">
-                    <a class="nav-link" id="debug" href="/debug">
-                        <i id="debug-icon" class="me-1 bi bi-bug"></i>
-                        Debug
+                    <a class="nav-link" id="debug" href="{{ url_for('debug.debug') }}" title="Debug">
+                        <i id="debug-icon" class="nav-icon me-1 bi bi-bug"></i>
+                        <span class="d-lg-none">Debug</span>
                     </a>
                     <div class="dropdown">
                         <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
-                            aria-label="Colour Scheme" data-bs-auto-close="true">
-                            <i id="colour-scheme-icon" class="me-1 bi bi-magic me-lg-1"></i>
-                            <span class="d-lg-none d-inline">Colour Scheme</span>
+                            aria-label="Colour scheme" data-bs-auto-close="true" title="Colour scheme">
+                            <i id="colour-scheme-icon" class="nav-icon me-1 bi bi-magic"></i>
+                            <span class="d-lg-none d-inline ms-1">Colour scheme</span>
                         </button>
                         <div class="dropdown-menu p-0 overflow-hidden">
-                            <div class="btn-group-vertical m-0 p-0 w-100" role="group" aria-label="Vertical radio toggle button group">
+                            <div class="btn-group-vertical m-0 p-0 w-100" role="group" aria-label="Colour scheme selection">
                                 <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-auto"
                                     value="auto" checked>
                                 <label class="dropdown-item" for="colour-scheme-radio-auto">
-                                    <i class="bi bi-magic me-1"></i> Auto
+                                    <i class="nav-icon bi bi-magic me-1"></i> Auto
                                 </label>
                                 <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-light"
                                     value="light">
                                 <label class="dropdown-item" for="colour-scheme-radio-light">
-                                    <i class="bi bi-sun-fill me-1"></i> Light
+                                    <i class="nav-icon bi bi-sun-fill me-1"></i> Light
                                 </label>
                                 <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-dark"
                                     value="dark">
                                 <label class="dropdown-item" for="colour-scheme-radio-dark">
-                                    <i class="bi bi-moon-fill me-1"></i> Dark
+                                    <i class="nav-icon bi bi-moon-fill me-1"></i> Dark
                                 </label>
                             </div>
                         </div>
                     </div>
                     {% if user.is_authenticated %}
-                    <a class="nav-link" id="notifications" href="/notifications">
-                        <i id="notifications-icon" class="me-1 bi bi-bell">
+                    <a class="nav-link" id="notifications" href="{{ url_for('notifications.notification_list') }}" title="Notifications">
+                        <i id="notifications-icon" class="nav-icon me-1 bi bi-bell">
                         </i>
                         <span class="fst-normal d-lg-none">
                             Notifications
                         </span>
                         {% if user.received_notifications|length > 0 %}
-                        <span class="badge fst-normal rounded-pill btn-primary d-lg-none" style="transform: translateY(-4%);">
-                            {{ user.received_notifications|length }}
-                        </span>
-                        <span class="badge fst-normal rounded-pill btn-primary d-none d-lg-inline-block" style="transform: translate(-5px, -50%);">
+                        <span class="badge notifications-badge fst-normal rounded-pill bg-icon-background">
                             {{ user.received_notifications|length }}
                         </span>
                         {% endif %}
                     </a>
-                    <a class="nav-link" id="profile" href="/people/{{user.id}}">
-                        <i id="profile-icon" class="me-1 bi bi-person"></i>
+                    <a class="nav-link" id="profile" href="{{ url_for('people.person', username=user.username) }}" title="Profile">
+                        <i id="profile-icon" class="nav-icon me-1 bi bi-person"></i>
                         Profile
                     </a>
-                    <a class="nav-link" id="logout" href="/logout">
-                        <i id="logout-icon" class="me-1 bi bi-door-closed"></i>
+                    <a class="nav-link" id="logout" href="{{ url_for('auth.logout') }}" title="Log out">
+                        <i id="logout-icon" class="nav-icon me-1 bi bi-door-closed"></i>
                         Logout
                     </a>
                     {% else %}
-                    <a class="nav-link" id="login" href="/login">
-                        <i id="login-icon" class="me-1 bi bi-door-open"></i>
-                        Login
+                    <a class="nav-link" id="login" href="{{ url_for('auth.login') }}">
+                        <i id="login-icon" class="nav-icon me-1 bi bi-door-open"></i>
+                        Log In
                     </a>
-                    <a class="nav-link" id="sign-up" href="/sign-up">
-                        <i id="sign-up-icon" class="me-1 bi bi-person-add"></i>
+                    <a class="nav-link" id="sign-up" href="{{ url_for('auth.sign_up') }}">
+                        <i id="sign-up-icon" class="nav-icon me-1 bi bi-person-add"></i>
                         Sign Up
                     </a>
                     {% endif %}
@@ -134,7 +131,7 @@
         </div>
 
         <div class="base container-lg px-2 px-md-3 py-3">
-            <div class="contentbox border px-3 py-4 p-lg-5 my-2 shadow bg-body rounded-5">{% block content %} {% endblock %}</div>
+            <div class="contentbox border p-4 p-lg-5 my-2 shadow bg-body rounded-5">{% block content %} {% endblock %}</div>
         </div>
         <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
             crossorigin="anonymous">
@@ -201,7 +198,7 @@
             if (window.location.pathname.startsWith("/events")) {
                 element = document.getElementById("events");
                 icon = document.getElementById("events-icon");
-            } else if (window.location.pathname.startsWith("/people/{{user.id}}")) {
+            } else if (window.location.pathname.startsWith("/people/{{user.username}}")) {
                 element = document.getElementById("profile");
                 icon = document.getElementById("profile-icon");
             } else if (window.location.pathname.startsWith("/people")) {

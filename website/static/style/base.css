@@ -131,6 +131,9 @@ body {
     opacity: 0.8;
 }
 
+.notifications-badge {
+    transform: translate(-5px, -50%);
+}
 
 @media only screen and (max-width: 768px) {
 
@@ -148,15 +151,16 @@ body {
     .navbar-collapse.show {
         padding-bottom: 10px;
     }
+
+    .notifications-badge {
+        transform: translateY(-5%);
+    }
 }
 
-.user-circle .rounded-circle {
+.user-circle .rounded-circle,
+.user-circle.rounded-circle {
     width: 100px;
     height: 100px;
-
-    >img {
-        object-fit: cover;
-    }
 }
 
 .user-circle:hover {
@@ -173,8 +177,13 @@ body {
     }
 }
 
-.image-container {
-    padding-top: 56.25%;
+.img-fluid {
+    object-fit: cover;
+}
+
+.card-img-top {
+    object-fit: cover;
+    height: 175px;
 }
 
 .rotate-n45 {
@@ -184,4 +193,56 @@ body {
 .accessibility-icon {
     width: 30px !important;
     height: 30px !important;
+}
+
+#map {
+    height: 400px;
+}
+
+#time-table {
+    --bs-table-striped-bg: var(--bs-tertiary-bg);
+}
+
+#btn-view-all {
+    width: 140px;
+}
+
+.price-prefix {
+    width: 30px;
+}
+
+.date-prefix {
+    width: 40px;
+}
+
+#search_button {
+    min-width: 58px;
+}
+
+#bioTextArea {
+    height: 100px;
+}
+
+#personTags {
+    height: 35px;
+}
+
+.social-icon {
+    width: 32px;
+}
+
+.nav-icon {
+    width: 24px;
+}
+
+.contributor-item {
+    width: 140px;
+}
+
+.grid-card {
+    width: 250px;
+}
+
+.stretched-link-container {
+    transform: rotate(0);
 }

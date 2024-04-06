@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container">
     {% if edit %}
-    <form action="{{ url_for('people.edit_person', id=person.id) }}" method="POST">
+    <form action="{{ url_for('people.edit_person', username=person.username) }}" method="POST">
         {% endif %}
         <div class="row align-items-center mb-4">
             <div class="col">
@@ -43,7 +43,7 @@
 
             <div class="col d-flex justify-content-end">
                 {% block edit_person_saveChanges %}
-                <a href="/people/{{ user.id }}/edit">
+                <a href="{{ url_for('people.edit_person', username=user.username) }}">
                     <button class="btn btn-primary px-4"> Edit Profile </button>
                 </a>
                 {% endblock %}
@@ -59,9 +59,10 @@
                     <img src="{{url_for('static', filename='images/placeholder.jpg')}}" class="img-fluid" alt="{{person.display_name}}" />
                 </div>
                 <!-- CONTACTS BLOCK -->
+                {% block edit_person_EditContacts %}
+                {% if socials %}
                 <div class="p-3 bg-body-tertiary rounded text-decoration-none">
-                    <p class="h4">Contact</p>
-                    {% block edit_person_EditContacts %}
+                    <h4>Contact</h4>
                     {% for site in socials %}
                     {% set icon_name = site %}
                     {% set url_prefix = "https://" %}
@@ -85,8 +86,8 @@
                     {% endif %}
                     <div class="row align-items-center ps-3 py-1">
                         <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-                                <i class="bi bi-{{ icon_name }}" style="font-size: 1rem;"></i>
+                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
+                                <i class="bi bi-{{ icon_name }}"></i>
                             </div>
                         </div>
                         <div class="col-10 ps-2 text-no-wrap text-truncate">
@@ -94,8 +95,9 @@
                         </div>
                     </div>
                     {% endfor %}
-                    {% endblock %}
                 </div> <!-- LEFT BLOCK END -->
+                {% endif %}
+                {% endblock %}
                 {% block edit_person_password %}
                 {% endblock %}
             </div>
@@ -125,7 +127,7 @@
                                 subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length
                                 != 1 else
                                 (event.occurrences[0].start_time.strftime("%A, %B %e"))), tags=event.tags,
-                                href="/events/"+(event.id|string)) }}
+                                href=url_for('events.event_details', event_id=event.id)) }}
                             </div>
                             <p>Event Times</p>
                         </div>
@@ -140,7 +142,7 @@
                             {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'),
                             title=user.display_name,
                             subtitle="@" + user.username, tags=user.tags,
-                            href="/people/"+(user.id|string)) }}
+                            href=url_for('people.person', username=user.username)) }}
                         </div>
                         {% endfor %}
                     </div>
