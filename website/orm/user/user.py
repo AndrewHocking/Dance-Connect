@@ -101,8 +101,8 @@ def read_users(
 
 
 # Returns a single User by their id. Returns null if no such user exists.
-def read_single_user(user_id: int):
-    user = db.session.query(User).filter_by(id=user_id).first()
+def read_single_user(username: str):
+    user = db.session.query(User).filter_by(username=username).first()
 
     if user is None:
         return json_response(404, "No user found")

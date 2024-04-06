@@ -1,7 +1,7 @@
 {% extends "person.html" %}
 
 {% block edit_person_saveChanges %}
-<a href="/people/{{ user.id }}">
+<a href="{{ url_for('people.person', username=user.username) }}">
     <div class="btn btn-secondary px-4"> Cancel </div>
 </a>
 <button class="btn btn-primary px-4 ms-3" type="submit" name="submit" value="Save"> Save Changes
@@ -11,15 +11,13 @@
 {% block edit_person_bio %}
 {% if bio == None %}
 <div class="form-floating">
-    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea"
-        style="height: 100px"></textarea>
+    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea"></textarea>
     <label for="bioTextArea">Enter your bio</label>
 </div>
 {% else %}
 <div class="form-floating">
-    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea"
-        style="height: 100px">{{ bio|default('') }}</textarea>
-    <label for="bioTextArea">Your bio</label>
+    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea">{{ bio|default('') }}</textarea>
+    <label for="bioTextArea">Enter your bio</label>
 </div>
 {% endif %}
 {% endblock %}
@@ -35,8 +33,7 @@
         <input type="text" class="form-control" name="pronouns" placeholder="Pronouns" value="{{ person.pronouns }}">
     </div>
     <div class="col-auto justify-content-start p-0 m-2">
-        <input type="text" class="form-control" name="uniqueUsername" placeholder="Unique username"
-            value="{{ person.username }}">
+        <input type="text" class="form-control" name="uniqueUsername" placeholder="Unique username" value="{{ person.username }}">
     </div>
 </div>
 {% endblock %}
@@ -44,81 +41,77 @@
 
 
 {% block edit_person_EditContacts %}
-<div class="row align-items-center ps-3 py-1">
-    <div class="col-auto p-0">
-        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-            <i class="bi bi-globe" style="font-size: 1rem;"></i>
+<div class="p-3 bg-body-tertiary rounded text-decoration-none">
+    <h4>Contact</h4>
+    <div class="row align-items-center ps-3 py-1">
+        <div class="col-auto p-0">
+            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
+                <i class="bi bi-globe"></i>
+            </div>
+        </div>
+        <div class="col ps-2">
+            <input type="text" class="form-control" name="website" placeholder="Website" id="website" value="{{ socials['website']|default('') }}">
         </div>
     </div>
-    <div class="col ps-2">
-        <input type="text" class="form-control" name="website" placeholder="Website" id="website"
-            value="{{ socials['website']|default('') }}">
-    </div>
-</div>
-<div class="row align-items-center ps-3 py-1">
-    <div class="col-auto p-0">
-        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-            <i class="bi bi-instagram" style="font-size: 1rem;"></i>
+    <div class="row align-items-center ps-3 py-1">
+        <div class="col-auto p-0">
+            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
+                <i class="bi bi-instagram"></i>
+            </div>
+        </div>
+        <div class="col ps-2">
+            <input type="text" class="form-control" name="instagram" placeholder="Instagram handle" value="{{ socials['instagram']|default('') }}">
         </div>
     </div>
-    <div class="col ps-2">
-        <input type="text" class="form-control" name="instagram" placeholder="Instagram handle"
-            value="{{ socials['instagram']|default('') }}">
-    </div>
-</div>
-<div class="row align-items-center ps-3 py-1">
-    <div class="col-auto p-0">
-        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-            <i class="bi-envelope-at" style="font-size: 1rem;"></i>
+    <div class="row align-items-center ps-3 py-1">
+        <div class="col-auto p-0">
+            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
+                <i class="bi-envelope-at"></i>
+            </div>
+        </div>
+        <div class="col ps-2">
+            <input type="text" class="form-control" name="email" placeholder="email" value="{{ socials['email']|default('') }}">
         </div>
     </div>
-    <div class="col ps-2">
-        <input type="text" class="form-control" name="email" placeholder="email"
-            value="{{ socials['email']|default('') }}">
-    </div>
-</div>
-<div class="row align-items-center ps-3 py-1">
-    <div class="col-auto p-0">
-        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-            <i class="bi bi-threads" style="font-size: 1rem;"></i>
+    <div class="row align-items-center ps-3 py-1">
+        <div class="col-auto p-0">
+            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
+                <i class="bi bi-threads"></i>
+            </div>
+        </div>
+        <div class="col ps-2">
+            <input type="text" class="form-control" name="threads" placeholder="Threads handle" value="{{ socials['threads']|default('') }}">
         </div>
     </div>
-    <div class="col ps-2">
-        <input type="text" class="form-control" name="threads" placeholder="Threads handle"
-            value="{{ socials['threads']|default('') }}">
-    </div>
-</div>
-<div class="row align-items-center ps-3 py-1">
-    <div class="col-auto p-0">
-        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-            <i class="bi bi-tiktok" style="font-size: 1rem;"></i>
+    <div class="row align-items-center ps-3 py-1">
+        <div class="col-auto p-0">
+            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
+                <i class="bi bi-tiktok"></i>
+            </div>
+        </div>
+        <div class="col ps-2">
+            <input type="text" class="form-control" name="tiktok" placeholder="Tiktok handle" value="{{ socials['tiktok']|default('') }}">
         </div>
     </div>
-    <div class="col ps-2">
-        <input type="text" class="form-control" name="tiktok" placeholder="Tiktok handle"
-            value="{{ socials['tiktok']|default('') }}">
-    </div>
-</div>
-<div class="row align-items-center ps-3 py-1">
-    <div class="col-auto p-0">
-        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-            <i class="bi bi-twitter-x" style="font-size: 1rem;"></i>
+    <div class="row align-items-center ps-3 py-1">
+        <div class="col-auto p-0">
+            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
+                <i class="bi bi-twitter-x"></i>
+            </div>
+        </div>
+        <div class="col ps-2">
+            <input type="text" class="form-control" name="twitter" placeholder="Twitter handle" value="{{ socials['twitter']|default('') }}">
         </div>
     </div>
-    <div class="col ps-2">
-        <input type="text" class="form-control" name="twitter" placeholder="Twitter handle"
-            value="{{ socials['twitter']|default('') }}">
-    </div>
-</div>
-<div class="row align-items-center ps-3 py-1">
-    <div class="col-auto p-0">
-        <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center" style="width: 32px">
-            <i class="bi bi-facebook" style="font-size: 1rem;"></i>
+    <div class="row align-items-center ps-3 py-1">
+        <div class="col-auto p-0">
+            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
+                <i class="bi bi-facebook"></i>
+            </div>
         </div>
-    </div>
-    <div class="col ps-2">
-        <input type="text" class="form-control" name="facebook" placeholder="Facebook URL"
-            value="{{ socials['facebook']|default('') }}">
+        <div class="col ps-2">
+            <input type="text" class="form-control" name="facebook" placeholder="Facebook URL" value="{{ socials['facebook']|default('') }}">
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -127,7 +120,7 @@
 {# TODO add change emails #}
 <div class="p-3 rounded pt-1">
 </div>
-<div class="p-3 bg-light rounded pt-1">
+<div class="p-3 bg-body-tertiary rounded pt-1">
     <p class="h4">Edit Account Info</p>
     <p class="h5">Password</p>
     <input type="password" class="form-control mb-2" name="current_password" placeholder="Current password">
@@ -142,8 +135,7 @@
 
 {% block edit_person_tags %}
 <div class="form-floating">
-    <textarea class="form-control" placeholder="Enter tags here" name="tags" id="tags"
-        style="height: 35px">{{ tag_name_list|join(',')|default('') }}</textarea>
+    <textarea class="form-control" placeholder="Enter tags here" name="tags" id="person_tags">{{ tag_name_list|join(',')|default('') }}</textarea>
     <label for="tags">Enter tags separated by commas here</label>
 </div>
 {% endblock %}

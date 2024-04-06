@@ -86,9 +86,8 @@
 
 
 {% macro contributor_item(contributor, role) %}
-<a href="/people/{{contributor.user.id}}"
-    class="col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body user-circle"
-    style="width: 140px;">
+<a href="{{ url_for('people.person', username=contributor.user.username) }}"
+    class="contributor-item col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body user-circle">
     <div class="rounded-circle mx-auto overflow-hidden position-relative">
         <img src="{{url_for('static', filename='images/placeholder.jpg')}}"
             class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle" alt="{{contributor.user.display_name}}" />
@@ -113,11 +112,10 @@
 
 
 {% macro grid_item(image_src, title, subtitle, text, tags, href) %}
-<div class="card mb-2" style="width: 250px;">
-    <a href="{{ href }}"><img src="{{ image_src }}" class="card-img-top" alt="Image preview for {{ title }}"
-            style="height: 175px; object-fit: cover;"></a>
+<div class="card grid-card mb-2">
+    <a href="{{ href }}"><img src="{{ image_src }}" class="card-img-top" alt="Image preview for {{ title }}"></a>
     <div class="card-body">
-        <div style="transform: rotate(0);">
+        <div class="stretched-link-container">
             <h5 class="card-title text-truncate">{{ title }}</h5>
             {% if subtitle %}
             <h6 class="card-subtitle mb-2 text-muted text-truncate">{{ subtitle }}</h6>
@@ -129,7 +127,7 @@
         </div>
         <div class="d-flex flex-no-wrap overflow-x-scroll">
             {% for tag in tags %}
-            <div class="me-1 mb-1 px-2 text-dark bg-opacity-25 rounded text-nowrap tag">{{ tag.name }}</div>
+            <div class="me-1 mb-1 px-2 bg-opacity-25 rounded text-nowrap tag">{{ tag.name }}</div>
             {% endfor %}
         </div>
     </div>

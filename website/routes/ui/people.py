@@ -123,9 +123,9 @@ def people_list(search, sort, filters):
     )
 
 
-@people.route("/people/<id>/", methods=["GET"])
-def person(id):
-    person: User = read_single_user(user_id=id)["data"]
+@people.route("/people/<username>/", methods=["GET"])
+def person(username):
+    person: User = read_single_user(username=username)["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_contributed))
 
@@ -157,9 +157,9 @@ def person(id):
     )
 
 
-@people.route("/people/<id>/edit/", methods=["GET", "POST"])
-def edit_person(id):
-    person: User = read_single_user(user_id=id)["data"]
+@people.route("/people/<username>/edit/", methods=["GET", "POST"])
+def edit_person(username):
+    person: User = read_single_user(username=username)["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_contributed))
     # form = PeopleFilter()

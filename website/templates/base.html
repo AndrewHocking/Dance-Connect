@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 
     <head>
         <meta charset="utf-8" />
@@ -9,56 +9,101 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous" />
         <link rel="stylesheet" href="{{ url_for('static', filename='style/base.css') }}" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
         {% block stylesheet %}{% endblock stylesheet %}
-        <title>{% block title %}Home{% endblock %} - DanceConnect</title>
+        <title>{% block title %}Home{% endblock %} | DanceConnect</title>
     </head>
 
-<body class="d-none">
-    <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-md-5 px-3">
-        <a id="logo" class="navbar-brand d-flex align-items-center" href="/">
-            <img id="logo-img" class="rounded-circle p-1" src="{{url_for('static', filename='images/logo.png')}}" alt="DanceConnect Logo" />
-            <div class="ps-2 pe-3 m-0 h3">DanceConnect</div>
-        </a>
-        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"
-            aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div id="navbar" class="navbar-collapse collapse justify-content-between mt-3 mt-lg-0">
-            <div class="navbar-nav navbar-left">
-                <a class="nav-link" id="home" href="/">Home </a>
-                <a class="nav-link" id="events" href="/events">Events </a>
-                <a class="nav-link" id="people" href="/people">People </a>
-            </div>
-            <div class="navbar-nav navbar-right">
-                <a class="nav-link" id="debug" href="/debug">Debug</a>
-                {% if user.is_authenticated %}
-                <a class="nav-link d-none d-md-block" id="notifications" href="/notifications">
-                    <i class="bi bi-bell p-1 position-relative">
-                    {% if user.received_notifications|length > 0 %}
-                        <div class="position-absolute top-0 start-100 translate-middle badge fst-normal rounded-pill btn-primary p-1">
-                            {{ user.received_notifications|length }}
+    <body class="d-none">
+        <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-md-5 px-3">
+            <a id="logo" class="navbar-brand d-flex align-items-center" href="{{ url_for('views.home') }}">
+                <img id="logo-img" class="rounded-circle p-1" src="{{url_for('static', filename='images/logo.png')}}" alt="DanceConnect Logo" />
+                <div class="ps-2 pe-3 m-0 h3">DanceConnect</div>
+            </a>
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbar" class="navbar-collapse collapse justify-content-between mt-3 mt-lg-0">
+                <div class="navbar-nav navbar-left">
+                    <a class="nav-link" id="home" href="{{ url_for('views.home') }}" title="Home">
+                        <i id="home-icon" class="nav-icon me-1 bi bi-house"></i>
+                        Home
+                    </a>
+                    <a class="nav-link" id="events" href="{{ url_for('events.events_list') }}" title="Events">
+                        <i id="events-icon" class="nav-icon me-1 bi bi-calendar-week"></i>
+                        Events
+                    </a>
+                    <a class="nav-link" id="people" href="{{ url_for('people.people_list') }}" title="People">
+                        <i id="people-icon" class="nav-icon me-1 bi bi-people"></i>
+                        People
+                    </a>
+                </div>
+                <div class="navbar-nav navbar-right">
+                    <a class="nav-link" id="debug" href="{{ url_for('debug.debug') }}" title="Debug">
+                        <i id="debug-icon" class="nav-icon me-1 bi bi-bug"></i>
+                        <span class="d-lg-none">Debug</span>
+                    </a>
+                    <div class="dropdown">
+                        <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                            aria-label="Colour scheme" data-bs-auto-close="true" title="Colour scheme">
+                            <i id="colour-scheme-icon" class="nav-icon me-1 bi bi-magic"></i>
+                            <span class="d-lg-none d-inline ms-1">Colour scheme</span>
+                        </button>
+                        <div class="dropdown-menu p-0 overflow-hidden">
+                            <div class="btn-group-vertical m-0 p-0 w-100" role="group" aria-label="Colour scheme selection">
+                                <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-auto"
+                                    value="auto" checked>
+                                <label class="dropdown-item" for="colour-scheme-radio-auto">
+                                    <i class="nav-icon bi bi-magic me-1"></i> Auto
+                                </label>
+                                <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-light"
+                                    value="light">
+                                <label class="dropdown-item" for="colour-scheme-radio-light">
+                                    <i class="nav-icon bi bi-sun-fill me-1"></i> Light
+                                </label>
+                                <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-dark"
+                                    value="dark">
+                                <label class="dropdown-item" for="colour-scheme-radio-dark">
+                                    <i class="nav-icon bi bi-moon-fill me-1"></i> Dark
+                                </label>
+                            </div>
                         </div>
-                    {% endif %}
-                    </i>
-                </a>
-                <a class="nav-link d-md-none position-relative" id="notifications" href="/notifications">
-                    <span class="position-relative pe-3">Notifications
-                    {% if user.received_notifications|length > 0 %}
-                        <div class="position-absolute top-0 start-100 translate-middle badge fst-normal rounded-pill btn-primary p-1">
+                    </div>
+                    {% if user.is_authenticated %}
+                    <a class="nav-link" id="notifications" href="{{ url_for('notifications.notification_list') }}" title="Notifications">
+                        <i id="notifications-icon" class="nav-icon me-1 bi bi-bell">
+                        </i>
+                        <span class="fst-normal d-lg-none">
+                            Notifications
+                        </span>
+                        {% if user.received_notifications|length > 0 %}
+                        <span class="badge notifications-badge fst-normal rounded-pill bg-icon-background">
                             {{ user.received_notifications|length }}
-                        </div>
+                        </span>
+                        {% endif %}
+                    </a>
+                    <a class="nav-link" id="profile" href="{{ url_for('people.person', username=user.username) }}" title="Profile">
+                        <i id="profile-icon" class="nav-icon me-1 bi bi-person"></i>
+                        Profile
+                    </a>
+                    <a class="nav-link" id="logout" href="{{ url_for('auth.logout') }}" title="Log out">
+                        <i id="logout-icon" class="nav-icon me-1 bi bi-door-closed"></i>
+                        Logout
+                    </a>
+                    {% else %}
+                    <a class="nav-link" id="login" href="{{ url_for('auth.login') }}">
+                        <i id="login-icon" class="nav-icon me-1 bi bi-door-open"></i>
+                        Log In
+                    </a>
+                    <a class="nav-link" id="sign-up" href="{{ url_for('auth.sign_up') }}">
+                        <i id="sign-up-icon" class="nav-icon me-1 bi bi-person-add"></i>
+                        Sign Up
+                    </a>
                     {% endif %}
-                    </span>
-                </a>
-                <a class="nav-link" id="profile" href="/people/{{user.id}}">Profile </a>
-                <a class="nav-link" id="logout" href="/logout">Logout</a>
-                {% else %}
-                <a class="nav-link" id="login" href="/login">Login </a>
-                <a class="nav-link" id="sign-up" href="/sign-up">Sign Up </a>
-                {% endif %}
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
         <div id="flash-area" class="container d-flex justify-content-center">
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -85,11 +130,11 @@
             {% endwith %}
         </div>
 
-        <div class="base container-lg">
-            <div class="contentbox border px-3 py-4 p-lg-5 my-2 shadow bg-body rounded-5">{% block content %} {% endblock %}</div>
+        <div class="base container-lg px-2 px-md-3 py-3">
+            <div class="contentbox border p-4 p-lg-5 my-2 shadow bg-body rounded-5">{% block content %} {% endblock %}</div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-            integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+            crossorigin="anonymous">
             </script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
             integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
@@ -99,17 +144,82 @@
             </script>
 
         <script>
-            var element;
+            document.addEventListener('DOMContentLoaded', (event) => {
+
+                function setColourScheme(colourScheme) {
+                    if (colourScheme == null) {
+                        colourScheme = "auto";
+                    }
+                    if (colourScheme == "auto") {
+                        const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+                        if (prefersDarkScheme.matches) {
+                            document.documentElement.setAttribute("data-bs-theme", "dark");
+                        } else {
+                            document.documentElement.setAttribute("data-bs-theme", "light");
+                        }
+                        document.getElementById("colour-scheme-icon").className = "bi bi-magic";
+                    } else {
+                        document.documentElement.setAttribute("data-bs-theme", colourScheme);
+                        if (colourScheme == "light") {
+                            document.getElementById("colour-scheme-icon").className = "bi bi-sun-fill";
+                        } else if (colourScheme == "dark") {
+                            document.getElementById("colour-scheme-icon").className = "bi bi-moon-fill";
+                        }
+                    }
+                    const colourSchemeOptions = document.getElementsByClassName("colour-scheme-option");
+                    for (let i = 0; i < colourSchemeOptions.length; i++) {
+                        if (colourSchemeOptions[i].value == colourScheme) {
+                            colourSchemeOptions[i].nextElementSibling.classList.add("bg-icon-background");
+                        } else {
+                            colourSchemeOptions[i].nextElementSibling.classList.remove("bg-icon-background");
+                        }
+                    }
+
+                    localStorage.setItem("colour-scheme", colourScheme);
+                }
+
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                    setColourScheme(localStorage.getItem("colour-scheme"));
+                });
+
+                setColourScheme(localStorage.getItem("colour-scheme"));
+
+                const colourSchemeOptions = document.getElementsByClassName("colour-scheme-option");
+                for (let i = 0; i < colourSchemeOptions.length; i++) {
+                    colourSchemeOptions[i].addEventListener("click", function () {
+                        setColourScheme(this.value);
+                    });
+                }
+            });
+
+            // TODO: Fix bug where you cannot switch to auto mode if the page loads with dark mode enabled (workaround: change to light mode first, then auto mode)
+
+            var element, icon;
             if (window.location.pathname.startsWith("/events")) {
                 element = document.getElementById("events");
+                icon = document.getElementById("events-icon");
+            } else if (window.location.pathname.startsWith("/people/{{user.username}}")) {
+                element = document.getElementById("profile");
+                icon = document.getElementById("profile-icon");
             } else if (window.location.pathname.startsWith("/people")) {
                 element = document.getElementById("people");
+                icon = document.getElementById("people-icon");
+            } else if (window.location.pathname.startsWith("/debug")) {
+                element = document.getElementById("debug");
+                icon = document.getElementById("debug-icon");
+            } else if (window.location.pathname.startsWith("/notifications")) {
+                element = document.getElementById("notifications");
+                icon = document.getElementById("notifications-icon");
             } else if (window.location.pathname.startsWith("/login")) {
                 element = document.getElementById("login");
+                icon = document.getElementById("login-icon");
             } else if (window.location.pathname.startsWith("/sign-up")) {
                 element = document.getElementById("sign-up");
+                document.getElementById("sign-up-icon").classList.remove("bi-person-add");
+                document.getElementById("sign-up-icon").classList.add("bi-person-fill-add");
             } else if (window.location.pathname == "/") {
                 element = document.getElementById("home");
+                icon = document.getElementById("home-icon");
             }
             if (element != null) {
                 element.classList.add("active");
@@ -118,6 +228,9 @@
                 srSpan.className = "sr-only";
                 srSpan.textContent = "(current)";
                 element.appendChild(srSpan);
+            }
+            if (icon != null) {
+                icon.className += "-fill";
             }
 
             var first_loaded = true;
@@ -133,16 +246,16 @@
                     return;
                 }
 
-            const navbar = document.getElementById("logo-img"); // Replace with your actual navbar ID
-            const logo = document.getElementById("logo");
-            if (window.scrollY > 0) {
-                navbar.classList.add("shrink");
-                logo.classList.add("shrink");
-            } else {
-                navbar.classList.remove("shrink");
-                logo.classList.remove("shrink");
-            }
-        });
+                const navbar = document.getElementById("logo-img");
+                const logo = document.getElementById("logo");
+                if (window.scrollY > 0) {
+                    navbar.classList.add("shrink");
+                    logo.classList.add("shrink");
+                } else {
+                    navbar.classList.remove("shrink");
+                    logo.classList.remove("shrink");
+                }
+            });
 
             window.addEventListener("load", function () {
                 const body = document.getElementsByTagName("body")[0];

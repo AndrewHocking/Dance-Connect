@@ -5,16 +5,16 @@
 
     <ul class="nav rounded-top row align-items-stretch">
         <li class="col-6 p-0 text-center nav-item">
-            <button 
-                class="d-flex align-items-center justify-content-center nav-link p-3 rounded-top w-100 h-100 {{ 'selected' if recv_req else 'bg-grey' }} nav-notification" 
+            <button
+                class="d-flex align-items-center justify-content-center nav-link p-3 rounded-top w-100 h-100 {{ 'selected' if recv_req else 'bg-body-secondary text-body' }} nav-notification"
                 name="recv-button">
 
                 Received Event Join Requests
             </button>
         </li>
         <li class="col-6 p-0 text-center nav-item">
-            <button 
-                class="d-flex align-items-center justify-content-center nav-link p-3 rounded-top w-100 h-100 {{ 'selected' if not recv_req else 'bg-grey' }} nav-notification" 
+            <button
+                class="d-flex align-items-center justify-content-center nav-link p-3 rounded-top w-100 h-100 {{ 'selected' if not recv_req else 'bg-body-secondary text-body' }} nav-notification"
                 name="sent-button">
 
                 Sent Event Join Requests
@@ -23,109 +23,109 @@
     </ul>
 
     {% if recv_req %}
-        <div class="py-2 py-sm-4 p-1 p-sm-3">
+    <div class="py-2 py-sm-4 p-1 p-sm-3">
         {% if notifications|length > 0 %}
         {% for event_notifications in notifications %}
-            <div class="mb-5">
-                <p class="h3 p-2 border-bottom border-4 border-dark">Event:&nbsp{{ event_notifications.event.title }}</p>
-                <div class="px-md-5">
+        <div class="mb-5">
+            <p class="h3 p-2 border-bottom border-4 border-dark">Event:&nbsp{{ event_notifications.event.title }}</p>
+            <div class="px-md-5">
                 {% for notification in event_notifications.notification_list %}
-                    <div class="row pt-2 pb-4 py-md-2"> 
-                        <div class="col order-1 d-flex align-items-center text-wrap">
-                            <img class="rounded-circle p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
-                                alt="DanceConnect Logo" />
-                            <div class="h5 m-0">{{ notification.sender.display_name }}</div>
-                        </div>
-                        <div class="col order-4 order-md-2 d-flex flex-row align-items-center flex-wrap">
-                            <span class="h6 m-0 fw-bold">Role:&nbsp </span>
-                            <div class="h6 m-0 text-wrap">{{ notification.role }}</div>
-                        </div>
-
-                        <div class="order-3 d-md-none w-100 pt-1"></div>
-
-                        <div class="col-auto px-1 order-2 order-md-3 d-flex align-items-center">
-                            <button name="accept" value="accept-{{notification.id}}" class="btn btn-primary notification-button">Accept</button>
-                        </div>
-                        <div class="col-auto px-1 order-5 order-md-4 d-flex align-items-center">
-                            <button name="decline" value="decline-{{notification.id}}" class="btn btn-secondary notification-button">Decline</button>
-                        </div>
+                <div class="row pt-2 pb-4 py-md-2">
+                    <div class="col order-1 d-flex align-items-center text-wrap">
+                        <img class="rounded-circle p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                            alt="DanceConnect Logo" />
+                        <div class="h5 m-0">{{ notification.sender.display_name }}</div>
+                    </div>
+                    <div class="col order-4 order-md-2 d-flex flex-row align-items-center flex-wrap">
+                        <span class="h6 m-0 fw-bold">Role:&nbsp </span>
+                        <div class="h6 m-0 text-wrap">{{ notification.role }}</div>
                     </div>
 
-                    <div class="d-md-none border-bottom border-2 border-sm-0"></div>
-                {% endfor %}
+                    <div class="order-3 d-md-none w-100 pt-1"></div>
+
+                    <div class="col-auto px-1 order-2 order-md-3 d-flex align-items-center">
+                        <button name="accept" value="accept-{{notification.id}}" class="btn btn-primary notification-button">Accept</button>
+                    </div>
+                    <div class="col-auto px-1 order-5 order-md-4 d-flex align-items-center">
+                        <button name="decline" value="decline-{{notification.id}}" class="btn btn-secondary notification-button">Decline</button>
+                    </div>
                 </div>
+
+                <div class="d-md-none border-bottom border-2 border-sm-0"></div>
+                {% endfor %}
             </div>
+        </div>
         {% endfor %}
         {% else %}
-            <div class="h5 my-4 text-center">There are currently no pending requests received from other users to join your events.</div>
+        <div class="h5 my-4 text-center">There are currently no pending requests received from other users to join your events.</div>
         {% endif %}
-        </div>
+    </div>
 
     {% else %}
 
-        <div class="py-2 py-sm-4 p-1 p-sm-3">
+    <div class="py-2 py-sm-4 p-1 p-sm-3">
         {% if notifications|length > 0 %}
-            <div class="d-none d-md-block">
-                <div class="row border-bottom border-4 border-dark pb-2 mb-1 px-3 px-lg-4">
-                    <div class="col h4 m-0 fw-bold">Event</div>
-                    <div class="col h4 m-0 fw-bold">Organizer</div>
-                    <div class="col h4 m-0 fw-bold">Requested Role</div>
-                    <div class="col-auto">
-                        <div class="notification-button"></div>
-                    </div>
+        <div class="d-none d-md-block">
+            <div class="row border-bottom border-4 border-dark pb-2 mb-1 px-3 px-lg-4">
+                <div class="col h4 m-0 fw-bold">Event</div>
+                <div class="col h4 m-0 fw-bold">Organizer</div>
+                <div class="col h4 m-0 fw-bold">Requested Role</div>
+                <div class="col-auto">
+                    <div class="notification-button"></div>
                 </div>
+            </div>
 
-                {% for notification in notifications %}
-                <div class="row pt-1 pb-3 py-md-2 px-3 px-lg-4">
-                    <div class="col d-flex flex-row align-items-center">
-                        <img class="rounded-3 p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
-                                alt="DanceConnect Logo" />
-                        <div class="h6 m-0">{{ notification.event.title }}</div>
-                    </div>
-                    <div class="col d-flex flex-row align-items-center">
-                        <img class="rounded-circle p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
-                                alt="DanceConnect Logo" />
-                        <div class="h6 m-0">{{ notification.recipient.display_name }}</div>
-                    </div>
-                    <div class="col h6 m-0 d-flex align-items-center">
-                        {{ notification.role }}
-                    </div>
-                    <div class="col-auto d-flex align-items-center">
-                        <button name="cancel" value="cancel-{{notification.id}}" class="btn btn-primary notification-button">Cancel</button>
-                    </div>
+            {% for notification in notifications %}
+            <div class="row pt-1 pb-3 py-md-2 px-3 px-lg-4">
+                <div class="col d-flex flex-row align-items-center">
+                    <img class="rounded-3 p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                        alt="DanceConnect Logo" />
+                    <div class="h6 m-0">{{ notification.event.title }}</div>
                 </div>
-                {% endfor %}
-            </div> <!-- Desktop Section End -->
+                <div class="col d-flex flex-row align-items-center">
+                    <img class="rounded-circle p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                        alt="DanceConnect Logo" />
+                    <div class="h6 m-0">{{ notification.recipient.display_name }}</div>
+                </div>
+                <div class="col h6 m-0 d-flex align-items-center">
+                    {{ notification.role }}
+                </div>
+                <div class="col-auto d-flex align-items-center">
+                    <button name="cancel" value="cancel-{{notification.id}}" class="btn btn-primary notification-button">Cancel</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div> <!-- Desktop Section End -->
 
-            <div class="d-md-none">
-                {% for notification in notifications %}
-                <div class="row pt-3 pb-4 border-bottom border-2">
-                    <div class="col-12 mb-1 d-flex flex-row align-items-center">
-                        <div class="fw-bold h6 mb-0 me-2 me-sm-5 notification-title">Event</div>
-                        <img class="rounded-3 p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
-                                alt="DanceConnect Logo" />
-                        <div class="h6 mb-0">{{ notification.event.title }}</div>
-                    </div>
-                    <div class="col-12 mb-1 d-flex flex-row align-items-center">
-                        <div class="fw-bold h6 mb-0 me-2 me-sm-5 notification-title">Organizer</div>
-                        <img class="rounded-circle p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
-                                alt="DanceConnect Logo" />
-                        <div class="h6 mb-0">{{ notification.recipient.display_name }}</div>
-                    </div>
-                    <div class="col-12 mb-1 d-flex align-items-center">
-                        <div class="fw-bold h6 mb-0 me-2 me-sm-5 notification-title">Requested Role</div>
-                        <div class="h6 mb-0">{{ notification.role }}</div>
-                    </div>
-                    <div class="col-12 d-flex justify-content-center">
-                        <button name="cancel" value="cancel-{{notification.id}}" class="btn btn-primary notification-button">Cancel</button>
-                    </div>
+        <div class="d-md-none">
+            {% for notification in notifications %}
+            <div class="row pt-3 pb-4 border-bottom border-2">
+                <div class="col-12 mb-1 d-flex flex-row align-items-center">
+                    <div class="fw-bold h6 mb-0 me-2 me-sm-5 notification-title">Event</div>
+                    <img class="rounded-3 p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                        alt="DanceConnect Logo" />
+                    <div class="h6 mb-0">{{ notification.event.title }}</div>
                 </div>
-                {% endfor %}
-            </div> <!-- Mobile Section End -->
+                <div class="col-12 mb-1 d-flex flex-row align-items-center">
+                    <div class="fw-bold h6 mb-0 me-2 me-sm-5 notification-title">Organizer</div>
+                    <img class="rounded-circle p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                        alt="DanceConnect Logo" />
+                    <div class="h6 mb-0">{{ notification.recipient.display_name }}</div>
+                </div>
+                <div class="col-12 mb-1 d-flex align-items-center">
+                    <div class="fw-bold h6 mb-0 me-2 me-sm-5 notification-title">Requested Role</div>
+                    <div class="h6 mb-0">{{ notification.role }}</div>
+                </div>
+                <div class="col-12 d-flex justify-content-center">
+                    <button name="cancel" value="cancel-{{notification.id}}" class="btn btn-primary notification-button">Cancel</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div> <!-- Mobile Section End -->
         {% else %}
-            <div class="h5 my-4 text-center">You currently have no pending requests to join events of other users.</div>
+        <div class="h5 my-4 text-center">You currently have no pending requests to join events of other users.</div>
         {% endif %}
-        </div>
+    </div>
     {% endif %}
 
 </form>
