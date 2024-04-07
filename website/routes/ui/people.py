@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
+
+from ...orm.event.event_contributor import get_affilliations
 from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link
 from ...forms.people_filter import (
     PeopleFilter,
@@ -126,8 +128,7 @@ def people_list(search, sort, filters):
 @people.route("/people/<username>/", methods=["GET"])
 def person(username):
     person: User = read_single_user(username=username)["data"]
-    events = list(person.events_organized)
-    events.extend(list(person.events_contributed))
+    events_contributed = person.contributor_association
 
     socialMediaDic = {}
     for social in person.socials:
@@ -141,16 +142,14 @@ def person(username):
     if person.bio != "":
         bio = person.bio
 
-    affiliations: list[User] = read_users()["data"]
-    if person in affiliations:
-        affiliations.remove(person)
+    affiliations = get_affilliations(person.id)["data"]
 
     return render_template(
         "person.html",
         user=current_user,
         person=person,
         bio=bio,
-        events=events,
+        events_contributed=events_contributed,
         affiliations=affiliations,
         edit=edit,
         socials=socialMediaDic,
@@ -240,9 +239,12 @@ def edit_person(username):
                     create_socials_link(id, social[1], social[0])
 
             # check password and update if all good
-            if (person.password != current_pass or new_pass != confirm_pass) and (
-                current_pass != "" or new_pass != "" or confirm_pass != ""
-            ):
+            if current_pass != "" and new_pass != "" and confirm_pass != "" and person.password == current_pass and new_pass == confirm_pass:
+                update_user(
+                    user_id=id,
+                    password=new_pass,
+                )
+            else:
                 flash(
                     "Password did not match or current password is incorrect", "error"
                 )
@@ -258,13 +260,8 @@ def edit_person(username):
                     tag_name_list=tag_name_list,
                     socials=socialMediaDic,
                 )
-            else:
-                update_user(
-                    user_id=id,
-                    password=new_pass,
-                )
 
-             # check new account login email and update if all good
+            # check new account login email and update if all good
             if (socialMediaDic.get("email") != current_login_email or new_email != confirm_email) and (
                 current_login_email != "" or new_email != "" or confirm_email != ""
             ):

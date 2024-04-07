@@ -1,3 +1,4 @@
+from sqlalchemy import and_, distinct, func
 from ...models.event import Event, EventContributor
 from ..user.user import User
 from ... import db, json_response
@@ -67,3 +68,22 @@ def get_event_contributors(event_id: int):
     """
     contributors = EventContributor.query.filter_by(event_id=event_id).all()
     return json_response(200, f"{len(contributors)} event contributors found.", contributors)
+
+
+def get_affilliations(user_id: int):
+    query = (
+        db.session.query(User, Event)
+        .join(User.events_contributed)
+        .filter(Event.contributors.any(id=user_id))
+        .order_by(User.id)
+    )
+
+    affiliations = {}
+    for user, event in query.all():
+        if user not in affiliations:
+            affiliations[user] = []
+        affiliations[user].append(event)
+
+    if not affiliations or len(affiliations) == 0:
+        return json_response(404, "No affiliations found.", None)
+    return json_response(200, f"{len(affiliations)} affiliations found.", affiliations)
