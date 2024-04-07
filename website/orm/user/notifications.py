@@ -1,7 +1,7 @@
 from website.orm.event.event_contributor import connect_user_to_event
 from ... import db, json_response
-from ...models.user import User, EventRequestNotification, Notification
-from ...models.event import Event, EventContributor
+from ...models.user import User, EventRequestNotification
+from ...models.event import Event
 
 from sqlalchemy import and_
 
@@ -13,16 +13,16 @@ def add_event_request_notification(sender: User, event_id: Event, role: str = ""
         return json_response(404, f"No event was found for the given event_id: {event_id}")
 
     if associated_event.organizer_id == sender.id:
-        return json_response(404, f"A user can't request to join their own event.")
+        return json_response(400, "A user can't request to join their own event.")
 
     for contributor in associated_event.contributor_association:
         if contributor.user_id == sender.id:
-            return json_response(404, f"A user can't request to join an event their already a part of.", contributor.role)
+            return json_response(409, "A user can't request to join an event they are already a part of.", contributor.role)
 
     conflict = db.session.query(EventRequestNotification).filter(and_(
         EventRequestNotification.event_id == event_id, EventRequestNotification.sender_id == sender.id)).first()
     if conflict is not None:
-        return json_response(400, f"This user has already request to join this event.", conflict.role)
+        return json_response(409, "This user has already requested to join this event.", conflict.role)
 
     new_notification = EventRequestNotification(
         recipient_id=associated_event.organizer_id,

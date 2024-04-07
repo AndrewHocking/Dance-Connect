@@ -5,8 +5,8 @@ from flask_login import current_user, login_required
 from ...models.event.event import Event
 from ...models.event.event_contributor import EventContributor
 from ...models.user.user import EventRequestNotification
-from ...orm.event.event import all_events, get_event, create_event, search_events
-from ...orm.event.event_contributor import get_event_contributors, remove_user_from_event
+from ...orm.event.event import get_event, create_event, search_events
+from ...orm.event.event_contributor import connect_user_to_event, get_event_contributors, remove_user_from_event
 from ...orm.user.notifications import get_event_request_notification, add_event_request_notification, delete_notification
 from ...forms.events import CreateEventForm, CreateEventOccurrenceForm
 from ...forms.event_filter import EventFilterForm
@@ -19,78 +19,101 @@ events = Blueprint('events', __name__)
 def events_list():
     filters = EventFilterForm()
     if request.method == "POST":
-        filters.search.default = request.form.get("search") or ""
+        search = request.form.get("search") or ""
+        filters.search.default = search
         if request.form.get("clear_filters") is None:
-            filters.sort.default = request.form.get("sort") or "upcoming"
-            if request.form.get("accessible_venue") is not None:
-                filters.accessible_venue.default = request.form.get(
-                    "accessible_venue")
-            if request.form.get("asl_interpreter") is not None:
-                filters.asl_interpreter.default = request.form.get(
-                    "asl_interpreter")
-            if request.form.get("relaxed_performance") is not None:
-                filters.relaxed_performance.default = request.form.get(
-                    "relaxed_performance")
-            filters.min_ticket_price.default = request.form.get(
-                "min_ticket_price")
-            filters.max_ticket_price.default = request.form.get(
-                "max_ticket_price")
-            filters.start_date.default = request.form.get("start_date")
-            filters.end_date.default = request.form.get("end_date")
-            filters.tags.default = request.form.get("tags")
-            filters.match_all_tags.default = request.form.get("match_all_tags")
-
-            search = request.form.get("search") or ""
             sort = request.form.get("sort") or "upcoming"
-            accessible_venue = bool(
-                request.form.get('accessible_venue') or False)
-            asl_interpreter = bool(
-                request.form.get('asl_interpreter') or False)
-            relaxed_performance = bool(
-                request.form.get('relaxed_performance') or False)
+            filters.sort.default = sort
+
+            venue_is_mobility_aid_accessible = request.form.get(
+                "venue_is_mobility_aid_accessible")
+            if request.form.get("venue_is_mobility_aid_accessible") is not None:
+                filters.venue_is_mobility_aid_accessible.default = venue_is_mobility_aid_accessible
+            venue_is_mobility_aid_accessible = bool(
+                venue_is_mobility_aid_accessible or False)
+
+            is_relaxed_performance = request.form.get("is_relaxed_performance")
+            if is_relaxed_performance is not None:
+                filters.is_relaxed_performance.default = is_relaxed_performance
+            is_relaxed_performance = bool(is_relaxed_performance or False)
+
+            is_photosensitivity_friendly = request.form.get(
+                "is_photosensitivity_friendly")
+            if is_photosensitivity_friendly is not None:
+                filters.is_photosensitivity_friendly.default = is_photosensitivity_friendly
+            is_photosensitivity_friendly = bool(
+                is_photosensitivity_friendly or False)
+
+            is_hearing_accessible = request.form.get("is_hearing_accessible")
+            if is_hearing_accessible is not None:
+                filters.is_hearing_accessible.default = is_hearing_accessible
+            is_hearing_accessible = bool(is_hearing_accessible or False)
+
+            is_visually_accessible = request.form.get("is_visually_accessible")
+            if is_visually_accessible is not None:
+                filters.is_visually_accessible.default = is_visually_accessible
+            is_visually_accessible = bool(is_visually_accessible or False)
+
+            min_ticket_price = request.form.get("min_ticket_price")
+            filters.min_ticket_price.default = min_ticket_price
             try:
-                min_ticket_price = float(request.form.get('min_ticket_price'))
+                min_ticket_price = float(min_ticket_price)
             except Exception:
                 min_ticket_price = None
+
+            max_ticket_price = request.form.get("max_ticket_price")
+            filters.max_ticket_price.default = max_ticket_price
             try:
-                max_ticket_price = float(request.form.get('max_ticket_price'))
+                max_ticket_price = float(max_ticket_price)
             except Exception:
                 max_ticket_price = None
+
+            start_date = request.form.get("start_date")
+            filters.start_date.default = start_date
             try:
-                start_time = datetime.strptime(
-                    f"{request.form.get("start_date")} 00:00:00", "%Y-%m-%d %H:%M:%S")
+                start_date = datetime.strptime(
+                    f"{start_date} 00:00:00", "%Y-%m-%d %H:%M:%S")
             except Exception:
-                start_time = datetime.now()
+                start_date = datetime.now()
+
+            end_date = request.form.get("end_date")
+            filters.end_date.default = end_date
             try:
-                end_time = datetime.strptime(
-                    f"{request.form.get("end_date")} 23:59:59", "%Y-%m-%d %H:%M:%S")
+                end_date = datetime.strptime(
+                    f"{end_date} 00:00:00", "%Y-%m-%d %H:%M:%S")
             except Exception:
-                end_time = None
+                end_date = None
+
             tags = request.form.get("tags")
+            filters.tags.default = tags
+            match_all_tags = request.form.get("match_all_tags")
+            filters.match_all_tags.default = match_all_tags
+
             tag_list = list()
             if tags is not None and tags != "":
                 for tag in tags.split(","):
                     tag_list.append(tag.strip())
-            match_all_tags = request.form.get('match_all_tags') == 'True'
-            print(match_all_tags)
+            match_all_tags = match_all_tags == 'True'
 
             response = search_events(
                 search=search,
                 sort=sort,
-                accessible_venue=accessible_venue,
-                asl_interpreter=asl_interpreter,
-                relaxed_performance=relaxed_performance,
+                venue_is_mobility_aid_accessible=venue_is_mobility_aid_accessible,
+                is_relaxed_performance=is_relaxed_performance,
+                is_photosensitivity_friendly=is_photosensitivity_friendly,
+                is_hearing_accessible=is_hearing_accessible,
+                is_visually_accessible=is_visually_accessible,
                 min_ticket_price=min_ticket_price,
                 max_ticket_price=max_ticket_price,
-                start_date=start_time,
-                end_date=end_time,
+                start_date=start_date,
+                end_date=end_date,
                 tags=tag_list,
                 match_all_tags=match_all_tags
             )
         else:
             return redirect(url_for("events.events_list"))
     else:
-        response = all_events()
+        response = search_events()
 
     events = response.get("data") or []
     return render_template("events.html", user=current_user, events=events, filters=filters)
@@ -178,8 +201,9 @@ def create_event_submit():
         max_ticket_price = None
 
     tag_list = list()
-    for tag in tags.split(","):
-        tag_list.append(tag.strip())
+    if tags is not None and tags != "":
+        for tag in tags.split(","):
+            tag_list.append(tag.strip())
 
     response = create_event(
         title=title,
@@ -222,7 +246,7 @@ def event_details(event_id: int):
 
     occurrences = {}
     for occurrence in event.occurrences:
-        date = occurrence.start_time.strftime("%A, %B %d")
+        date = occurrence.start_time.strftime("%A, %B %e")
         if date not in occurrences:
             occurrences[date] = []
         occurrences[date].append(occurrence)
@@ -233,6 +257,14 @@ def event_details(event_id: int):
 @events.route('/<int:event_id>/join/', methods=['POST'])
 @login_required
 def join_event(event_id: int):
+    event = get_event(event_id).get("data")
+    if event.organizer == current_user:
+        connect_user_to_event(user=current_user, event=event,
+                              role=request.form.get("role", ""))
+        flash('You have successfully added yourself to your event!',
+              category='success')
+        return redirect(url_for('events.event_details', event_id=event_id))
+
     add_event_request_notification(
         sender=current_user, event_id=event_id, role=request.form.get("role", ""))["data"]
     flash('Request sent!', category='success')

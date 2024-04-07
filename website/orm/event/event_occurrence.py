@@ -33,9 +33,3 @@ def create_event_occurrence(
         db.session.commit()
 
     return json_response(201, "Event occurrence created successfully.", new_occurrence)
-
-
-def read_event_occurrence():
-    # TODO: Add filters
-    event_occurrences = db.session.query(EventOccurrence).all()
-    return json_response(200, f"{len(event_occurrences)} event occurrences found.", event_occurrences)

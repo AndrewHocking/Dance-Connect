@@ -3,19 +3,25 @@
 
 {% block title %}{{ event.title }}{% endblock %}
 {% block content %}
-{% set icons_to_show_in_legend = {"relaxed_performance": False, "photosensitivity_friendly": False, "photosensitivity_unfriendly": False,
+{% set icons_to_show_in_legend = {"is_relaxed_performance": False, "photosensitivity_friendly": False, "photosensitivity_unfriendly": False,
 "hearing_accessible": False, "visually_accessible": False} %}
 
 <div class="container">
     <h1>{{ event.title }}</h1>
     <div class="col">
         <div class="row d-flex flex-wrap gx-1 pb-4">
+            {% if event.tags and event.tags|length > 0 %}
+            <div class="col-lg-auto col-12 d-lg-inline-block d-block me-1 mb-1">
+                <i class="bi bi-tag{{'s' if event.tags|length > 1}}-fill" aria-describedby="Tags"></i>
+                <span class="d-lg-none">Tags</span>
+            </div>
             {% for tag in event.tags %}
-            <form class="col-auto" action="{{ url_for('events.events_list') }}" method="POST">
+            <form class="col-auto mb-1" action="{{ url_for('events.events_list') }}" method="POST">
                 <button name="tags" value="{{ tag.name }}"
                     class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name }}</button>
             </form>
             {% endfor %}
+            {% endif %}
         </div>
         <div class="clearfix">
             <div class="row gx-0 gy-2 d-flex flex-wrap d-lg-block container mx-0 px-0">
@@ -62,9 +68,11 @@
                                 {% endif %}
                             </div>
                         </div>
+                        {% if event.venue_name or event.venue_address %}
                         <div id="location" class="col-12">
                             <h3>Location</h3>
                             <div class="row align-middle pb-2">
+                                {% if event.venue_address %}
                                 <div class="col-lg-auto col-12 pe-0">
                                     <div class="dropdown py-lg-2 pb-2">
                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -96,9 +104,14 @@
                                         </ul>
                                     </div>
                                 </div>
+                                {% endif %}
                                 <div class="col-auto">
+                                    {% if event.venue_name %}
                                     <div class="fw-semibold">{{event.venue_name}}</div>
+                                    {% endif %}
+                                    {% if event.venue_address %}
                                     <div>{{event.venue_address}}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <ul class="list-group">
@@ -114,10 +127,13 @@
                                         </li>
                                     </ul>
                                 </li>
+                                {% if event.venue_address %}
                                 <li id="map" class="list-group-item bg-secondary-subtle">
                                 </li>
+                                {% endif %}
                             </ul>
                         </div>
+                        {% endif %}
                         <div id="times" class="col-12">
                             <h3>Times</h3>
                             <div class="border rounded-3 overflow-hidden p-0 m-0">
@@ -139,7 +155,7 @@
                                                     <td class="text-end">
                                                         <ul class="list-inline m-0 d-inline-flex align-middle">
                                                             {% if occurrence.is_relaxed_performance %}
-                                                            {% set _ = icons_to_show_in_legend.update({"relaxed_performance": True}) %}
+                                                            {% set _ = icons_to_show_in_legend.update({"is_relaxed_performance": True}) %}
                                                             {{ accessibility_icon("relaxed performance", false, "ms-1") }}
                                                             {% endif %}
                                                             {% if occurrence.is_photosensitivity_friendly %}
@@ -170,7 +186,7 @@
                         <div id="accessibility" class="col-12">
                             <h5>Accessibility Icon Legend</h5>
                             <ul class="list-group">
-                                {% if icons_to_show_in_legend["relaxed_performance"] %}
+                                {% if icons_to_show_in_legend["is_relaxed_performance"] %}
                                 <li class="list-group-item d-inline-flex align-items-center">
                                     <ul class="list-inline row align-items-center ps-2">
                                         {{ accessibility_icon("relaxed performance", false, "ms-1") }}
@@ -244,7 +260,7 @@
                 <div id="contributors" class="col-lg-5 float-start order-last">
                     <div class="row bg-body-tertiary rounded mx-0 justify-content-center py-3">
                         <div class="row">
-                            <h3>Contributors</h3>
+                            <h3 class="text-center">Contributors</h3>
                         </div>
                         {% if contributors|length > 0 %}
                         <div class="row justify-content-center">
@@ -273,18 +289,18 @@
                                 {% if event in current_user.events_contributed %}
                                 <button id="btn-leave-event" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#leave-modal">
                                     <i class="bi bi-person-fill-dash"></i>
-                                    Remove self as a contributor
+                                    Leave event
                                 </button>
                                 {% elif event_request_notification == None %}
                                 <button id="btn-join-event" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#join-modal">
                                     <i class="bi bi-person-fill-add"></i>
-                                    Request to be a contributor
+                                    Join event
                                 </button>
                                 {% else %}
                                 <form method="post" action="/events/{{event.id}}/cancel-join-request">
                                     <button id="btn-cancel-join-request" class="btn btn-primary mt-2">
                                         <i class="bi bi-person-fill-x"></i>
-                                        Cancel request to be a contributor
+                                        Cancel join request
                                     </button>
                                 </form>
                                 {% endif %}
@@ -351,6 +367,10 @@
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to leave this event?</p>
+                {% if event.organizer == current_user %}
+                <p>You are the organizer of this event. If you leave, you will remain the organizer of this event; you will just be hidden from the
+                    list of contributors.</p>
+                {% endif %}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

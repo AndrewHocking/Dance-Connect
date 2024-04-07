@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import RadioField, StringField, SubmitField, SelectField, BooleanField, DecimalField, DateField, TextAreaField
 from wtforms.validators import NumberRange
@@ -22,22 +23,34 @@ class EventFilterForm(FlaskForm):
                                             'Title (A-Z)'), ('alpha-desc', 'Title (Z-A)')],
         render_kw={"placeholder": "", "class": "form-select"}
     )
-    accessible_venue = BooleanField(
+    venue_is_mobility_aid_accessible = BooleanField(
         label="Accessible Venue",
         validators=[],
-        name="accessible_venue",
+        name="venue_is_mobility_aid_accessible",
         render_kw={"placeholder": "", "class": "form-check-input"}
     )
-    asl_interpreter = BooleanField(
-        label="ASL Interpreter",
-        validators=[],
-        name="asl_interpreter",
-        render_kw={"placeholder": "", "class": "form-check-input"}
-    )
-    relaxed_performance = BooleanField(
+    is_relaxed_performance = BooleanField(
         label="Relaxed Performance",
         validators=[],
-        name="relaxed_performance",
+        name="is_relaxed_performance",
+        render_kw={"placeholder": "", "class": "form-check-input"}
+    )
+    is_photosensitivity_friendly = BooleanField(
+        label="Photosensitivity Friendly",
+        validators=[],
+        name="is_photosensitivity_friendly",
+        render_kw={"placeholder": "", "class": "form-check-input"}
+    )
+    is_hearing_accessible = BooleanField(
+        label="Hearing Accessible",
+        validators=[],
+        name="is_hearing_accessible",
+        render_kw={"placeholder": "", "class": "form-check-input"}
+    )
+    is_visually_accessible = BooleanField(
+        label="Visually Accessible",
+        validators=[],
+        name="is_visually_accessible",
         render_kw={"placeholder": "", "class": "form-check-input"}
     )
     min_ticket_price = DecimalField(
@@ -57,6 +70,7 @@ class EventFilterForm(FlaskForm):
     start_date = DateField(
         label="Start Date",
         name="start_date",
+        default=datetime.now(),
         render_kw={"class": "form-control"}
     )
     end_date = DateField(

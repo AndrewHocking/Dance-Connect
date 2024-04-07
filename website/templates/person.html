@@ -119,17 +119,17 @@
                     <p class="h4">Events</p>
                     <div class="row overflow-x-scroll">
                         {% from 'macros.html' import grid_item %}
-                        {% for event in events %}
+                        {% for contributed in events_contributed %}
                         <div class="col-auto">
-                            <div class="col-auto">
-                                {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'),
-                                title=event.title,
-                                subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length
-                                != 1 else
-                                (event.occurrences[0].start_time.strftime("%A, %B %e"))), tags=event.tags,
-                                href=url_for('events.event_details', event_id=event.id)) }}
-                            </div>
-                            <p>Event Times</p>
+                            {{ grid_item(
+                                        image_src=url_for('static',
+                                        filename='images/placeholder.jpg'),
+                                        title=contributed.event.title,
+                                        subtitle=contributed.role,
+                                        text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %e, %l:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %e, %l:%M %p')),
+                                        href=url_for('events.event_details',
+                                        event_id=contributed.event.id)
+                                ) }}
                         </div>
                         {% endfor %}
                     </div>
@@ -137,12 +137,13 @@
                 <div class="pb-4">
                     <p class="h4">Affiliated</p>
                     <div class="row-10 d-flex flex-no-wrap overflow-x-scroll ">
-                        {% for user in affiliations %}
+                        {% for affiliation in affiliations %}
                         <div class="col-auto">
                             {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'),
-                            title=user.display_name,
-                            subtitle="@" + user.username, tags=user.tags,
-                            href=url_for('people.person', username=user.username)) }}
+                            title=affiliation.display_name,
+                            subtitle="@" + affiliation.username,
+                            text=affiliations[affiliation][0].title if affiliations[affiliation]|length == 1 else (affiliations[affiliation]|length) ~ " events",
+                            href=url_for('people.person', username=affiliation.username)) }}
                         </div>
                         {% endfor %}
                     </div>

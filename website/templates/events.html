@@ -12,20 +12,28 @@
 <label class="form-label">Accessibility</label>
 <div class="form-group mb-3">
     <div class="form-check">
-        {{ filters.accessible_venue() }}
-        {{ filters.accessible_venue.label(class_="form-check-label") }}
+        {{ filters.venue_is_mobility_aid_accessible() }}
+        {{ filters.venue_is_mobility_aid_accessible.label(class_="form-check-label") }}
     </div>
     <div class="form-check">
-        {{ filters.asl_interpreter() }}
-        {{ filters.asl_interpreter.label(class_="form-check-label") }}
-    </div>
-    <div class="form-check">
-        {{ filters.relaxed_performance() }}
-        {{ filters.relaxed_performance.label(class_="form-check-label") }}
+        {{ filters.is_relaxed_performance() }}
+        {{ filters.is_relaxed_performance.label(class_="form-check-label") }}
         <a href="https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed"
             title="What is a relaxed performance?" target="_blank" rel="noopener noreferrer">
             <i class="bi bi-question-circle"></i>
         </a>
+    </div>
+    <div class="form-check">
+        {{ filters.is_photosensitivity_friendly() }}
+        {{ filters.is_photosensitivity_friendly.label(class_="form-check-label") }}
+    </div>
+    <div class="form-check">
+        {{ filters.is_hearing_accessible() }}
+        {{ filters.is_hearing_accessible.label(class_="form-check-label") }}
+    </div>
+    <div class="form-check">
+        {{ filters.is_visually_accessible() }}
+        {{ filters.is_visually_accessible.label(class_="form-check-label") }}
     </div>
 </div>
 <label class="form-label">Ticket prices</label>
@@ -61,13 +69,27 @@
     </div>
 </div>
 <div class="form-group mb-3">
-    <div class="form-label">{{ filters.tags.label() }}</div>
-    {% for choice in filters.match_all_tags %}
+    {# {% for choice in filters.match_all_tags %}
     <div class="form-check form-check-inline">
         {{ choice(class_="form-check-input") }}
         {{ choice.label(class_="form-check-label") }}
     </div>
-    {% endfor %}
+    {% endfor %} #}
+    <div class="row align-items-center py-1">
+        <div class="col-auto pe-0 me-1">
+            <label class="form-label m-0">Match</label>
+        </div>
+        <div class="col-auto px-0 me-1">
+            <select class="form-select form-select-sm m-0" name="match_all_tags">
+                <option value="any">any</option>
+                <option value="all">all</option>
+                <option value="none">none</option>
+            </select>
+        </div>
+        <div class="col-auto ps-0">
+            <label class="form-label m-0">of these tags</label>
+        </div>
+    </div>
     {{ filters.tags() }}
     <div id="tags-help-block" class="form-text">{{ filters.tags.description }}</div>
 </div>
@@ -75,11 +97,17 @@
 
 {% block items_to_list %}
 {% from "macros.html" import grid_item %}
-{% for event in events %}
+{% for event, occurrence_count in events %}
 <div class="col-auto">
-    {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title,
-    subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else
-    (event.occurrences[0].start_time.strftime("%A, %B %e"))), tags=event.tags, href=url_for('events.event_details', event_id=event.id)) }}
+    {{ grid_item(
+        image_src=url_for('static',
+        filename='images/placeholder.jpg'),
+        title=event.title,
+        subtitle=(event.occurrences[0].start_time.strftime("%b %e, %l:%M %p")),
+        text=("+"+((occurrence_count-1)|string)+" more time" if occurrence_count != 1 else "") + ("s" if occurrence_count > 2 else ""),
+        href=url_for('events.event_details',
+        event_id=event.id)
+    ) }}
 </div>
 {% endfor %}
 {% endblock %}

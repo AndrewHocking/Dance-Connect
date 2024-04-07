@@ -183,7 +183,6 @@ body {
 
 .card-img-top {
     object-fit: cover;
-    height: 175px;
 }
 
 .rotate-n45 {
@@ -241,6 +240,7 @@ body {
 
 .grid-card {
     width: 250px;
+    height: 250px;
 }
 
 .stretched-link-container {

@@ -1,5 +1,5 @@
 from typing import List
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, distinct, func, or_
 from flask_login import current_user
 from datetime import datetime
 
@@ -10,9 +10,8 @@ from .event_contributor import connect_user_to_event
 from .event_tag import create_event_tag
 from .event_occurrence import create_event_occurrence
 
+
 # Creates a new Event object
-
-
 def create_event(
     organizer: User = current_user,
     title: str = "Untitled Event",
@@ -84,27 +83,33 @@ def get_event(id: int):
 
 
 def search_events(
-    search: str,
-    sort: str,
-    accessible_venue: bool,
-    asl_interpreter: bool,
-    relaxed_performance: bool,
-    min_ticket_price: float,
-    max_ticket_price: float,
-    start_date: datetime,
-    end_date: datetime,
-    tags: List[str],
-    match_all_tags: bool
+    search: str = "",
+    sort: str = "upcoming",
+    venue_is_mobility_aid_accessible: bool = False,
+    is_relaxed_performance: bool = False,
+    is_photosensitivity_friendly: bool = False,
+    is_hearing_accessible: bool = False,
+    is_visually_accessible: bool = False,
+    min_ticket_price: float = None,
+    max_ticket_price: float = None,
+    start_date: datetime = datetime.now(),
+    end_date: datetime = None,
+    tags: List[str] = list(),
+    match_all_tags: bool = False
 ):
-    filtered_events = db.session.query(Event).join(Event.occurrences).join(Event.tags).filter(
+    filtered_events = db.session.query(Event, func.count(distinct(EventOccurrence.id))).join(Event.occurrences).join(Event.tags).filter(
         (Event.title.ilike(f"%{search}%") |
          Event.description.ilike(f"%{search}%")),
         or_(Event.venue_is_mobility_aid_accessible ==
-            accessible_venue, not accessible_venue),
-        or_(EventOccurrence.is_visually_accessible ==
-            asl_interpreter, not asl_interpreter),
+            venue_is_mobility_aid_accessible, not venue_is_mobility_aid_accessible),
         or_(EventOccurrence.is_relaxed_performance ==
-            relaxed_performance, not relaxed_performance)
+            is_relaxed_performance, not is_relaxed_performance),
+        or_(EventOccurrence.is_photosensitivity_friendly ==
+            is_photosensitivity_friendly, not is_photosensitivity_friendly),
+        or_(EventOccurrence.is_hearing_accessible ==
+            is_hearing_accessible, not is_hearing_accessible),
+        or_(EventOccurrence.is_visually_accessible ==
+            is_visually_accessible, not is_visually_accessible),
     )
 
     if len(tags) > 0:
@@ -128,7 +133,7 @@ def search_events(
             EventOccurrence.start_time >= start_date)
     if end_date is not None:
         filtered_events = filtered_events.filter(
-            EventOccurrence.end_time <= end_date)
+            EventOccurrence.start_time <= end_date)
 
     if sort == "alpha-desc":
         filtered_events = filtered_events.order_by(Event.title.desc())
@@ -137,15 +142,8 @@ def search_events(
     else:
         filtered_events = filtered_events.order_by(Event.title)
 
-    results = filtered_events.all()
+    results = filtered_events.group_by(Event).all()
     if results is None or len(results) == 0:
         return json_response(404, "No events found that match the given search criteria.", results)
 
     return json_response(200, f"{len(results)} events found.", results)
-
-
-def all_events():
-    events = db.session.query(Event).all()
-    if events is None or len(events) == 0:
-        return json_response(404, "No events found.", None)
-    return json_response(200, f"{len(events)} events found.", events)
