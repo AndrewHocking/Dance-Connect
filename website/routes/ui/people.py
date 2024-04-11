@@ -158,6 +158,9 @@ def person(username):
 
 @people.route("/people/<username>/edit/", methods=["GET", "POST"])
 def edit_person(username):
+    if not current_user.is_authenticated or current_user.username != username:
+        return redirect(url_for("people.person", username=username))
+
     person: User = read_single_user(username=username)["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_contributed))

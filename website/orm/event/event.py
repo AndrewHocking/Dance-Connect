@@ -1,5 +1,5 @@
 from typing import List
-from sqlalchemy import and_, distinct, func, or_
+from sqlalchemy import and_, distinct, func, not_, or_
 from flask_login import current_user
 from datetime import datetime
 
@@ -95,7 +95,7 @@ def search_events(
     start_date: datetime = datetime.now(),
     end_date: datetime = None,
     tags: List[str] = list(),
-    match_all_tags: bool = False
+    match_all_tags: str = "any"
 ):
     filtered_events = db.session.query(Event, func.count(distinct(EventOccurrence.id))).join(Event.occurrences).join(Event.tags).filter(
         (Event.title.ilike(f"%{search}%") |
@@ -113,14 +113,20 @@ def search_events(
     )
 
     if len(tags) > 0:
-        if match_all_tags:
+        if match_all_tags == "all":
             filtered_events = filtered_events.filter(
                 and_(*[Event.tags.any(name=name) for name in tags])
             )
-        else:
+        elif match_all_tags == "any":
             filtered_events = filtered_events.filter(
                 or_(*[Event.tags.any(name=name) for name in tags])
             )
+        elif match_all_tags == "none":
+            filtered_events = filtered_events.filter(
+                not_(or_(*[Event.tags.any(name=name) for name in tags]))
+            )
+        else:
+            return json_response(400, "Invalid value for 'match_all_tags'.", None)
 
     if min_ticket_price is not None:
         filtered_events = filtered_events.filter(

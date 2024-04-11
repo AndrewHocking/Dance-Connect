@@ -110,6 +110,16 @@ def read_single_user(username: str):
     return json_response(200, f"User {user.display_name} found.", user)
 
 
+def get_user_by_email_or_username(query: str):
+    user = db.session.query(User).filter(
+        or_(User.email == query, User.username == query)).first()
+
+    if user is None:
+        return json_response(404, "No user found")
+
+    return json_response(200, f"User {user.display_name} found.", user)
+
+
 # Updates a user with the given variables. Pass None to leave a variable unchanged.
 def update_user(
     user_id: int,

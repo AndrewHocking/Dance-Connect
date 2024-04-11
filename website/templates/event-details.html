@@ -33,7 +33,7 @@
                 <div id="right-column" class="col-lg-7 float-end order-3 order-lg-2 ps-lg-4 mb-3">
                     <div class="row gy-4">
                         <div id="description" class="col-12">
-                            <h3>Description</h3>
+                            <h3><i class="bi bi-megaphone-fill me-2"></i>Description</h3>
                             <p>{{event.description}}</p>
                             {% if event.accessibility_notes %}
                             <h6 class="m-0">Accessibility Notes</h6>
@@ -70,14 +70,14 @@
                         </div>
                         {% if event.venue_name or event.venue_address %}
                         <div id="location" class="col-12">
-                            <h3>Location</h3>
+                            <h3><i class="bi bi-geo-alt-fill me-2"></i>Location</h3>
                             <div class="row align-middle pb-2">
                                 {% if event.venue_address %}
                                 <div class="col-lg-auto col-12 pe-0">
                                     <div class="dropdown py-lg-2 pb-2">
                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
                                             aria-expanded="false">
-                                            <i class="bi bi-geo-alt-fill"></i>
+                                            <i class="bi bi-map-fill"></i>
                                             <span class="d-lg-none">Directions</span>
                                         </button>
                                         <ul class="dropdown-menu">
@@ -135,7 +135,7 @@
                         </div>
                         {% endif %}
                         <div id="times" class="col-12">
-                            <h3>Times</h3>
+                            <h3><i class="bi bi-clock-fill me-2"></i>Times</h3>
                             <div class="border rounded-3 overflow-hidden p-0 m-0">
                                 <table id="times-table" class="table table-striped table-borderless p-0 m-0">
                                     {% for date in occurrences %}
@@ -260,7 +260,7 @@
                 <div id="contributors" class="col-lg-5 float-start order-last">
                     <div class="row bg-body-tertiary rounded mx-0 justify-content-center py-3">
                         <div class="row">
-                            <h3 class="text-center">Contributors</h3>
+                            <h3 class="text-center"><i class="bi bi-people-fill me-2"></i>Contributors</h3>
                         </div>
                         {% if contributors|length > 0 %}
                         <div class="row justify-content-center">

@@ -91,12 +91,15 @@ class EventFilterForm(FlaskForm):
         render_kw={"placeholder": "e.g. ballet, hip hop, contemporary",
                    "class": "form-control", "aria-describedby": "tags-help-block"}
     )
-    match_all_tags = RadioField(
+    match_all_tags = SelectField(
         label="Match all tags",
         name="match_all_tags",
-        choices=[('False', "Match any of the following tags"),
-                 ('True', 'Match all of the following tags')],
-        default='False'
+        choices=[('any', "any"),
+                 ('all', 'all'),
+                 ('none', 'none')],
+        default='any',
+        render_kw={"placeholder": "",
+                   "class": "form-select form-select-sm m-0"}
     )
     clear_filters = SubmitField(
         label="Clear filters",

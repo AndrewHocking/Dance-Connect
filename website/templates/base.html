@@ -15,10 +15,11 @@
     </head>
 
     <body class="d-none">
-        <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-md-5 px-3">
-            <a id="logo" class="navbar-brand d-flex align-items-center" href="{{ url_for('views.home') }}">
-                <img id="logo-img" class="rounded-circle p-1" src="{{url_for('static', filename='images/logo.png')}}" alt="DanceConnect Logo" />
-                <div class="ps-2 pe-3 m-0 h3">DanceConnect</div>
+        <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-md-5 px-3 shadow">
+            <a id="logo" class="navbar-brand d-flex align-items-center pe-3" href="{{ url_for('views.home') }}">
+                <img id="logo-img" class="rounded-circle p-1 shadow-lg bg-gradient" src="{{url_for('static', filename='images/logo.png')}}"
+                    alt="DanceConnect Logo" />
+                <div class="ps-3 m-0 py-0 h4">DanceConnect</div>
             </a>
             <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -27,45 +28,46 @@
             <div id="navbar" class="navbar-collapse collapse justify-content-between mt-3 mt-lg-0">
                 <div class="navbar-nav navbar-left">
                     <a class="nav-link" id="home" href="{{ url_for('views.home') }}" title="Home">
-                        <i id="home-icon" class="nav-icon me-1 bi bi-house"></i>
-                        Home
+                        <i id="home-icon" class="nav-icon d-lg-none me-1 bi bi-house"></i>
+                        <span class="nav-label">Home</span>
                     </a>
                     <a class="nav-link" id="events" href="{{ url_for('events.events_list') }}" title="Events">
-                        <i id="events-icon" class="nav-icon me-1 bi bi-calendar-week"></i>
-                        Events
+                        <i id="events-icon" class="nav-icon d-lg-none me-1 bi bi-calendar-week"></i>
+                        <span class="nav-label">Events</span>
                     </a>
                     <a class="nav-link" id="people" href="{{ url_for('people.people_list') }}" title="People">
-                        <i id="people-icon" class="nav-icon me-1 bi bi-people"></i>
-                        People
+                        <i id="people-icon" class="nav-icon d-lg-none me-1 bi bi-people"></i>
+                        <span class="nav-label">People</span>
                     </a>
                 </div>
                 <div class="navbar-nav navbar-right">
                     <a class="nav-link" id="debug" href="{{ url_for('debug.debug') }}" title="Debug">
                         <i id="debug-icon" class="nav-icon me-1 bi bi-bug"></i>
-                        <span class="d-lg-none">Debug</span>
+                        <span class="nav-label d-lg-none">Debug</span>
                     </a>
                     <div class="dropdown">
                         <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
-                            aria-label="Colour scheme" data-bs-auto-close="true" title="Colour scheme">
-                            <i id="colour-scheme-icon" class="nav-icon me-1 bi bi-magic"></i>
-                            <span class="d-lg-none d-inline ms-1">Colour scheme</span>
+                            aria-label="Colour Scheme" data-bs-auto-close="true" title="Colour Scheme">
+                            <i id="colour-scheme-icon" class="nav-icon me-1 bi bi-circle-half"></i>
+                            <span class="nav-label d-lg-none ms-1">Colour Scheme</span>
                         </button>
                         <div class="dropdown-menu p-0 overflow-hidden">
                             <div class="btn-group-vertical m-0 p-0 w-100" role="group" aria-label="Colour scheme selection">
+                                <div class="dropdown-header d-none d-lg-inline">Colour Scheme</div>
                                 <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-auto"
                                     value="auto" checked>
                                 <label class="dropdown-item" for="colour-scheme-radio-auto">
-                                    <i class="nav-icon bi bi-magic me-1"></i> Auto
+                                    <i class="bi bi-circle-half me-1"></i> Auto
                                 </label>
                                 <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-light"
                                     value="light">
                                 <label class="dropdown-item" for="colour-scheme-radio-light">
-                                    <i class="nav-icon bi bi-sun-fill me-1"></i> Light
+                                    <i class="bi bi-sun-fill me-1"></i> Light
                                 </label>
                                 <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-dark"
                                     value="dark">
                                 <label class="dropdown-item" for="colour-scheme-radio-dark">
-                                    <i class="nav-icon bi bi-moon-fill me-1"></i> Dark
+                                    <i class="bi bi-moon-fill me-1"></i> Dark
                                 </label>
                             </div>
                         </div>
@@ -74,7 +76,7 @@
                     <a class="nav-link" id="notifications" href="{{ url_for('notifications.notification_list') }}" title="Notifications">
                         <i id="notifications-icon" class="nav-icon me-1 bi bi-bell">
                         </i>
-                        <span class="fst-normal d-lg-none">
+                        <span class="fst-normal nav-label d-lg-none">
                             Notifications
                         </span>
                         {% if user.received_notifications|length > 0 %}
@@ -84,21 +86,21 @@
                         {% endif %}
                     </a>
                     <a class="nav-link" id="profile" href="{{ url_for('people.person', username=user.username) }}" title="Profile">
-                        <i id="profile-icon" class="nav-icon me-1 bi bi-person"></i>
-                        Profile
+                        <i id="profile-icon" class="nav-icon d-lg-none me-1 bi bi-person"></i>
+                        <span class="nav-label">Profile</span>
                     </a>
                     <a class="nav-link" id="logout" href="{{ url_for('auth.logout') }}" title="Log out">
-                        <i id="logout-icon" class="nav-icon me-1 bi bi-door-closed"></i>
-                        Logout
+                        <i id="logout-icon" class="nav-icon d-lg-none me-1 bi bi-door-closed"></i>
+                        <span class="nav-label">Log Out</span>
                     </a>
                     {% else %}
                     <a class="nav-link" id="login" href="{{ url_for('auth.login') }}">
-                        <i id="login-icon" class="nav-icon me-1 bi bi-door-open"></i>
-                        Log In
+                        <i id="login-icon" class="nav-icon d-lg-none me-1 bi bi-door-open"></i>
+                        <span class="nav-label">Log In</span>
                     </a>
                     <a class="nav-link" id="sign-up" href="{{ url_for('auth.sign_up') }}">
-                        <i id="sign-up-icon" class="nav-icon me-1 bi bi-person-add"></i>
-                        Sign Up
+                        <i id="sign-up-icon" class="nav-icon d-lg-none me-1 bi bi-person-add"></i>
+                        <span class="nav-label">Sign Up</span>
                     </a>
                     {% endif %}
                 </div>
@@ -157,7 +159,7 @@
                         } else {
                             document.documentElement.setAttribute("data-bs-theme", "light");
                         }
-                        document.getElementById("colour-scheme-icon").className = "bi bi-magic";
+                        document.getElementById("colour-scheme-icon").className = "bi bi-circle-half";
                     } else {
                         document.documentElement.setAttribute("data-bs-theme", colourScheme);
                         if (colourScheme == "light") {
@@ -192,15 +194,15 @@
                 }
             });
 
-            // TODO: Fix bug where you cannot switch to auto mode if the page loads with dark mode enabled (workaround: change to light mode first, then auto mode)
-
             var element, icon;
             if (window.location.pathname.startsWith("/events")) {
                 element = document.getElementById("events");
                 icon = document.getElementById("events-icon");
+                {% if user.is_authenticated %}
             } else if (window.location.pathname.startsWith("/people/{{user.username}}")) {
                 element = document.getElementById("profile");
                 icon = document.getElementById("profile-icon");
+                {% endif %}
             } else if (window.location.pathname.startsWith("/people")) {
                 element = document.getElementById("people");
                 icon = document.getElementById("people-icon");

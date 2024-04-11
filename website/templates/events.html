@@ -80,11 +80,7 @@
             <label class="form-label m-0">Match</label>
         </div>
         <div class="col-auto px-0 me-1">
-            <select class="form-select form-select-sm m-0" name="match_all_tags">
-                <option value="any">any</option>
-                <option value="all">all</option>
-                <option value="none">none</option>
-            </select>
+            {{ filters.match_all_tags() }}
         </div>
         <div class="col-auto ps-0">
             <label class="form-label m-0">of these tags</label>

@@ -86,14 +86,13 @@ def events_list():
 
             tags = request.form.get("tags")
             filters.tags.default = tags
-            match_all_tags = request.form.get("match_all_tags")
+            match_all_tags = request.form.get("match_all_tags") or "any"
             filters.match_all_tags.default = match_all_tags
 
             tag_list = list()
             if tags is not None and tags != "":
                 for tag in tags.split(","):
                     tag_list.append(tag.strip())
-            match_all_tags = match_all_tags == 'True'
 
             response = search_events(
                 search=search,
@@ -168,7 +167,6 @@ def event_create():
 
 @events.route('/create/submit/', methods=['POST'])
 def create_event_submit():
-    print(request.form)
     title = request.form.get('title')
     description = request.form.get('description')
     url = request.form.get('url')
@@ -231,7 +229,6 @@ def create_event_submit():
 
 @events.route('/create/create-event-occurrence/', methods=['POST'])
 def create_event_occurrence():
-    print(request.form)
     occurrence = CreateEventOccurrenceForm()
     return render_template("create-event-occurrence.html", occurrence=occurrence, occurrence_number=int(request.form.get("occurrence_number")))
 
