@@ -13,8 +13,9 @@
                         {{ filters.search() }}
                         {{ filters.search.label() }}
                     </div>
-                    <button class="btn btn-primary" id="search_button" name="search_button" type="submit">
-                        <i class="bi bi-search"></i>
+                    <button class="btn btn-primary" id="search_button" name="search_button" type="submit" title="Search">
+                        <i class="bi bi-search bi-bold"></i>
+                        <span class="visually-hidden">Search</span>
                     </button>
                 </div>
             </div>
@@ -33,7 +34,7 @@
                     </button>
                 </div>
 
-                <div id="filter-collapse" class="collapse d-md-block mb-3">
+                <div id="filter-collapse" class="collapse d-md-block mb-3 px-lg-0">
                     {% block filters %}{% endblock %}
                     {{ filters.apply_filters(class_="btn btn-primary w-100 mb-1") }}
                     {{ filters.clear_filters(class_="btn btn-secondary w-100") }}

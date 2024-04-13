@@ -6,7 +6,7 @@ from datetime import datetime
 from ... import db, json_response
 from ...models.event import Event, EventOccurrence
 from ...models.user import User
-from .event_contributor import connect_user_to_event
+from .event_contributor import connect_user_to_event, remove_user_from_event
 from .event_tag import create_event_tag
 from .event_occurrence import create_event_occurrence
 
@@ -57,16 +57,16 @@ def create_event(
     for occurrence in occurrences:
         create_event_occurrence(
             event=new_event,
-            start_time=occurrence.get("start_time"),
-            end_time=occurrence.get("end_time"),
-            is_relaxed_performance=bool(occurrence.get(
-                "is_relaxed_performance")) or False,
-            is_photosensitivity_friendly=bool(occurrence.get(
-                "is_photosensitivity_friendly")) or False,
-            is_hearing_accessible=bool(occurrence.get(
-                "is_hearing_accessible")) or False,
-            is_visually_accessible=bool(occurrence.get(
-                "is_visually_accessible")) or False,
+            start_time=occurrence.start_time,
+            end_time=occurrence.end_time,
+            is_relaxed_performance=bool(
+                occurrence.is_relaxed_performance or False),
+            is_photosensitivity_friendly=bool(
+                occurrence.is_photosensitivity_friendly or False),
+            is_hearing_accessible=bool(
+                occurrence.is_hearing_accessible or False),
+            is_visually_accessible=bool(
+                occurrence.is_visually_accessible or False),
         )
 
     if commit_db_after_creation:
@@ -97,7 +97,7 @@ def search_events(
     tags: List[str] = list(),
     match_all_tags: str = "any"
 ):
-    filtered_events = db.session.query(Event, func.count(distinct(EventOccurrence.id))).join(Event.occurrences).join(Event.tags).filter(
+    filtered_events = db.session.query(Event, func.count(distinct(EventOccurrence.id))).join(Event.occurrences).filter(
         (Event.title.ilike(f"%{search}%") |
          Event.description.ilike(f"%{search}%")),
         or_(Event.venue_is_mobility_aid_accessible ==
@@ -153,3 +153,85 @@ def search_events(
         return json_response(404, "No events found that match the given search criteria.", results)
 
     return json_response(200, f"{len(results)} events found.", results)
+
+
+def update_event(
+    event: Event,
+    organizer: User = None,
+    title: str = None,
+    description: str = None,
+    url: str = None,
+    tags: List[str] = None,
+    venue_name: str = None,
+    venue_address: str = None,
+    venue_is_mobility_aid_accessible: bool = None,
+    accessibility_notes: str = None,
+    min_ticket_price: float = None,
+    max_ticket_price: float = None,
+    occurrences: List[dict] = None,
+    contributors: List[User] = None,
+    commit_db_after_update: bool = True
+):
+
+    if organizer is not None:
+        remove_user_from_event(event.organizer, event)
+        connect_user_to_event(user=organizer, event=event, role="Organizer")
+        event.organizer = organizer
+        event.organizer_id = organizer.id
+    if title is not None:
+        event.title = title
+    if description is not None:
+        event.description = description
+    if url is not None:
+        event.url = url
+    if tags is not None:
+        event.tags = list()
+        for tag in tags:
+            create_event_tag(tag, event, False)
+    if venue_name is not None:
+        event.venue_name = venue_name
+    if venue_address is not None:
+        event.venue_address = venue_address
+    if venue_is_mobility_aid_accessible is not None:
+        event.venue_is_mobility_aid_accessible = venue_is_mobility_aid_accessible
+    if accessibility_notes is not None:
+        event.accessibility_notes = accessibility_notes
+    if min_ticket_price is not None:
+        event.min_ticket_price = min_ticket_price
+    if max_ticket_price is not None:
+        event.max_ticket_price = max_ticket_price
+    if occurrences is not None:
+        event.occurrences = list()
+        for occurrence in occurrences:
+            create_event_occurrence(
+                event=event,
+                start_time=occurrence.start_time,
+                end_time=occurrence.end_time,
+                is_relaxed_performance=bool(
+                    occurrence.is_relaxed_performance or False),
+                is_photosensitivity_friendly=bool(
+                    occurrence.is_photosensitivity_friendly or False),
+                is_hearing_accessible=bool(
+                    occurrence.is_hearing_accessible or False),
+                is_visually_accessible=bool(
+                    occurrence.is_visually_accessible or False),
+            )
+    if contributors is not None:
+        event.contributors = list()
+        for contributor in contributors:
+            connect_user_to_event(
+                user=contributor, event=event, role="Contributor")
+
+    db.session.add(event)
+    if commit_db_after_update:
+        db.session.commit()
+
+    return json_response(200, "Event updated successfully.", event)
+
+
+def delete_event(event: Event, commit_db_after_deletion: bool = True):
+    db.session.delete(event)
+    if commit_db_after_deletion:
+        db.session.commit()
+
+    return json_response(200, "Event deleted successfully.")

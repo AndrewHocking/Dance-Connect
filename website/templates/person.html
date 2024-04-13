@@ -126,7 +126,7 @@
                                         filename='images/placeholder.jpg'),
                                         title=contributed.event.title,
                                         subtitle=contributed.role,
-                                        text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %e, %l:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %e, %l:%M %p')),
+                                        text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %e, %l:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %e, %l:%M %p')) if contributed.event.occurrences|length > 0 else "",
                                         href=url_for('events.event_details',
                                         event_id=contributed.event.id)
                                 ) }}

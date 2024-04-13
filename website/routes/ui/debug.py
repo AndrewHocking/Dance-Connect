@@ -243,7 +243,6 @@ def create_dummy_users():
             bio=user["bio"],
             tags=user["tags"]
         )
-        print("AAAAAAA")
         if response["status_code"] != 201:
             print(response["status_code"])
             print(response["message"])

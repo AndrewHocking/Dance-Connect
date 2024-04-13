@@ -24,7 +24,7 @@ class EventFilterForm(FlaskForm):
         render_kw={"placeholder": "", "class": "form-select"}
     )
     venue_is_mobility_aid_accessible = BooleanField(
-        label="Accessible Venue",
+        label="Mobility Aid Accessible Venue",
         validators=[],
         name="venue_is_mobility_aid_accessible",
         render_kw={"placeholder": "", "class": "form-check-input"}
@@ -36,7 +36,7 @@ class EventFilterForm(FlaskForm):
         render_kw={"placeholder": "", "class": "form-check-input"}
     )
     is_photosensitivity_friendly = BooleanField(
-        label="Photosensitivity Friendly",
+        label="Photosensitivity-Friendly",
         validators=[],
         name="is_photosensitivity_friendly",
         render_kw={"placeholder": "", "class": "form-check-input"}
