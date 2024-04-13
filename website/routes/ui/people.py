@@ -150,6 +150,7 @@ def person(username):
         person=person,
         bio=bio,
         events_contributed=events_contributed,
+        events_organized=person.events_organized,
         affiliations=affiliations,
         edit=edit,
         socials=socialMediaDic,

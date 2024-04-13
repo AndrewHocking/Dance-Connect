@@ -92,13 +92,13 @@
                                 <div class="col-auto px-1">
                                     {% if event.min_ticket_price != None %}
                                     {% if event.max_ticket_price == None %}
-                                    From {{ ("${:,.2f}".format(event.min_ticket_price)).rstrip('0').rstrip('.') }}
+                                    From {{ "${:,.2f}".format(event.min_ticket_price) | replace(".00", "") }}
                                     {% else %}
-                                    {{ ("${:,.2f}".format(event.min_ticket_price)).rstrip('0').rstrip('.') }} – {{
-                                                                                                ("${:,.2f}".format(event.max_ticket_price)).rstrip('0').rstrip('.')}}
+                                    {{ "${:,.2f}".format(event.min_ticket_price) | replace(".00", "") }} –
+                                    {{ "${:,.2f}".format(event.max_ticket_price) | replace(".00", "") }}
                                     {% endif %}
                                     {% elif event.max_ticket_price != None %}
-                                    Up to {{ ("${:,.2f}".format(event.max_ticket_price)).rstrip('0').rstrip('.') }}
+                                    Up to {{ "${:,.2f}".format(event.max_ticket_price) | replace(".00", "") }}
                                     {% endif %}
                                 </div>
                                 {% endif %}
@@ -164,7 +164,10 @@
                                     </ul>
                                 </li>
                                 {% if event.venue_address %}
-                                <li id="map" class="list-group-item bg-secondary-subtle">
+                                <li id="map" class="list-group-item bg-secondary-subtle p-0 overflow-hidden">
+                                    <iframe class="w-100 h-100 border-0"
+                                        src="https://www.google.com/maps/embed/v1/search?q={{(event.venue_address)|urlencode}}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8">
+                                    </iframe>
                                 </li>
                                 {% endif %}
                             </ul>
@@ -329,8 +332,8 @@
             <div class="modal-body">
                 <p>Are you sure you want to leave this event?</p>
                 {% if event.organizer == current_user %}
-                <p>You are the organizer of this event. If you leave, you will remain the organizer of this event; you will just be hidden from the
-                    list of contributors.</p>
+                <p>You are the organizer of this event. If you leave, you will be hidden from the list of contributors, and this event will not appear
+                    on your profile. You will still remain the organizer of this event.</p>
                 {% endif %}
             </div>
             <div class="modal-footer">
