@@ -141,7 +141,7 @@ def event_create():
         event_form.min_ticket_price.data = form.get('min_ticket_price', "")
         event_form.max_ticket_price.data = form.get('max_ticket_price', "")
         event_form.num_occurrences.data = form.get('num_occurrences', 1)
-        for i in range(0, int(form.get("num_occurrences"))):
+        for i in range(0, int(form.get("num_occurrences")) + 1):
             occurrence = CreateEventOccurrenceForm()
             occurrence.date.data = form.get(f"occurrence-{i}-date", "")
             occurrence.start_time.data = form.get(
@@ -176,7 +176,7 @@ def create_event_submit():
     OccurrenceTuple = namedtuple("Occurrence", ["start_time", "end_time", "is_relaxed_performance",
                                                 "is_photosensitivity_friendly", "is_hearing_accessible", "is_visually_accessible"])
     occurrences = []
-    for i in range(0, int(request.form.get("num_occurrences"))):
+    for i in range(0, int(request.form.get("num_occurrences")) + 1):
         occurrences.append(OccurrenceTuple(
             start_time=datetime.strptime(f"{request.form.get(f"occurrence-{i}-date")} {
                 request.form.get(f"occurrence-{i}-start-time")}", "%Y-%m-%d %H:%M"),

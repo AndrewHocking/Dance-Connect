@@ -1,0 +1,667 @@
+{% extends "base.html" %}
+
+{% block title %}Isabella Rodriguez{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="row align-items-center mb-4">
+        <div class="col">
+
+            <div class="row p-0 m-0 align-items-center">
+                <div class="col-auto justify-content-start p-0 pe-2 m-0">
+                    <h1>Isabella Rodriguez</h1>
+                </div>
+
+                <div class="col-auto justify-content-start p-0 text-muted">
+                    she/her
+                </div>
+
+            </div>
+            <div class="col-auto justify-content-start mb-3 text-muted">
+                <h5>@izzyrod</h5>
+            </div>
+
+
+
+
+            <div class="row d-flex flex-wrap gx-1 pb-0 mb-0">
+
+                <div class="col-lg-auto col-12 d-lg-inline-block d-block me-1 mb-1">
+                    <i class="bi bi-tags-fill" aria-describedby="Tags"></i>
+                    <span class="d-lg-none">Tags</span>
+                </div>
+
+                <form class="col-auto mb-1" action="/people/" method="POST">
+                    <button name="tags" value="choreographer"
+                        class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">choreographer</button>
+                </form>
+
+                <form class="col-auto mb-1" action="/people/" method="POST">
+                    <button name="tags" value="artistic director"
+                        class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">artistic director</button>
+                </form>
+
+                <form class="col-auto mb-1" action="/people/" method="POST">
+                    <button name="tags" value="contemporary"
+                        class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">contemporary</button>
+                </form>
+
+                <form class="col-auto mb-1" action="/people/" method="POST">
+                    <button name="tags" value="indie" class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">indie</button>
+                </form>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div> <!-- HEADER ROW END -->
+
+
+    <div class="row mb-4">
+        <div class="col-12 col-md-5 col-xl-3">
+            <div class="rounded mb-4 overflow-hidden ratio ratio-1x1">
+                <img src="/static/dummy/izzyrod.jpg" class="img-fluid" alt="Leo Kim">
+            </div>
+            <!-- CONTACTS BLOCK -->
+
+
+            <div class="p-3 bg-body-tertiary rounded text-decoration-none">
+                <h4><i class="bi bi-chat-dots-fill pe-2"></i>Contact</h4>
+
+
+
+                <a href="https://isabellarodriguez.dance/" class="row align-items-center ps-3 py-1 text-decoration-none">
+                    <div class="col-auto p-0">
+                        <div class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
+                            <i class="bi bi-globe2"></i>
+                        </div>
+                    </div>
+                    <div class="col-10 ps-2 text-no-wrap text-truncate text-body">
+                        isabellarodriguez.dance
+                    </div>
+                </a>
+
+
+
+                <a href="https://www.instagram.com/izzyrod" class="row align-items-center ps-3 py-1 text-decoration-none">
+                    <div class="col-auto p-0">
+                        <div class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
+                            <i class="bi bi-instagram"></i>
+                        </div>
+                    </div>
+                    <div class="col-10 ps-2 text-no-wrap text-truncate text-body">
+                        izzyrod
+                    </div>
+                </a>
+
+
+
+
+
+
+
+                <a href="https://www.threads.net/@izzyrod" class="row align-items-center ps-3 py-1 text-decoration-none">
+                    <div class="col-auto p-0">
+                        <div class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
+                            <i class="bi bi-threads"></i>
+                        </div>
+                    </div>
+                    <div class="col-10 ps-2 text-no-wrap text-truncate text-body">
+                        izzyrod
+                    </div>
+                </a>
+
+
+
+
+
+
+
+                <a href="https://www.tiktok.com/@izzyrod" class="row align-items-center ps-3 py-1 text-decoration-none">
+                    <div class="col-auto p-0">
+                        <div class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
+                            <i class="bi bi-tiktok"></i>
+                        </div>
+                    </div>
+                    <div class="col-10 ps-2 text-no-wrap text-truncate text-body">
+                        izzyrod
+                    </div>
+                </a>
+
+            </div> <!-- LEFT BLOCK END -->
+
+
+
+
+        </div>
+
+        <div class="col-12 col-md-7 col-xl-9 pl-xl-5 pl-3">
+            <div class="pb-4">
+                <h4><i class="bi bi-person-fill pe-2"></i>Bio</h4>
+                <p>
+                    Isabella Rodriguez, a trailblazing force in the dance industry, has dedicated her life to transforming movement into captivating
+                    narratives. Known for her ability to fuse different dance styles and evoke powerful emotions through movement, Isabella continues
+                    to push the boundaries of artistic expression. With a repertoire of breathtaking performances and a commitment to pushing the art
+                    form forward, Isabella Rodriguez stands as a beacon of innovation in the world of dance.
+                </p>
+            </div>
+            <div class="pb-4">
+                <h4><i class="bi bi-calendar-week-fill pe-2"></i>Events</h4>
+                <div class="row-12 d-flex flex-no-wrap overflow-x-scroll ">
+                    <div class="col-auto me-2">
+                        <h6>Upcoming</h6>
+                        <div class="card grid-card mb-2">
+                            <a href="/events/9/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/beforeyouregone.jpg"
+                                    class="card-img-top" alt="Image preview for Before You're Gone"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Before You're Gone</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Choreographer</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jun 5, 7:30 PM</p>
+
+                                    <a href="/events/9/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="col-auto me-2">
+                        <h6 style="color: transparent;">Upcoming</h6>
+                        <div class="card grid-card mb-2">
+                            <a href="/events/14/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/sheelemental.jpg"
+                                    class="card-img-top" alt="Image preview for she elemental"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">she elemental</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Artistic Director</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jul 15, 8:00 PM</p>
+
+                                    <a href="/events/14/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+                        <h6>Past</h6>
+                        <div class="card grid-card mb-2">
+                            <a href="/events/9/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/restep.jpg" class="card-img-top"
+                                    alt="Image preview for reSTEP"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">reSTEP</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Choreographer</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Last: Mar 8, 9:00 PM</p>
+
+                                    <a href="/events/9/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+                        <h6 style="color: transparent;">Past</h6>
+                        <div class="card grid-card mb-2">
+                            <a href="/events/14/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/fusionflow.jpg"
+                                    class="card-img-top" alt="Image preview for Fusion Flow"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Fusion Flow</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Choreographer</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Last: Jan 27, 7:45 PM</p>
+
+                                    <a href="/events/14/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-auto me-2">
+                        <h6 style="color: transparent;">Past</h6>
+                        <div class="card grid-card mb-2">
+                            <a href="/events/9/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Swingin' Soiree"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Swingin' Soiree</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Contributor</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jun 5, 1:39 AM</p>
+
+                                    <a href="/events/9/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/events/14/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Fusion Flow Fest"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Fusion Flow Fest</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Contributor</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jun 15, 4:39 PM</p>
+
+                                    <a href="/events/14/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/events/9/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Swingin' Soiree"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Swingin' Soiree</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Contributor</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jun 5, 1:39 AM</p>
+
+                                    <a href="/events/9/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/events/14/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Fusion Flow Fest"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Fusion Flow Fest</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Contributor</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jun 15, 4:39 PM</p>
+
+                                    <a href="/events/14/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/events/14/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Fusion Flow Fest"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Fusion Flow Fest</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Contributor</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jun 15, 4:39 PM</p>
+
+                                    <a href="/events/14/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/events/14/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Fusion Flow Fest"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Fusion Flow Fest</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Contributor</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jun 15, 4:39 PM</p>
+
+                                    <a href="/events/14/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/events/14/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Fusion Flow Fest"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Fusion Flow Fest</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Contributor</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jun 15, 4:39 PM</p>
+
+                                    <a href="/events/14/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/events/14/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Fusion Flow Fest"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Fusion Flow Fest</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">Contributor</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Next: Jun 15, 4:39 PM</p>
+
+                                    <a href="/events/14/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="pb-4">
+                <h4><i class="bi bi-people-fill pe-2"></i>Affiliated</h4>
+                <div class="row-12 d-flex flex-no-wrap overflow-x-scroll ">
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/alex_r/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/alex_r.jpg"
+                                    class="card-img-top" alt="Image preview for Alex Rivera"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Alex Rivera</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@alex_r</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">4 mutual events</p>
+
+                                    <a href="/people/alex_r/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/lunavega/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/lunavega.jpg"
+                                    class="card-img-top" alt="Image preview for Luna Vega"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Luna Vega</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@lunavega</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">1 mutual event</p>
+
+                                    <a href="/people/lunavega/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/maxvega/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/maxvega.jpg"
+                                    class="card-img-top" alt="Image preview for Max Vega"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Max Vega</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@maxvega</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">1 mutual event</p>
+
+                                    <a href="/people/maxvega/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/ninac/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/ninac.png" class="card-img-top"
+                                    alt="Image preview for Nina Chen"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Nina Chen</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@ninac</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">2 mutual events</p>
+
+                                    <a href="/people/ninac/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/elenarod/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Elena Rodriguez"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Elena Rodriguez</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@elenarod</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">2 mutual events</p>
+
+                                    <a href="/people/elenarod/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/davidf/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for David Foster"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">David Foster</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@davidf</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Swingin' Soiree</p>
+
+                                    <a href="/people/davidf/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/emily_dance/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Emily Parker"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Emily Parker</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@emily_dance</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Fusion Flow Fest</p>
+
+                                    <a href="/people/emily_dance/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/leok/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Leo Kim"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Leo Kim</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@leok</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">3 mutual events</p>
+
+                                    <a href="/people/leok/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/zaral/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Zara Liu"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Zara Liu</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@zaral</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Swingin' Soiree</p>
+
+                                    <a href="/people/zaral/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/samuelr/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Samuel Rodriguez"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Samuel Rodriguez</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@samuelr</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Swingin' Soiree</p>
+
+                                    <a href="/people/samuelr/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/lilac/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Lila Chen"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Lila Chen</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@lilac</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Fusion Flow Fest</p>
+
+                                    <a href="/people/lilac/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto me-2">
+
+                        <div class="card grid-card mb-2">
+                            <a href="/people/oscarm/" class="overflow-hidden ratio ratio-16x9"><img src="/static/images/placeholder.jpg"
+                                    class="card-img-top" alt="Image preview for Oscar Morales"></a>
+                            <div class="card-body">
+                                <div class="stretched-link-container">
+                                    <h5 class="card-title text-truncate">Oscar Morales</h5>
+
+                                    <h6 class="card-subtitle mb-2 text-muted text-truncate">@oscarm</h6>
+
+
+                                    <p class="card-text text-truncate text-muted pb-0 mb-0">Fusion Flow Fest</p>
+
+                                    <a href="/people/oscarm/" class="stretched-link"></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div> <!-- RIGHT BLOCK END -->
+    </div> <!-- BODY ROW END -->
+
+</div>
+{% endblock %}

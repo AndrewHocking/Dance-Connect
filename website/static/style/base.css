@@ -11,6 +11,10 @@
     --pink: #d1368b;
     --background-blue: 111, 137, 148;
     --filters-background: #343a40;
+
+    >* .tag {
+        background-color: rgba(var(--background-blue), 0.5);
+    }
 }
 
 #logo {
@@ -72,12 +76,11 @@ body {
 }
 
 /* .btn.show, */
-.navbar-nav .dropdown .dropdown-menu .btn-group-vertical .dropdown-item.bg-icon-background:hover,
-.navbar-nav .dropdown .dropdown-menu .btn-group-vertical .dropdown-item.bg-icon-background:active:hover,
-.navbar-nav .dropdown .dropdown-menu .btn-group-vertical .dropdown-item.bg-icon-background:active,
-.navbar-nav .dropdown .dropdown-menu .btn-group-vertical .dropdown-item:hover,
-.navbar-nav .dropdown .dropdown-menu .btn-group-vertical .dropdown-item:active:hover,
-.navbar-nav .dropdown .dropdown-menu .btn-group-vertical .dropdown-item:active {
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:hover,
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active:hover,
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active,
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item:active:hover,
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item:active {
     background-color: var(--dark-pink);
     border-color: var(--dark-pink);
     color: white;
@@ -234,6 +237,21 @@ body {
 
 .stretched-link-container {
     transform: rotate(0);
+}
+
+.page-link:not(.active) {
+    color: var(--pink);
+}
+
+.page-link.active {
+    color: white;
+    background-color: var(--pink);
+    border-color: var(--pink);
+    font-weight: bold;
+}
+
+.page-link:not(.active):hover {
+    color: var(--dark-pink);
 }
 
 /*** Responsive design ***/

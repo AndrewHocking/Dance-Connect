@@ -239,16 +239,16 @@ def edit_person(username):
                 threads, "threads"], [tiktok, "tiktok"], [twitter, "twitter"], [facebook, "facebook"], ]
 
             for social in socialListofList:
-                if update_socials_link(id, social[1], social[0])["status_code"] == 404 and social[0] != "":
-                    create_socials_link(id, social[1], social[0])
+                if social[0] != "" and update_socials_link(person.id, social[1], social[0])["status_code"] == 404:
+                    create_socials_link(person.id, social[1], social[0])
 
             # check password and update if all good
-            if current_pass != "" and new_pass != "" and confirm_pass != "" and person.password == current_pass and new_pass == confirm_pass:
+            if person.password == current_pass and new_pass == confirm_pass:
                 update_user(
-                    user_id=id,
+                    user_id=person.id,
                     password=new_pass,
                 )
-            else:
+            elif current_pass != "" and new_pass != "" and confirm_pass != "":
                 flash(
                     "Password did not match or current password is incorrect", "error"
                 )
@@ -286,12 +286,12 @@ def edit_person(username):
                 )
             else:
                 update_user(
-                    user_id=id,
+                    user_id=person.id,
                     password=new_pass,
                 )
 
             # Check for unique username
-            if update_user(user_id=id, username=uniqueUsername)["status_code"] == 400:
+            if update_user(user_id=person.id, username=uniqueUsername)["status_code"] == 400:
                 flash("Username already taken", "error")
                 return render_template(
                     "edit_person.html",
@@ -309,7 +309,7 @@ def edit_person(username):
 
             # if all okay, then update everyone
             update_user(
-                user_id=id,
+                user_id=person.id,
                 display_name=display_name,
                 pronouns=pronouns,
                 bio=request.form.get("bioTextArea", ""),
@@ -317,7 +317,7 @@ def edit_person(username):
             )
             # person.bio = request.form.get("bioTextArea", "")
             # person.save()
-            return redirect(url_for("people.person", id=id))
+            return redirect(url_for("people.person", username=username))
 
     return render_template(
         "edit_person.html",

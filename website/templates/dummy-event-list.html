@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous" />
+        <link rel="stylesheet" href="/static/style/base.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="shortcut icon" href="/static/images/favicon.ico">
+
+        <title>Events | DanceConnect</title>
+    </head>
+
+    <body class="d-none">
+        <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-gradient mt-4 px-md-5 px-3 shadow">
+            <a id="logo" class="navbar-brand d-flex align-items-center pe-3" href="/">
+                <img id="logo-img" class="rounded-circle p-1 shadow-lg bg-white bg-gradient" src="/static/images/logo.png" alt="DanceConnect Logo" />
+                <div class="ps-3 m-0 py-0 h4">DanceConnect</div>
+            </a>
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbar" class="navbar-collapse collapse justify-content-between mt-3 mt-lg-0">
+                <div class="navbar-nav navbar-left">
+                    <a class="nav-link" id="home" href="/" title="Home">
+                        <i id="home-icon" class="nav-icon d-lg-none me-1 bi bi-house"></i>
+                        <span class="nav-label">Home</span>
+                    </a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="events" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i id="events-icon" class="nav-icon d-lg-none me-1 bi bi-calendar-week"></i>
+                            <span class="nav-label">Events</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/events/">Upcoming events</a></li>
+                            <li><a class="dropdown-item" href="#">Event calendar</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="/events/create/">Create a new event</a></li>
+                            <li><a class="dropdown-item" href="#">My events</a></li>
+                        </ul>
+                    </div>
+                    <a class="nav-link" id="people" href="/people/" title="People">
+                        <i id="people-icon" class="nav-icon d-lg-none me-1 bi bi-people"></i>
+                        <span class="nav-label">People</span>
+                    </a>
+                    <a class="nav-link" id="opportunities" href="#" title="Opportunities">
+                        <i id="opportunities-icon" class="nav-icon d-lg-none me-1 bi bi-briefcase"></i>
+                        <span class="nav-label">Opportunities</span>
+                    </a>
+                </div>
+                <div class="navbar-nav navbar-right">
+                    <div class="dropdown">
+                        <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
+                            aria-label="Colour Scheme" data-bs-auto-close="true" title="Colour Scheme">
+                            <i id="colour-scheme-icon" class="nav-icon me-1 bi bi-circle-half"></i>
+                            <span class="nav-label d-lg-none ms-1">Colour Scheme</span>
+                        </button>
+                        <div class="dropdown-menu p-0 overflow-hidden">
+                            <div class="btn-group-vertical m-0 p-0 w-100" role="group" aria-label="Colour scheme selection">
+                                <div class="dropdown-header d-none d-lg-inline">Colour Scheme</div>
+                                <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-auto"
+                                    value="auto" checked>
+                                <label class="dropdown-item" for="colour-scheme-radio-auto">
+                                    <i class="bi bi-circle-half me-1"></i> Auto
+                                </label>
+                                <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-light"
+                                    value="light">
+                                <label class="dropdown-item" for="colour-scheme-radio-light">
+                                    <i class="bi bi-sun-fill me-1"></i> Light
+                                </label>
+                                <input type="radio" class="btn-check colour-scheme-option" name="colour-scheme-radio" id="colour-scheme-radio-dark"
+                                    value="dark">
+                                <label class="dropdown-item" for="colour-scheme-radio-dark">
+                                    <i class="bi bi-moon-fill me-1"></i> Dark
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a class="nav-link" id="notifications" href="/notifications" title="Notifications">
+                        <i id="notifications-icon" class="nav-icon me-1 bi bi-bell">
+                        </i>
+                        <span class="fst-normal nav-label d-lg-none">
+                            Notifications
+                        </span>
+
+                    </a>
+                    <a class="nav-link" id="profile" href="/people/emily_dance/" title="Profile">
+                        <i id="profile-icon" class="nav-icon d-lg-none me-1 bi bi-person"></i>
+                        <span class="nav-label">Profile</span>
+                    </a>
+                    <a class="nav-link" id="logout" href="/logout/" title="Log out">
+                        <i id="logout-icon" class="nav-icon d-lg-none me-1 bi bi-door-closed"></i>
+                        <span class="nav-label">Log Out</span>
+                    </a>
+
+                </div>
+            </div>
+        </nav>
+
+        <div id="flash-area" class="container d-flex justify-content-center">
+
+
+
+        </div>
+
+        <div class="base container-lg px-2 px-md-3 py-3">
+            <div class="contentbox border p-4 p-lg-5 my-2 shadow bg-body rounded-5">
+                <form method="POST" class="container-lg">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-12 col-md-4 col-xl-3">
+                            <h1>Events</h1>
+                        </div>
+                        <div class="col-12 col-md-8 col-xl-9">
+                            <div class="d-flex">
+                                <div class="flex-grow-1 pr-2 input-group">
+                                    <div class="form-floating">
+                                        <input class="form-control" id="search" name="search" placeholder="Search" type="text" value="">
+                                        <label for="search">Search</label>
+                                    </div>
+                                    <button class="btn btn-primary" id="search_button" name="search_button" type="submit" title="Search">
+                                        <i class="bi bi-search bi-bold"></i>
+                                        <span class="visually-hidden">Search</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- HEADER ROW END -->
+
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-4 col-xl-3 mb-4">
+                            <div id="form-filter" class="row m-1 p-1 pt-3 pb-1 p-md-0 m-md-0 rounded">
+                                <div id="filter-header" class="d-flex d-md-none align-items-center mb-3">
+                                    <div class="h4 mb-0">Filters</div>
+                                    <button class="btn btn-primary toggler-button ms-auto" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
+                                        <i class="bi bi-chevron-down item-collapsed"></i>
+                                        <i class="bi bi-chevron-up item-expanded"></i>
+                                    </button>
+                                </div>
+
+                                <div id="filter-collapse" class="collapse d-md-block mb-3 px-lg-0">
+
+                                    <div class="form-group mb-3">
+                                        <label for="sort">Sort</label>
+                                        <select class="form-select" id="sort" name="sort" placeholder="">
+                                            <option value="upcoming">Upcoming</option>
+                                            <option value="alpha-asc">Title (A-Z)</option>
+                                            <option value="alpha-desc">Title (Z-A)</option>
+                                        </select>
+                                    </div>
+                                    <label class="form-label mb-0">Accessibility</label>
+                                    <div class="form-text mt-0 pt-0 mb-1">Click the <i class="bi bi-question-circle"
+                                            aria-label="question mark icon"></i> for more information</div>
+                                    <div class="form-group mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="venue_is_mobility_aid_accessible"
+                                                name="venue_is_mobility_aid_accessible" placeholder="" type="checkbox" value="y">
+                                            <label class="form-check-label" for="venue_is_mobility_aid_accessible">Mobility Aid Accessible
+                                                Venue</label>
+                                            <a data-bs-content="Events with venues that are listed as being fully accessible for individuals who use mobility aids, such as wheelchairs."
+                                                tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
+                                                data-bs-trigger="focus" data-bs-title="Mobility Aid Accessible Venue">
+                                                <i class="bi bi-question-circle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="is_relaxed_performance" name="is_relaxed_performance" placeholder=""
+                                                type="checkbox" value="y">
+                                            <label class="form-check-label" for="is_relaxed_performance">Relaxed Performance</label>
+                                            <a data-bs-content="<p>Relaxed performances are adapted shows for those who find standard theater settings challenging. This can include changes to lighting and audio volume, as well as relaxing theatre &quot;rules&quot;.</p><a href='https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed'
+                    title='What is a relaxed performance?' target='_blank' rel='noopener noreferrer'>Click here to learn more.</a>" tabindex="0"
+                                                title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
+                                                data-bs-trigger="focus" data-bs-title="Relaxed Performance" data-bs-html="true">
+                                                <i class="bi bi-question-circle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="is_photosensitivity_friendly" name="is_photosensitivity_friendly"
+                                                placeholder="" type="checkbox" value="y">
+                                            <label class="form-check-label" for="is_photosensitivity_friendly">Photosensitivity-Friendly</label>
+                                            <a data-bs-content="Any lighting effects used during photosensitivity-friendly events should be safe for individuals who experience photosensitivity."
+                                                tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
+                                                data-bs-trigger="focus" data-bs-title="Photosensitivity-Friendly">
+                                                <i class="bi bi-question-circle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="is_hearing_accessible" name="is_hearing_accessible" placeholder=""
+                                                type="checkbox" value="y">
+                                            <label class="form-check-label" for="is_hearing_accessible">Hearing Accessible</label>
+                                            <a data-bs-content="Events that are hearing accessible are, or have been modified to be, accessible for individuals who are deaf or hard of hearing."
+                                                tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
+                                                data-bs-trigger="focus" data-bs-title="Hearing Accessible">
+                                                <i class="bi bi-question-circle"></i>
+                                            </a>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="is_visually_accessible" name="is_visually_accessible" placeholder=""
+                                                type="checkbox" value="y">
+                                            <label class="form-check-label" for="is_visually_accessible">Visually Accessible</label>
+                                            <a data-bs-content="Events that are visually accessible are, or have been modified to be, accessible for individuals who are blind or have low vision."
+                                                tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
+                                                data-bs-trigger="focus" data-bs-title="Visually Accessible">
+                                                <i class="bi bi-question-circle"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <label class="form-label">Ticket prices</label>
+                                    <div class="form-group mb-3">
+                                        <div class="input-group mb-1">
+                                            <span class="input-group-text">
+                                                <div class="text-center price-prefix">Min</div>
+                                            </span>
+                                            <span class="input-group-text">$</span>
+                                            <input aria-describedby="min-ticket-price-help-block" class="form-control" id="min_ticket_price" min="0"
+                                                name="min_ticket_price" step="any" type="number" value="">
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <div class="text-center price-prefix">Max</div>
+                                            </span>
+                                            <span class="input-group-text">$</span>
+                                            <input aria-describedby="max-ticket-price-help-block" class="form-control" id="max_ticket_price" min="0"
+                                                name="max_ticket_price" step="any" type="number" value="">
+                                        </div>
+                                    </div>
+                                    <label class="form-label">Date range</label>
+                                    <div class="form-group mb-3">
+                                        <div class="input-group mb-1">
+                                            <span class="input-group-text">
+                                                <div class="text-center date-prefix">Start</div>
+                                            </span>
+                                            <input class="form-control" id="start_date" name="start_date" type="date" value="2024-04-13">
+                                        </div>
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <div class="text-center date-prefix">End</div>
+                                            </span>
+                                            <input class="form-control" id="end_date" name="end_date" type="date" value="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <div class="row align-items-center py-1">
+                                            <div class="col-auto pe-0 me-1">
+                                                <label class="form-label m-0">Match</label>
+                                            </div>
+                                            <div class="col-auto px-0 me-1">
+                                                <select class="form-select form-select-sm m-0" id="match_all_tags" name="match_all_tags"
+                                                    placeholder="">
+                                                    <option selected value="any">any</option>
+                                                    <option value="all">all</option>
+                                                    <option value="none">none</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-auto ps-0">
+                                                <label class="form-label m-0">of these tags</label>
+                                            </div>
+                                        </div>
+                                        <textarea aria-describedby="tags-help-block" class="form-control" id="tags" name="tags"
+                                            placeholder="e.g. ballet, hip hop, contemporary">
+</textarea>
+                                        <div id="tags-help-block" class="form-text">Separate tags by commas.</div>
+                                    </div>
+
+                                    <input class="btn btn-primary w-100 mb-1" id="apply_filters" name="apply_filters" type="submit"
+                                        value="Apply filters">
+                                    <input class="btn btn-secondary w-100" id="clear_filters" name="clear_filters" type="submit"
+                                        value="Clear filters">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-8 col-xl-9">
+                            <div class="row justify-content-center gy-3">
+
+
+
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/11/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/flamenco.jpg"
+                                                class="card-img-top" alt="Image preview for Flāmenco"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Flāmenco</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">May 1, 5:30 PM</h6>
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+3 more times</p>
+
+                                                <a href="/events/11/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/2/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/urbangrooveshowcase.jpg"
+                                                class="card-img-top" alt="Image preview for Urban Groove Showcase"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Urban Groove Showcase</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">May 15, 8:30 PM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+1 more time</p>
+
+                                                <a href="/events/2/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/7/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/sundaysalsasocial.jpg"
+                                                class="card-img-top" alt="Image preview for Salsa Sunset Social"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Sunday Salsa Social</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Jun 2, 5:30 PM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+12 more times</p>
+
+                                                <a href="/events/7/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/3/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/beforeyouregone.jpg"
+                                                class="card-img-top" alt="Image preview for Before You&#39;re Gone"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Before You&#39;re Gone</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Jun 5, 7:30 PM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+7 more times</p>
+
+                                                <a href="/events/3/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/10/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/breakthebeatbattle.png"
+                                                class="card-img-top" alt="Image preview for Break the Beat Battle"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Break the Beat Battle</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Jun 9, 6:30 PM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+1 more time</p>
+
+                                                <a href="/events/10/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/6/" class="overflow-hidden ratio ratio-16x9"><img
+                                                src="/static/dummy/contemporarycollisions.png" class="card-img-top"
+                                                alt="Image preview for Contemporary Collisions"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Contemporary Collisions</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Jun 19, 7:30 PM</h6>
+
+
+                                                <a href="/events/6/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/9/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/balletinthepark.jpg"
+                                                class="card-img-top" alt="Image preview for Ballet in the Park"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Ballet in the Park</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Jun 30, 2:30 PM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+5 more times</p>
+
+                                                <a href="/events/9/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/13/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/sheelemental.jpg"
+                                                class="card-img-top" alt="Image preview for she elemental"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">she elemental</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Jul 15, 8:00 PM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+3 more times</p>
+
+                                                <a href="/events/13/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/12/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/rhythmrevival.png"
+                                                class="card-img-top" alt="Image preview for Rhythm Revival"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Rhythm Revival</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Aug 12, 5:30 PM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+5 more times</p>
+
+                                                <a href="/events/12/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/8/" class="overflow-hidden ratio ratio-16x9"><img src="/static/dummy/fusionfireworks.jpg"
+                                                class="card-img-top" alt="Image preview for Fusion Fireworks"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Fusion Fireworks</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Sep 10, 6:45 PM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+8 more times</p>
+
+                                                <a href="/events/8/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/4/" class="overflow-hidden ratio ratio-16x9"><img
+                                                src="/static/dummy/introductorytapworkshop.png" class="card-img-top"
+                                                alt="Image preview for Introductory Tap Workshop"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Introductory Tap Workshop</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Sep 12, 5:45 PM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+5 more times</p>
+
+                                                <a href="/events/4/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-auto mx-xxl-2 mx-xl-0">
+
+                                    <div class="card grid-card mb-2">
+                                        <a href="/events/5/" class="overflow-hidden ratio ratio-16x9"><img
+                                                src="/static/dummy/bollywoodbeatsfestival.png" class="card-img-top"
+                                                alt="Image preview for Bollywood Beats Festival"></a>
+                                        <div class="card-body">
+                                            <div class="stretched-link-container">
+                                                <h5 class="card-title text-truncate">Bollywood Beats Festival</h5>
+
+                                                <h6 class="card-subtitle mb-2 text-muted text-truncate">Oct 5, 11:15 AM</h6>
+
+
+                                                <p class="card-text text-truncate text-muted pb-0 mb-0">+1 more time</p>
+
+                                                <a href="/events/5/" class="stretched-link"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                            <div class="d-flex justify-content-center mt-3">
+                                <ul class="pagination mx-auto">
+                                    <li class="page-item">
+                                        <a class="page-link disabled" href="#" aria-label="Previous" disabled>
+                                            <span aria-hidden="true"><i class="bi bi-arrow-left-short"></i></span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link active" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#" aria-label="Next">
+                                            <span aria-hidden="true"><i class="bi bi-arrow-right-short"></i></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div> <!-- ITEM LIST END -->
+                    </div> <!-- ITEM ROW END -->
+                </form> <!-- CONTAINER END -->
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+            crossorigin="anonymous">
+            </script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
+            </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous">
+            </script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+
+                function setColourScheme(colourScheme) {
+                    if (colourScheme == null) {
+                        colourScheme = "auto";
+                    }
+                    if (colourScheme == "auto") {
+                        const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+                        if (prefersDarkScheme.matches) {
+                            document.documentElement.setAttribute("data-bs-theme", "dark");
+                        } else {
+                            document.documentElement.setAttribute("data-bs-theme", "light");
+                        }
+                        document.getElementById("colour-scheme-icon").className = "bi bi-circle-half";
+                    } else {
+                        document.documentElement.setAttribute("data-bs-theme", colourScheme);
+                        if (colourScheme == "light") {
+                            document.getElementById("colour-scheme-icon").className = "bi bi-sun-fill";
+                        } else if (colourScheme == "dark") {
+                            document.getElementById("colour-scheme-icon").className = "bi bi-moon-fill";
+                        }
+                    }
+                    const colourSchemeOptions = document.getElementsByClassName("colour-scheme-option");
+                    for (let i = 0; i < colourSchemeOptions.length; i++) {
+                        if (colourSchemeOptions[i].value == colourScheme) {
+                            colourSchemeOptions[i].nextElementSibling.classList.add("bg-icon-background");
+                        } else {
+                            colourSchemeOptions[i].nextElementSibling.classList.remove("bg-icon-background");
+                        }
+                    }
+
+                    localStorage.setItem("colour-scheme", colourScheme);
+                }
+
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+                    setColourScheme(localStorage.getItem("colour-scheme"));
+                });
+
+                setColourScheme(localStorage.getItem("colour-scheme"));
+
+                const colourSchemeOptions = document.getElementsByClassName("colour-scheme-option");
+                for (let i = 0; i < colourSchemeOptions.length; i++) {
+                    colourSchemeOptions[i].addEventListener("click", function () {
+                        setColourScheme(this.value);
+                    });
+                }
+            });
+
+            var element, icon;
+            if (window.location.pathname.startsWith("/events")) {
+                element = document.getElementById("events");
+                icon = document.getElementById("events-icon");
+
+            } else if (window.location.pathname.startsWith("/people/emily_dance")) {
+                element = document.getElementById("profile");
+                icon = document.getElementById("profile-icon");
+
+            } else if (window.location.pathname.startsWith("/people")) {
+                element = document.getElementById("people");
+                icon = document.getElementById("people-icon");
+            } else if (window.location.pathname.startsWith("/debug")) {
+                element = document.getElementById("debug");
+                icon = document.getElementById("debug-icon");
+            } else if (window.location.pathname.startsWith("/notifications")) {
+                element = document.getElementById("notifications");
+                icon = document.getElementById("notifications-icon");
+            } else if (window.location.pathname.startsWith("/login")) {
+                element = document.getElementById("login");
+                icon = document.getElementById("login-icon");
+            } else if (window.location.pathname.startsWith("/sign-up")) {
+                element = document.getElementById("sign-up");
+                document.getElementById("sign-up-icon").classList.remove("bi-person-add");
+                document.getElementById("sign-up-icon").classList.add("bi-person-fill-add");
+            } else if (window.location.pathname == "/") {
+                element = document.getElementById("home");
+                icon = document.getElementById("home-icon");
+            }
+            if (element != null) {
+                element.classList.add("active");
+                element.classList.add("fw-bold");
+                const srSpan = document.createElement("span");
+                srSpan.className = "sr-only";
+                srSpan.textContent = "(current)";
+                element.appendChild(srSpan);
+            }
+            if (icon != null) {
+                icon.className += "-fill";
+            }
+
+            var first_loaded = true;
+
+            window.addEventListener("scroll", function () {
+                if (first_loaded) {
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: "instant",
+                    });
+                    first_loaded = false;
+                    return;
+                }
+
+                const navbar = document.getElementById("logo-img");
+                const logo = document.getElementById("logo");
+                if (window.scrollY > 0) {
+                    navbar.classList.add("shrink");
+                    logo.classList.add("shrink");
+                } else {
+                    navbar.classList.remove("shrink");
+                    logo.classList.remove("shrink");
+                }
+            });
+
+            window.addEventListener("load", function () {
+                const body = document.getElementsByTagName("body")[0];
+                body.classList.remove("d-none");
+            });
+
+        </script>
+
+
+        <script>
+            const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+            const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+            const popover = new bootstrap.Popover('.popover-dismiss', {
+                trigger: 'focus'
+            });
+        </script>
+
+    </body>
+
+</html>

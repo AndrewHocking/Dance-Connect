@@ -93,6 +93,12 @@
                                     {% if event.min_ticket_price != None %}
                                     {% if event.max_ticket_price == None %}
                                     From {{ "${:,.2f}".format(event.min_ticket_price) | replace(".00", "") }}
+                                    {% elif event.min_ticket_price == event.max_ticket_price %}
+                                    {% if event.min_ticket_price == 0 %}
+                                    Free
+                                    {% else %}
+                                    {{ "${:,.2f}".format(event.min_ticket_price) | replace(".00", "") }}
+                                    {% endif %}
                                     {% else %}
                                     {{ "${:,.2f}".format(event.min_ticket_price) | replace(".00", "") }} –
                                     {{ "${:,.2f}".format(event.max_ticket_price) | replace(".00", "") }}
@@ -111,8 +117,8 @@
                                 {% if event.venue_address %}
                                 <div class="col-lg-auto col-12 pe-0">
                                     <div class="dropdown py-lg-2 pb-2">
-                                        <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                            aria-expanded="false" title="Directions">
+                                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                            title="Directions">
                                             <i class="bi bi-map-fill"></i>
                                             <span class="d-lg-none ms-1">Directions</span>
                                         </button>
@@ -165,9 +171,9 @@
                                 </li>
                                 {% if event.venue_address %}
                                 <li id="map" class="list-group-item bg-secondary-subtle p-0 overflow-hidden">
-                                    <iframe class="w-100 h-100 border-0"
+                                    {# <iframe class="w-100 h-100 border-0"
                                         src="https://www.google.com/maps/embed/v1/search?q={{(event.venue_address)|urlencode}}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8">
-                                    </iframe>
+                                    </iframe> #}
                                 </li>
                                 {% endif %}
                             </ul>
@@ -198,13 +204,13 @@
                                                             {% if occurrence.is_relaxed_performance %}
                                                             {{ accessibility_icon("relaxed performance", false, "ms-1") }}
                                                             {% endif %}
-                                                            {{ accessibility_icon("photosensitivity", not occurrence.is_photosensitivity_friendly, "ms-1") }}
                                                             {% if occurrence.is_hearing_accessible %}
                                                             {{ accessibility_icon("hearing", false, "ms-1") }}
                                                             {% endif %}
                                                             {% if occurrence.is_visually_accessible %}
                                                             {{ accessibility_icon("vision", false, "ms-1") }}
                                                             {% endif %}
+                                                            {{ accessibility_icon("photosensitivity", not occurrence.is_photosensitivity_friendly, "ms-1") }}
                                                         </ul>
                                                     </td>
                                                 </tr>

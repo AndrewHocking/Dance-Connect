@@ -143,7 +143,7 @@ def update_user(
         if conflict is None:
             user.username = username
         else:
-            return json_response(400, "Username already taken.", username)
+            return json_response(409, "Username already taken.", username)
 
     if email is not None:
         user.email = email
@@ -193,7 +193,7 @@ def create_socials_link(user_id: int, type: str, handle: str):
         .first()
 
     if conflict is not None:
-        return json_response(400, f"User aleady has an existing social media handle <{conflict.handle}> for this platform.")
+        return json_response(409, f"User aleady has an existing social media handle <{conflict.handle}> for this platform.")
 
     new_socials = SocialMedia(
         user=user_id,
@@ -204,7 +204,7 @@ def create_socials_link(user_id: int, type: str, handle: str):
     db.session.add(new_socials)
     db.session.commit()
 
-    return json_response(200, f"New social media handle {handle} added for user on platform {type}", new_socials)
+    return json_response(201, f"New social media handle {handle} added for user on platform {type}", new_socials)
 
 
 def update_socials_link(user_id: int, type: str, handle: str):
@@ -212,10 +212,10 @@ def update_socials_link(user_id: int, type: str, handle: str):
         .filter(and_(
             SocialMedia.user == user_id,
             func.lower(SocialMedia.social_media) == func.lower(type)
-        )) \
+        ))
 
     if socials_link.first() is None:
-        return json_response(404, f"User {user_id} does not have an existing handle on platform {type}")
+        return create_socials_link(user_id, type, handle)
 
     if handle == "":
         db.session.delete(socials_link.first())

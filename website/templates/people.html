@@ -48,6 +48,7 @@
             filename='images/placeholder.jpg'),
             title=person.display_name,
             subtitle="@"+person.username,
+            text=person.password,
             href=url_for('people.person',
             username=person.username)
         ) }}

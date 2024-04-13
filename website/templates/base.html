@@ -31,13 +31,28 @@
                         <i id="home-icon" class="nav-icon d-lg-none me-1 bi bi-house"></i>
                         <span class="nav-label">Home</span>
                     </a>
-                    <a class="nav-link" id="events" href="{{ url_for('events.events_list') }}" title="Events">
-                        <i id="events-icon" class="nav-icon d-lg-none me-1 bi bi-calendar-week"></i>
-                        <span class="nav-label">Events</span>
-                    </a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="events" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i id="events-icon" class="nav-icon d-lg-none me-1 bi bi-calendar-week"></i>
+                            <span class="nav-label">Events</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('events.events_list') }}">Upcoming events</a></li>
+                            <li><a class="dropdown-item" href="#">Event calendar</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('events.event_create') }}">Create a new event</a></li>
+                            <li><a class="dropdown-item" href="#">My events</a></li>
+                        </ul>
+                    </div>
                     <a class="nav-link" id="people" href="{{ url_for('people.people_list') }}" title="People">
                         <i id="people-icon" class="nav-icon d-lg-none me-1 bi bi-people"></i>
                         <span class="nav-label">People</span>
+                    </a>
+                    <a class="nav-link" id="opportunities" href="#" title="Opportunities">
+                        <i id="opportunities-icon" class="nav-icon d-lg-none me-1 bi bi-briefcase"></i>
+                        <span class="nav-label">Opportunities</span>
                     </a>
                 </div>
                 <div class="navbar-nav navbar-right">

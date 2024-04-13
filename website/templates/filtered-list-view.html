@@ -45,6 +45,23 @@
             <div class="row justify-content-center gy-3">
                 {% block items_to_list %}{% endblock %}
             </div>
+            <div class="d-flex justify-content-center mt-3">
+                <ul class="pagination mx-auto">
+                    <li class="page-item">
+                        <a class="page-link disabled" href="#" aria-label="Previous" disabled>
+                            <span aria-hidden="true"><i class="bi bi-arrow-left-short"></i></span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link active" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true"><i class="bi bi-arrow-right-short"></i></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div> <!-- ITEM LIST END -->
     </div> <!-- ITEM ROW END -->
 </form> <!-- CONTAINER END -->
