@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Person{% endblock %}
+{% block title %}{{ person.display_name }}{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -27,13 +27,19 @@
 
                 {% block edit_person_tags %}
                 {% if person.tags|length > 0 %}
-                <div class="row d-flex flex-wrap gx-1">
+                <div class="row d-flex flex-wrap gx-1 pb-0 mb-0">
+                    {% if person.tags and person.tags|length > 0 %}
+                    <div class="col-lg-auto col-12 d-lg-inline-block d-block me-1 mb-1">
+                        <i class="bi bi-tag{{'s' if person.tags|length > 1}}-fill" aria-describedby="Tags"></i>
+                        <span class="d-lg-none">Tags</span>
+                    </div>
                     {% for tag in person.tags %}
-                    <form class="col-auto" action="{{ url_for('people.people_list') }}" method="POST">
+                    <form class="col-auto mb-1" action="{{ url_for('people.people_list') }}" method="POST">
                         <button name="tags" value="{{ tag.name }}"
                             class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name }}</button>
                     </form>
                     {% endfor %}
+                    {% endif %}
                 </div>
                 {% endif %}
                 {% endblock %}
@@ -62,13 +68,13 @@
                 {% block edit_person_EditContacts %}
                 {% if socials %}
                 <div class="p-3 bg-body-tertiary rounded text-decoration-none">
-                    <h4>Contact</h4>
+                    <h4><i class="bi bi-chat-dots-fill pe-2"></i>Contact</h4>
                     {% for site in socials %}
                     {% set icon_name = site %}
                     {% set url_prefix = "https://" %}
                     {% set handle = socials[site] %}
                     {% if site == "website" %}
-                    {% set icon_name = "globe" %}
+                    {% set icon_name = "globe2" %}
                     {% elif site == "instagram" %}
                     {% set url_prefix = "https://www.instagram.com/" %}
                     {% elif site == "email" %}
@@ -84,16 +90,17 @@
                     {% elif site == "facebook" %}
                     {% set url_prefix = "https://facebook.com/" %}
                     {% endif %}
-                    <div class="row align-items-center ps-3 py-1">
+                    <a href="{{ url_prefix }}{{ handle.replace('https://', '', 1).replace('http://', '', 1) }}"
+                        class="row align-items-center ps-3 py-1 text-decoration-none">
                         <div class="col-auto p-0">
-                            <div class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
+                            <div class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
                                 <i class="bi bi-{{ icon_name }}"></i>
                             </div>
                         </div>
-                        <div class="col-10 ps-2 text-no-wrap text-truncate">
-                            <a href="{{ url_prefix }}{{ handle.replace('https://', '', 1).replace('http://', '', 1) }}">{{ handle }}</a>
+                        <div class="col-10 ps-2 text-no-wrap text-truncate text-body">
+                            {{ handle }}
                         </div>
-                    </div>
+                    </a>
                     {% endfor %}
                 </div> <!-- LEFT BLOCK END -->
                 {% endif %}
@@ -104,7 +111,7 @@
 
             <div class="col-12 col-md-7 col-xl-9 pl-xl-5 pl-3">
                 <div class="pb-4">
-                    <p class="h4">Bio</p>
+                    <h4><i class="bi bi-person-fill pe-2"></i>Bio</h4>
                     <p>
                         {% block edit_person_bio %}
                         {% if bio == None %}
@@ -116,17 +123,17 @@
                     </p>
                 </div>
                 <div class="pb-4">
-                    <p class="h4">Events</p>
-                    <div class="row overflow-x-scroll">
+                    <h4><i class="bi bi-calendar-week-fill pe-2"></i>Events</h4>
+                    <div class="row-12 d-flex flex-no-wrap overflow-x-scroll ">
                         {% from 'macros.html' import grid_item %}
                         {% for contributed in events_contributed %}
-                        <div class="col-auto">
+                        <div class="col-auto me-2">
                             {{ grid_item(
                                         image_src=url_for('static',
                                         filename='images/placeholder.jpg'),
                                         title=contributed.event.title,
                                         subtitle=contributed.role,
-                                        text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %e, %l:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %e, %l:%M %p')),
+                                        text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %e, %l:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %e, %l:%M %p')) if contributed.event.occurrences|length > 0 else "",
                                         href=url_for('events.event_details',
                                         event_id=contributed.event.id)
                                 ) }}
@@ -135,10 +142,10 @@
                     </div>
                 </div>
                 <div class="pb-4">
-                    <p class="h4">Affiliated</p>
-                    <div class="row-10 d-flex flex-no-wrap overflow-x-scroll ">
+                    <h4><i class="bi bi-people-fill pe-2"></i>Affiliated</h4>
+                    <div class="row-12 d-flex flex-no-wrap overflow-x-scroll ">
                         {% for affiliation in affiliations %}
-                        <div class="col-auto">
+                        <div class="col-auto me-2">
                             {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'),
                             title=affiliation.display_name,
                             subtitle="@" + affiliation.username,

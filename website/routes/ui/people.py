@@ -16,11 +16,11 @@ people = Blueprint("people", __name__)
 
 
 @people.route(
-    "/people/",
+    "/",
     defaults={"search": "_", "sort": "_", "filters": "_"},
     methods=["GET", "POST"],
 )
-@people.route("/people/<search>/<sort>/<filters>/", methods=["GET", "POST"])
+@people.route("/<search>/<sort>/<filters>/", methods=["GET", "POST"])
 def people_list(search, sort, filters):
     form = PeopleFilter()
 
@@ -125,7 +125,7 @@ def people_list(search, sort, filters):
     )
 
 
-@people.route("/people/<username>/", methods=["GET"])
+@people.route("/<username>/", methods=["GET"])
 def person(username):
     person: User = read_single_user(username=username)["data"]
     events_contributed = person.contributor_association
@@ -142,7 +142,7 @@ def person(username):
     if person.bio != "":
         bio = person.bio
 
-    affiliations = get_affilliations(person.id)["data"]
+    affiliations = get_affilliations(person.id)["data"] or []
 
     return render_template(
         "person.html",
@@ -150,14 +150,18 @@ def person(username):
         person=person,
         bio=bio,
         events_contributed=events_contributed,
+        events_organized=person.events_organized,
         affiliations=affiliations,
         edit=edit,
         socials=socialMediaDic,
     )
 
 
-@people.route("/people/<username>/edit/", methods=["GET", "POST"])
+@people.route("/<username>/edit/", methods=["GET", "POST"])
 def edit_person(username):
+    if not current_user.is_authenticated or current_user.username != username:
+        return redirect(url_for("people.person", username=username))
+
     person: User = read_single_user(username=username)["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_contributed))
@@ -235,16 +239,16 @@ def edit_person(username):
                 threads, "threads"], [tiktok, "tiktok"], [twitter, "twitter"], [facebook, "facebook"], ]
 
             for social in socialListofList:
-                if update_socials_link(id, social[1], social[0])["status_code"] == 404 and social[0] != "":
-                    create_socials_link(id, social[1], social[0])
+                if social[0] != "" and update_socials_link(person.id, social[1], social[0])["status_code"] == 404:
+                    create_socials_link(person.id, social[1], social[0])
 
             # check password and update if all good
-            if current_pass != "" and new_pass != "" and confirm_pass != "" and person.password == current_pass and new_pass == confirm_pass:
+            if person.password == current_pass and new_pass == confirm_pass:
                 update_user(
-                    user_id=id,
+                    user_id=person.id,
                     password=new_pass,
                 )
-            else:
+            elif current_pass != "" and new_pass != "" and confirm_pass != "":
                 flash(
                     "Password did not match or current password is incorrect", "error"
                 )
@@ -282,12 +286,12 @@ def edit_person(username):
                 )
             else:
                 update_user(
-                    user_id=id,
+                    user_id=person.id,
                     password=new_pass,
                 )
 
             # Check for unique username
-            if update_user(user_id=id, username=uniqueUsername)["status_code"] == 400:
+            if update_user(user_id=person.id, username=uniqueUsername)["status_code"] == 400:
                 flash("Username already taken", "error")
                 return render_template(
                     "edit_person.html",
@@ -305,7 +309,7 @@ def edit_person(username):
 
             # if all okay, then update everyone
             update_user(
-                user_id=id,
+                user_id=person.id,
                 display_name=display_name,
                 pronouns=pronouns,
                 bio=request.form.get("bioTextArea", ""),
@@ -313,7 +317,7 @@ def edit_person(username):
             )
             # person.bio = request.form.get("bioTextArea", "")
             # person.save()
-            return redirect(url_for("people.person", id=id))
+            return redirect(url_for("people.person", username=username))
 
     return render_template(
         "edit_person.html",

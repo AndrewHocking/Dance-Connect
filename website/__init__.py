@@ -61,7 +61,7 @@ def create_app():
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
-    app.register_blueprint(people, url_prefix='/')
+    app.register_blueprint(people, url_prefix='/people')
     app.register_blueprint(events, url_prefix='/events')
     app.register_blueprint(debug_route, url_prefix='/')
     app.register_blueprint(notifications, url_prefix='/')

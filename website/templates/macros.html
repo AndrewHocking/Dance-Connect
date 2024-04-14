@@ -1,30 +1,52 @@
 {% macro accessibility_icon(icon, danger, extra_classes="") %}
 {% if icon == "photosensitivity" %}
-{% set title = "photosensitivity friendly" %}
+{% set title = "photosensitivity-friendly" %}
 {% if danger %}
 {% set icon_name = "lightbulb-off-fill" %}
+{% set popover_content = "This event may contain lighting effects that are not safe for individuals who experience photosensitivity." %}
 {% else %}
 {% set icon_name = "lightbulb-fill" %}
+{% set popover_content = "Any lighting effects used during photosensitivity-friendly events should be safe for individuals who experience
+photosensitivity." %}
 {% endif %}
 {% elif icon == "hearing" %}
 {% set icon_name = "ear-fill" %}
 {% set title = "hearing accessible" %}
+{% set popover_content = "Events that are hearing accessible are, or have been modified to be, accessible for individuals who are deaf or hard of
+hearing." %}
 {% elif icon == "vision" %}
 {% set icon_name = "eye-fill" %}
 {% set title = "visually accessible" %}
+{% set popover_content = "Events that are visually accessible are, or have been modified to be, accessible for individuals who are blind or have low
+vision." %}
 {% elif icon == "relaxed performance" %}
 {% set icon_name = "infinity" %}
 {% set title = "relaxed performance" %}
+{% set popover_content = "<p>Relaxed performances are adapted shows for those who find standard theater settings challenging. This can include changes
+    to
+    lighting and audio volume, as well as relaxing theatre &quot;rules&quot;.</p><a
+    href='https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed' title='What is a relaxed performance?'
+    target='_blank' rel='noopener noreferrer'>Click here to learn more.</a>" %}
 {% elif icon == "mobility aid" %}
 {% set icon_name = "person-wheelchair" %}
-{% set title = "mobility aid accessible" %}
+{% set title = "mobility aid accessible venue" %}
+{% if danger %}
+{% set popover_content = "This venue is <strong>not</strong> fully accessible for individuals who use mobility aids, such as wheelchairs." %}
+{% else %}
+{% set popover_content = "This venue is fully accessible for individuals who use mobility aids, such as wheelchairs." %}
+{% endif %}
 {% else %}
 {% set icon_name = "question" %}
-{% set title = "Congratulations! You've found a bug. This state should not exist." %}
+{% set title = "Error" %}
+{% set popover_title = "Error" %}
+{% set popover_content = "Congratulations! You've found a bug. This state should not exist." %}
 {% endif %}
 <li class="list-inline-item position-relative text-bg-{{ 'danger' if danger else 'primary' }} rounded-circle p-0 m-0 accessibility-icon {{extra_classes}}"
-    title="{{ 'Not ' if danger }}{{ title|title }}">
-    <i class="bi bi-{{ icon_name }} position-absolute top-50 start-50 translate-middle p-2"></i>
+    title="{{ 'Not ' if danger }}{{ title|title }} - Click for more information">
+    <a data-bs-content="{{ popover_content }}" tabindex="0" title="What does this mean?" role="button" data-bs-toggle="popover"
+        data-bs-trigger="focus" data-bs-title="{{ 'Not ' if danger }}{{ title|title }}" data-bs-html="true">
+        <i class="bi bi-{{ icon_name }} position-absolute top-50 start-50 translate-middle p-2"></i>
+    </a>
 </li>
 {% endmacro %}
 
@@ -71,7 +93,7 @@
         </div>
     </div>
     <div class="col-xl-auto col d-flex justify-content-center justify-content-xl-end form-group mt-xl-0 mt-2">
-        <button class="btn btn-danger delete-btn" type="button">
+        <button id="occurrence-occurrence_number-delete-btn" class="btn btn-danger delete-btn" type="button" value="occurrence_number">
             <i class="bi bi-trash3-fill"></i>
             Delete
         </button>
@@ -81,7 +103,7 @@
 
 
 {% macro create_event_occurrence(occurrence, occurrence_number) %}
-{{ create_event_occurrence_helper(occurrence) | replace("occurrence-occurrence_number", "occurrence-" + occurrence_number|string) }}
+{{ create_event_occurrence_helper(occurrence) | replace("occurrence_number", occurrence_number|string) }}
 {% endmacro %}
 
 
