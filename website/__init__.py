@@ -58,6 +58,7 @@ def create_app():
     from .routes.ui.events import events
     from .routes.ui.debug import debug_route
     from .routes.ui.notifications import notifications
+    from .routes.ui.opportunities import opportunities
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
@@ -65,6 +66,7 @@ def create_app():
     app.register_blueprint(events, url_prefix='/events')
     app.register_blueprint(debug_route, url_prefix='/')
     app.register_blueprint(notifications, url_prefix='/')
+    app.register_blueprint(opportunities, url_prefix='/opportunities')
 
     with app.app_context():
         db.create_all()

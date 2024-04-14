@@ -38,7 +38,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('events.events_list') }}">Upcoming events</a></li>
-                            <li><a class="dropdown-item" href="#">Event calendar</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('events.events_calendar') }}">Event calendar</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -50,7 +50,7 @@
                         <i id="people-icon" class="nav-icon d-lg-none me-1 bi bi-people"></i>
                         <span class="nav-label">People</span>
                     </a>
-                    <a class="nav-link" id="opportunities" href="#" title="Opportunities">
+                    <a class="nav-link" id="opportunities" href="{{ url_for('opportunities.opportunities_list') }}" title="Opportunities">
                         <i id="opportunities-icon" class="nav-icon d-lg-none me-1 bi bi-briefcase"></i>
                         <span class="nav-label">Opportunities</span>
                     </a>
@@ -221,6 +221,9 @@
             } else if (window.location.pathname.startsWith("/people")) {
                 element = document.getElementById("people");
                 icon = document.getElementById("people-icon");
+            } else if (window.location.pathname.startsWith("/opportunities")) {
+                element = document.getElementById("opportunities");
+                icon = document.getElementById("opportunities-icon");
             } else if (window.location.pathname.startsWith("/debug")) {
                 element = document.getElementById("debug");
                 icon = document.getElementById("debug-icon");

@@ -19,7 +19,7 @@ events = Blueprint('events', __name__)
 
 
 @events.route('/', methods=['GET', 'POST'])
-def events_list():
+def events_list(calendar_view: bool = False):
     filters = EventFilterForm()
     if request.method == "POST":
         search = request.form.get("search") or ""
@@ -116,7 +116,14 @@ def events_list():
         response = search_events()
 
     events = response.get("data") or []
+    if calendar_view:
+        return render_template("events-calendar.html", user=current_user, events=events, filters=filters)
     return render_template("events.html", user=current_user, events=events, filters=filters)
+
+
+@events.route('/calendar/', methods=['GET', 'POST'])
+def events_calendar():
+    return events_list(calendar_view=True)
 
 
 @events.route('/create/', methods=['GET', 'POST'])
