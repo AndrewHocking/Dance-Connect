@@ -9,21 +9,21 @@ def home():
     return render_template("home.html", user=current_user)
 
 
-@views.route("/people/dummy/", methods=["GET", "POST"])
-def dummy_user():
-    return render_template("dummy-user.html", user=current_user)
+@views.route("/people/demo/", methods=["GET", "POST"])
+def demo_user():
+    return render_template("demo-user.html", user=current_user)
 
 
-@views.route("/events/dummy/", methods=["GET", "POST"])
-def dummy_event():
-    return render_template("dummy-event.html", user=current_user)
+@views.route("/events/demo/", methods=["GET", "POST"])
+def demo_event():
+    return render_template("demo-event.html", user=current_user)
 
 
-@views.route("/events/dummy-list/", methods=["GET", "POST"])
-def dummy_event_list():
-    return render_template("dummy-event-list.html", user=current_user)
+@views.route("/events/demo-list/", methods=["GET", "POST"])
+def demo_event_list():
+    return render_template("demo-event-list.html", user=current_user)
 
 
-@views.route("/people/dummy-list/", methods=["GET", "POST"])
-def dummy_people_list():
-    return render_template("dummy-people-list.html", user=current_user)
+@views.route("/people/demo-list/", methods=["GET", "POST"])
+def demo_people_list():
+    return render_template("demo-people-list.html", user=current_user)

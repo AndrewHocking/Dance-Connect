@@ -275,6 +275,11 @@ body {
     border-color: var(--pink);
 }
 
+.bg-nav {
+    background-color: var(--nav-background);
+    color: white;
+}
+
 /*** Responsive design ***/
 
 /* For extra extra wide screens (e.g. very large desktops), i.e. Bootstrap's "xxl" breakpoint: */
