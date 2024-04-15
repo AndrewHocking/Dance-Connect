@@ -21,8 +21,8 @@ def debug():
     return render_template("debug.html", user=current_user)
 
 
-@debug_route.route('/debug/create_dummy_users/', methods=['GET', 'POST'])
-def create_dummy_users():
+@debug_route.route('/debug/create_demo_users/', methods=['GET', 'POST'])
+def create_demo_users():
     users = [
         {
             "display_name": "Grace Turner",
@@ -263,8 +263,8 @@ def create_dummy_users():
     return redirect(url_for("people.people_list"))
 
 
-@debug_route.route('/debug/create_dummy_events/', methods=['GET', 'POST'])
-def create_dummy_events():
+@debug_route.route('/debug/create_demo_events/', methods=['GET', 'POST'])
+def create_demo_events():
     events = [
         # {
         #     "title": "Groove Fusion Night",
