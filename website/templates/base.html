@@ -14,7 +14,7 @@
         <title>{% block title %}Home{% endblock %} | DanceConnect</title>
     </head>
 
-    <body class="d-none">
+    <body class="visually-hidden">
         <nav class="navbar sticky-top navbar-expand-lg navbar-dark mt-4 px-md-5 px-3 shadow">
             <a id="logo" class="navbar-brand d-flex align-items-center pe-3" href="{{ url_for('views.home') }}">
                 <img id="logo-img" class="rounded-circle p-1 shadow-lg bg-white" src="{{url_for('static', filename='images/logo.png')}}"
@@ -166,10 +166,9 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous">
             </script>
-
+        
         <script>
             document.addEventListener('DOMContentLoaded', (event) => {
-
                 function setColourScheme(colourScheme) {
                     if (colourScheme == null) {
                         colourScheme = "auto";
@@ -283,10 +282,10 @@
                     logo.classList.remove("shrink");
                 }
             });
-
             window.addEventListener("load", function () {
                 const body = document.getElementsByTagName("body")[0];
-                body.classList.remove("d-none");
+                body.classList.remove("visually-hidden");
+
             });
 
         </script>

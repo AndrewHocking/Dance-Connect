@@ -105,6 +105,7 @@
                 </div> 
                 {% endif %}
             </div>
+            <a href="{{ url_for('opportunities.opportunity', organizer=opportunity.organizer, title=opportunity.title) }}" class="stretched-link"></a>
         </div>
     </div>
     {% endfor %}

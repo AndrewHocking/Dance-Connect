@@ -170,4 +170,14 @@ def get_opportunity_posts(
     if posts is None or len(posts) == 0:
         return json_response(404, "No opportunity posts found that match the given search criteria.", posts)
 
-    return json_response(201, f"{len(posts)} opportunity posts have been retrieved.", posts)
+    return json_response(200, f"{len(posts)} opportunity posts have been retrieved.", posts)
+
+
+def get_opportunity_by_organizer_and_title(organizer: str, title: str):
+    opportunity = db.session.query(Opportunity).filter(
+        and_(Opportunity.organizer == organizer, Opportunity.title == title)).first()
+
+    if opportunity is None:
+        return json_response(404, f"No opportunity post with organizer {organizer} and title {title} were found")
+
+    return json_response(200, f"Opportunity post has been found.", opportunity)

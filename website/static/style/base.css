@@ -160,9 +160,13 @@ body {
     background-color: #d6eef8;
 }
 
-
 .notifications-badge {
     transform: translate(-5px, -50%);
+}
+
+.opportunity-post-content {
+    height: 50vh;
+    overflow-y: scroll;
 }
 
 .user-circle .rounded-circle,

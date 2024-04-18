@@ -4,7 +4,7 @@ from flask_login import current_user
 from datetime import datetime, timedelta, timezone
 
 from ...forms.opportunity_filter import OpportunityFilter, fill_post_type_data, fill_term_type_data, fill_location_type_data, fill_compensation_type_data
-from ...orm.opportunity.opportunity import get_opportunity_posts
+from ...orm.opportunity.opportunity import get_opportunity_posts, get_opportunity_by_organizer_and_title
 from ...models.opportunity import PostType, TermType, LocationType, Opportunity
 
 opportunities = Blueprint('opportunities', __name__)
@@ -88,3 +88,16 @@ def opportunities_list():
     opportunities: list[Opportunity] = resp.get('data', [])
 
     return render_template("opportunities.html", user=current_user, filters=form, post_type=post_types, term_type=TermType, location_type=LocationType, opportunities=opportunities)
+
+
+@opportunities.route('/<organizer>/<title>/', methods=['GET', 'POST'])
+def opportunity(organizer: str, title: str):
+    resp = get_opportunity_by_organizer_and_title(
+        organizer=organizer, title=title)
+
+    opportunity: Opportunity = resp.get("data", None)
+    if opportunity is None:
+        return render_template("opportunity-details.html", user=current_user, opportunity=opportunity)
+
+    is_editable = current_user == opportunity.poster
+    return render_template("opportunity-details.html", user=current_user, opportunity=opportunity, edit=is_editable, post_type=post_types)
