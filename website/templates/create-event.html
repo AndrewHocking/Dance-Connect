@@ -3,11 +3,11 @@
 {% block content %}
 <div class="container">
     <div class="page-header mb-3">
-        <h1>Create Event</h1>
+        <h1>{{ "Edit Event" if edit else "Create Event" }}</h1>
         <div class="form-text">Fields labelled <strong>✽</strong> are required</div>
     </div>
-    <form method="POST" action="{{url_for('events.create_event_submit') }}">
-        {{ event_form.num_occurrences() }}
+    <form autocomplete="off" method="POST"
+        action="{{ url_for('events.event_edit', event_id=event_id) if edit else url_for('events.create_event_submit') }}">
         <fieldset class="form-group mb-3">
             <legend>Event Information</legend>
             <div class="form-group mb-3">
@@ -53,7 +53,8 @@
             </div>
         </fieldset>
         <fieldset class="form-group mb-3">
-            <legend>Event Occurrences</legend>
+            <legend>Event Times</legend>
+            {{ event_form.num_occurrences() }}
             <div id="occurrences" class="form-group mb-3"> {# TODO: Fix alignment #}
                 {% from "macros.html" import create_event_occurrence %}
                 {% for occurrence in occurrences %}
@@ -99,7 +100,10 @@
         </fieldset>
         <div class="row justify-content-center">
             <div class="col-auto">
-                {{ event_form.submit(class_="btn btn-primary") }}
+                <button type="button" id="cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+            <div class="col-auto">
+                {{ event_form.submit() }}
             </div>
         </div>
     </form>
@@ -108,69 +112,94 @@
 
 {% block javascript %}
 <script>
-    var numOccurrences = 0;
-
-    let buttons = document.getElementsByClassName("delete-btn");
-    for (let i = 0; i < buttons.length; i++) {
-        buttons[i].addEventListener("click", event => {
-            deleteOccurrence(i + 1);
-        });
-    }
+    var numOccurrences = parseInt(document.getElementById("num_occurrences").value);
+    const occurrenceTemplate = document.getElementById("occurrence-0").innerHTML;
 
     function addOccurrence() {
-        let data = new FormData();
-        data.append("previous_date", document.getElementById(`occurrence-${numOccurrences}-date`).value);
-        data.append("previous_start_time", document.getElementById(`occurrence-${numOccurrences}-start-time`).value);
-        data.append("previous_end_time", document.getElementById(`occurrence-${numOccurrences}-end-time`).value);
-        data.append("previous_is_relaxed_performance", document.getElementById(`occurrence-${numOccurrences}-is-relaxed-performance`).checked);
-        data.append("previous_is_hearing_accessible", document.getElementById(`occurrence-${numOccurrences}-is-hearing-accessible`).checked);
-        data.append("previous_is_visually_accessible", document.getElementById(`occurrence-${numOccurrences}-is-visually-accessible`).checked);
-
         numOccurrences++;
-        data.append("occurrence_number", numOccurrences);
-        fetch("{{ url_for("events.create_event_occurrence") }}", {
-            method: "POST",
-            body: data,
-        }).then(function (response) {
-            if (response.ok) {
-                response.text().then(function (content) {
-                    new_element = document.createElement("div");
-                    new_element.innerHTML = content.replace(/occurrence-occurrence_number/g, `occurrence-${numOccurrences}`);
-                    new_element.id = `occurrence-${numOccurrences}`;
-                    new_element.classList.add("occurrence");
-                    document.getElementById(`occurrence-${numOccurrences - 1}`).insertAdjacentElement("afterend", new_element);
-                    document.getElementById("num_occurrences").value = numOccurrences + 1;
-                });
-            } else {
-                console.error("Error: " + response.status + " – Failed to create a new occurrence form block.");
-            }
+        document.getElementById("num_occurrences").value++;
+        new_element = document.createElement("div");
+        new_element.innerHTML = occurrenceTemplate.replace(/occurrence-0/g, `occurrence-${numOccurrences}`);
+        new_element.id = `occurrence-${numOccurrences}`;
+        new_element.classList.add("occurrence");
+        let button = new_element.getElementsByClassName("delete-btn")[0];
+        button.value = numOccurrences;
+        button.addEventListener("click", event => {
+            deleteOccurrence(button);
         });
+        document.getElementById("occurrences").appendChild(new_element);
+
+
+        if (numOccurrences > 0) {
+            document.getElementById(`occurrence-${numOccurrences}-date`).value = document.getElementById(`occurrence-${numOccurrences - 1}-date`).value;
+            document.getElementById(`occurrence-${numOccurrences}-start-time`).value = document.getElementById(`occurrence-${numOccurrences - 1}-start-time`).value;
+            document.getElementById(`occurrence-${numOccurrences}-end-time`).value = document.getElementById(`occurrence-${numOccurrences - 1}-end-time`).value;
+            document.getElementById(`occurrence-${numOccurrences}-is-relaxed-performance`).checked = document.getElementById(`occurrence-${numOccurrences - 1}-is-relaxed-performance`).checked;
+            document.getElementById(`occurrence-${numOccurrences}-is-photosensitivity-friendly`).checked = document.getElementById(`occurrence-${numOccurrences - 1}-is-photosensitivity-friendly`).checked;
+            document.getElementById(`occurrence-${numOccurrences}-is-hearing-accessible`).checked = document.getElementById(`occurrence-${numOccurrences - 1}-is-hearing-accessible`).checked;
+            document.getElementById(`occurrence-${numOccurrences}-is-visually-accessible`).checked = document.getElementById(`occurrence-${numOccurrences - 1}-is-visually-accessible`).checked;
+        }
     }
 
-    function deleteOccurrence(occurrenceNum) {
-        alert("TODO: FIX ME - DELETING DOESN'T WORK PROPERLY");
-        for (let i = occurrenceNum + 1; i <= numOccurrences; i++) {
-            document.getElementById("occurrences-" + (i - 1) + "-date").value = i == numOccurrences ? null : document.getElementById("occurrences-" + i + "-date").value;
-            document.getElementById("occurrences-" + (i - 1) + "-start_time").value = i == numOccurrences ? null : document.getElementById("occurrences-" + i + "-start_time").value;
-            document.getElementById("occurrences-" + (i - 1) + "-end_time").value = i == numOccurrences ? null : document.getElementById("occurrences-" + i + "-end_time").value;
-            document.getElementById("occurrences-" + (i - 1) + "-is_relaxed_performance").checked = i == numOccurrences ? false : document.getElementById("occurrences-" + i + "-is_relaxed_performance").checked;
-            document.getElementById("occurrences-" + (i - 1) + "-is_visually_accessible").checked = i == numOccurrences ? false : document.getElementById("occurrences-" + i + "-is_visually_accessible").checked;
-        }
-        document.getElementById("occurrences-" + numOccurrences).classList.add(["d-none"]);
-        document.getElementById("num_occurrences").value = numOccurrences;
+    function deleteOccurrence(button) {
+        occurrenceNum = parseInt(button.value);
         numOccurrences--;
+        document.getElementById("num_occurrences").value--;
+
+        for (let i = occurrenceNum; i <= numOccurrences; i++) {
+            document.getElementById(`occurrence-${i}-date`).value = document.getElementById(`occurrence-${i + 1}-date`).value;
+            document.getElementById(`occurrence-${i}-start-time`).value = document.getElementById(`occurrence-${i + 1}-start-time`).value;
+            document.getElementById(`occurrence-${i}-end-time`).value = document.getElementById(`occurrence-${i + 1}-end-time`).value;
+            document.getElementById(`occurrence-${i}-is-relaxed-performance`).checked = document.getElementById(`occurrence-${i + 1}-is-relaxed-performance`).checked;
+            document.getElementById(`occurrence-${i}-is-photosensitivity-friendly`).checked = document.getElementById(`occurrence-${i + 1}-is-photosensitivity-friendly`).checked;
+            document.getElementById(`occurrence-${i}-is-hearing-accessible`).checked = document.getElementById(`occurrence-${i + 1}-is-hearing-accessible`).checked;
+            document.getElementById(`occurrence-${i}-is-visually-accessible`).checked = document.getElementById(`occurrence-${i + 1}-is-visually-accessible`).checked;
+            document.getElementById(`occurrence-${i}-delete-btn`).value = i;
+        }
+        document.getElementById(`occurrence-${numOccurrences + 1}`).remove();
+        if (numOccurrences < 0) {
+            addOccurrence();
+        }
     }
 
     document.getElementById("add_occurrence_btn").addEventListener("click", event => {
         addOccurrence();
     });
+    let buttons = document.getElementsByClassName("delete-btn");
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].value = i;
+        buttons[i].addEventListener("click", event => {
+            deleteOccurrence(buttons[i]);
+        });
+    }
 
     $("form").bind("keypress", function (e) {
         if (e.keyCode == 13) {
-            $("#btnSearch").attr('value');
-            //add more buttons here
             e.preventDefault();
         }
+    });
+
+    $("form :input").change(function () {
+        $("form").data("changed", true);
+    });
+
+    document.getElementById("cancel").addEventListener("click", event => {
+        if (history.length > 1) {
+            history.back();
+        } else {
+            window.close();
+        }
+    });
+
+    $(window).on('beforeunload', function () {
+        if ($("form").data("changed")) {
+            return "Are you sure you want to leave this page? Changes you made will not be saved.";
+        }
+    });
+
+    $(document).on("submit", "form", function (event) {
+        // disable unload warning
+        $(window).off('beforeunload');
     });
 
     let elements = document.getElementsByTagName("label");
@@ -179,19 +208,6 @@
             elements[i].classList.add("form-label");
         }
     }
-    function setDateTimesAsRequired() {
-        let occurrences = document.getElementsByClassName("occurrence");
-        for (let i = 0; i < occurrences.length; i++) {
-            if (occurrences[i].classList.contains("d-none")) {
-                document.getElementById("occurrences-" + i + "-date").required = false;
-                document.getElementById("occurrences-" + i + "-start_time").required = false;
-            } else {
-                document.getElementById("occurrences-" + i + "-date").required = true;
-                document.getElementById("occurrences-" + i + "-start_time").required = true;
-            }
-        }
-    }
-    setDateTimesAsRequired();
 
 </script>
 {% endblock %}

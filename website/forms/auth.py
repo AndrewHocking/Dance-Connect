@@ -36,8 +36,8 @@ class SignUpForm(FlaskForm):
 
 
 class LogInForm(FlaskForm):
-    email = EmailField(
-        label="Email address",
+    email = StringField(
+        label="Email address or username",
         validators=[InputRequired()],
         name="email",
         render_kw={"placeholder": "name@example.com", "class": "form-control"}

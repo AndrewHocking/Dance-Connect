@@ -1,5 +1,5 @@
 :root {
-    --pink: #FD41A7;
+    --pink: #f90096;
     --dark-pink: #ab274f;
     --nav-background: #01628B;
     --nav-highlight: #43a5cf;
@@ -11,24 +11,31 @@
     --pink: #d1368b;
     --background-blue: 111, 137, 148;
     --filters-background: #343a40;
+
+    >* .tag {
+        background-color: rgba(var(--background-blue), 0.5);
+    }
 }
 
 #logo {
     height: 40px;
     margin: 0px;
+    transition: all ease-in-out 250ms;
 }
 
 #logo-img {
     height: 80px;
-    background-color: var(--nav-background);
+    transition: all ease-in-out 250ms;
 }
 
 #logo-img.shrink {
-    height: 50px;
+    height: 40px;
+    transition: all ease-in-out 250ms;
 }
 
 #logo.shrink {
-    margin-right: 30px;
+    margin-right: 40px;
+    transition: all ease-in-out 250ms;
 }
 
 nav {
@@ -44,16 +51,52 @@ body {
 }
 
 .btn-primary {
-    background-color: var(--pink);
-    border-color: var(--pink);
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--pink);
+    --bs-btn-border-color: var(--pink);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--dark-pink);
+    --bs-btn-hover-border-color: var(--dark-pink);
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--dark-pink);
+    --bs-btn-active-border-color: var(--dark-pink);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: var(--pink);
+    --bs-btn-disabled-border-color: var(--pink);
+
+    /* Bold the text in the pink buttons, to make it higher contrast for accessibility reasons */
+    font-weight: bold;
 }
 
-.btn-primary:hover,
-.btn-primary:active:hover,
-.btn.show,
-.navbar-nav .dropdown .dropdown-menu .btn-group-vertical .dropdown-item.bg-icon-background:hover,
-.navbar-nav .dropdown .dropdown-menu .btn-group-vertical .dropdown-item:active:hover,
-.navbar-nav .dropdown .dropdown-menu .btn-group-vertical .dropdown-item:active {
+.btn-outline-primary {
+    --bs-btn-color: var(--pink);
+    --bs-btn-border-color: var(--pink);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--pink);
+    --bs-btn-hover-border-color: var(--pink);
+    --bs-btn-focus-shadow-rgb: 13, 110, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--pink);
+    --bs-btn-active-border-color: var(--pink);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: var(--pink);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: var(--pink);
+    --bs-gradient: none;
+}
+
+.bi-bold {
+    -webkit-text-stroke: 1px white;
+}
+
+/* .btn.show, */
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:hover,
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active:hover,
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active,
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item:active:hover,
+.navbar-nav .dropdown .dropdown-menu * .dropdown-item:active {
     background-color: var(--dark-pink);
     border-color: var(--dark-pink);
     color: white;
@@ -88,24 +131,14 @@ body {
     display: none;
 }
 
-.nav-link.nav-notification {
-    color: black
-}
-
-.nav-link.nav-notification:hover {
-    background-color: var(--nav-highlight);
-    border-color: var(--nav-highlight);
-    color: white;
-}
-
-.nav-link.nav-notification.selected {
+.nav-notification.selected {
     background-color: var(--nav-background);
     font-weight: bold;
     color: white;
 }
 
-.nav-link.nav-notification.selected:hover {
-    border-color: var(--nav-background);
+.nav-notification:not(.selected):hover {
+    opacity: 0.8;
 }
 
 .notification-button {
@@ -127,34 +160,9 @@ body {
     background-color: #d6eef8;
 }
 
-.nav-notification:not(.selected):hover {
-    opacity: 0.8;
-}
 
 .notifications-badge {
     transform: translate(-5px, -50%);
-}
-
-@media only screen and (max-width: 768px) {
-
-    /* For mobile phones: */
-    #form-filter {
-        background-color: var(--filters-background);
-        /* equivalent to .bg-body-tertiary */
-    }
-}
-
-
-@media only screen and (max-width: 992px) {
-
-    /* For tablets: */
-    .navbar-collapse.show {
-        padding-bottom: 10px;
-    }
-
-    .notifications-badge {
-        transform: translateY(-5%);
-    }
 }
 
 .user-circle .rounded-circle,
@@ -245,4 +253,86 @@ body {
 
 .stretched-link-container {
     transform: rotate(0);
+}
+
+.page-link:not(.active) {
+    color: var(--pink);
+}
+
+.page-link.active {
+    color: white;
+    background-color: var(--pink);
+    border-color: var(--pink);
+    font-weight: bold;
+}
+
+.page-link:not(.active):hover {
+    color: var(--dark-pink);
+}
+
+.form-check-input:checked {
+    background-color: var(--pink);
+    border-color: var(--pink);
+}
+
+.bg-nav {
+    background-color: var(--nav-background);
+    color: white;
+}
+
+/*** Responsive design ***/
+
+/* For extra extra wide screens (e.g. very large desktops), i.e. Bootstrap's "xxl" breakpoint: */
+@media only screen and (min-width: 1401px) {
+    /* body {
+        background-color: red;
+    } */
+}
+
+/* For extra wide screens (e.g. large desktops), i.e. Bootstrap's "xl" breakpoint: */
+@media only screen and (max-width: 1400px) {
+    /* body {
+        background-color: orange;
+    } */
+}
+
+/* For wide screens (e.g. desktops), i.e. Bootstrap's "lg" breakpoint: */
+@media only screen and (max-width: 1200px) {
+    /* body {
+        background-color: yellow;
+    } */
+}
+
+/* For medium-sized screens (e.g. tablets), i.e. Bootstrap's "md" breakpoint: */
+@media only screen and (max-width: 992px) {
+    .navbar-collapse.show {
+        padding-bottom: 10px;
+    }
+
+    .notifications-badge {
+        transform: translateY(-5%);
+    }
+
+    /* body {
+        background-color: green;
+    } */
+}
+
+/* For narrow screens (e.g. mobile phones), i.e. Bootstrap's "sm" breakpoint: */
+@media only screen and (max-width: 768px) {
+    #form-filter {
+        background-color: var(--filters-background);
+        /* equivalent to .bg-body-tertiary */
+    }
+
+    /* body {
+        background-color: blue;
+    } */
+}
+
+/* For very narrow screens, i.e. Bootstrap's "xs" breakpoint: */
+@media only screen and (max-width: 576px) {
+    /* body {
+        background-color: purple;
+    } */
 }
