@@ -3,10 +3,8 @@ from flask import Blueprint, render_template, redirect, url_for, request
 from flask_login import current_user, login_required
 from random import randrange
 
-from ...models.notification.notification import EventRequestNotification
-
-from ...orm.notification.notifications import accept_event_request_notification, deny_event_request_notification
-from ...models.user import User
+from ...orm.user.notifications import accept_event_request_notification, deny_event_request_notification
+from ...models.user import EventRequestNotification, User
 from ...models.event import Event
 
 notifications = Blueprint('notifications', __name__)

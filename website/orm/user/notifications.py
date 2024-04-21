@@ -1,7 +1,6 @@
-from ...models.notification import EventRequestNotification
-from ..event.event_contributor import connect_user_to_event
+from website.orm.event.event_contributor import connect_user_to_event
 from ... import db, json_response
-from ...models.user import User
+from ...models.user import User, EventRequestNotification
 from ...models.event import Event
 
 from sqlalchemy import and_

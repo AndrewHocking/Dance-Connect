@@ -7,14 +7,12 @@ class CreateEventOccurrenceForm(FlaskForm):
     date = DateField(
         label="Date ✽",
         name="occurrence-occurrence_number-date",
-        render_kw={"class": "form-control date"},
-        validators=[DataRequired()]
+        render_kw={"class": "form-control date"}
     )
     start_time = TimeField(
         label="Start Time ✽",
         name="occurrence-occurrence_number-start-time",
-        render_kw={"class": "form-control time"},
-        validators=[DataRequired()]
+        render_kw={"class": "form-control time"}
     )
     end_time = TimeField(
         label="End Time",
@@ -27,8 +25,9 @@ class CreateEventOccurrenceForm(FlaskForm):
         render_kw={"class": "form-check-input"}
     )
     is_photosensitivity_friendly = BooleanField(
-        label="Any lighting effects used during this event should be safe for individuals who experience photosensitivity.",
+        label="Some lighting effects used during this event may pose risks for individuals who experience photosensitivity.",
         name="occurrence-occurrence_number-is-photosensitivity-friendly",
+        default="y",
         render_kw={"class": "form-check-input"}
     )
     is_hearing_accessible = BooleanField(
@@ -115,7 +114,7 @@ class CreateEventForm(FlaskForm):
     )
     num_occurrences = HiddenField(
         name="num_occurrences",
-        default="0"
+        default="1"
     )
     submit = SubmitField(
         label="Submit",

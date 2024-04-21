@@ -42,13 +42,12 @@
     {% block items_to_list %}
     {% from "macros.html" import grid_item %}
     {% for person in people %}
-    <div class="col-auto mx-xxl-2 mx-xl-0">
+    <div class="col-auto">
         {{ grid_item(
             image_src=url_for('static',
             filename='images/placeholder.jpg'),
             title=person.display_name,
             subtitle="@"+person.username,
-            text=person.password,
             href=url_for('people.person',
             username=person.username)
         ) }}

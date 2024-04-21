@@ -16,11 +16,11 @@ people = Blueprint("people", __name__)
 
 
 @people.route(
-    "/",
+    "/people/",
     defaults={"search": "_", "sort": "_", "filters": "_"},
     methods=["GET", "POST"],
 )
-@people.route("/<search>/<sort>/<filters>/", methods=["GET", "POST"])
+@people.route("/people/<search>/<sort>/<filters>/", methods=["GET", "POST"])
 def people_list(search, sort, filters):
     form = PeopleFilter()
 
@@ -125,7 +125,7 @@ def people_list(search, sort, filters):
     )
 
 
-@people.route("/<username>/", methods=["GET"])
+@people.route("/people/<username>/", methods=["GET"])
 def person(username):
     person: User = read_single_user(username=username)["data"]
     events_contributed = person.contributor_association
@@ -142,7 +142,7 @@ def person(username):
     if person.bio != "":
         bio = person.bio
 
-    affiliations = get_affilliations(person.id)["data"] or []
+    affiliations = get_affilliations(person.id)["data"]
 
     return render_template(
         "person.html",
@@ -150,18 +150,14 @@ def person(username):
         person=person,
         bio=bio,
         events_contributed=events_contributed,
-        events_organized=person.events_organized,
         affiliations=affiliations,
         edit=edit,
         socials=socialMediaDic,
     )
 
 
-@people.route("/<username>/edit/", methods=["GET", "POST"])
+@people.route("/people/<username>/edit/", methods=["GET", "POST"])
 def edit_person(username):
-    if not current_user.is_authenticated or current_user.username != username:
-        return redirect(url_for("people.person", username=username))
-
     person: User = read_single_user(username=username)["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_contributed))
@@ -309,7 +305,7 @@ def edit_person(username):
 
             # if all okay, then update everyone
             update_user(
-                user_id=id,
+                user_id=person.id,
                 display_name=display_name,
                 pronouns=pronouns,
                 bio=request.form.get("bioTextArea", ""),

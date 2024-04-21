@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from flask_login import login_user, login_required, logout_user, current_user
 from ...models.user import User
+from flask_login import login_user, login_required, logout_user, current_user
 from ...forms.auth import SignUpForm, LogInForm
-from ...orm.user.user import create_user, get_user_by_email_or_username
+from ...orm.user.user import create_user
 
 auth = Blueprint('auth', __name__)
 
@@ -14,13 +14,16 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        response = get_user_by_email_or_username(email)
-        if response["status_code"] == 200 and response["data"].password == password:
-            flash('Logged in successfully!', category='success')
-            login_user(response["data"], remember=True)
-            return redirect(url_for('views.home'))
+        user: User = User.query.filter_by(email=email).first()
+        if user:
+            if user.password == password:
+                flash('Logged in successfully!', category='success')
+                login_user(user, remember=True)
+                return redirect(url_for('views.home'))
+            else:
+                flash('Incorrect password, try again.', category='error')
         else:
-            flash('Incorrect login information, please try again.', category='error')
+            flash('Email does not exist.', category='error')
 
     return render_template("login.html", user=current_user, form=form)
 
