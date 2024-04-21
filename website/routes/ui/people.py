@@ -295,12 +295,10 @@ def edit_person(username):
             else:
                 update_user(
                     user_id=person.id,
-                    user_id=person.id,
                     password=new_pass,
                 )
 
             # Check for unique username
-            if update_user(user_id=person.id, username=uniqueUsername)["status_code"] == 400:
             if update_user(user_id=person.id, username=uniqueUsername)["status_code"] == 400:
                 flash("Username already taken", "error")
                 return render_template(
@@ -319,7 +317,6 @@ def edit_person(username):
 
             # if all okay, then update everyone
             update_user(
-                user_id=person.id,
                 user_id=person.id,
                 display_name=display_name,
                 pronouns=pronouns,

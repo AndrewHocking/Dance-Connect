@@ -246,11 +246,12 @@ def event_details(event_id: int):
         event_id=event_id, sender_id=current_user.id).get("data") if current_user.is_authenticated else None
 
     occurrences = {}
-    for occurrence in event.occurrences:
-        date = occurrence.start_time.strftime("%A, %B %e")
-        if date not in occurrences:
-            occurrences[date] = []
-        occurrences[date].append(occurrence)
+    if event is not None:
+        for occurrence in event.occurrences:
+            date = occurrence.start_time.strftime("%A, %B %e")
+            if date not in occurrences:
+                occurrences[date] = []
+            occurrences[date].append(occurrence)
 
     return render_template("event-details.html", user=current_user, event=event, occurrences=occurrences,
                            contributors=contributors, event_request_notification=event_request_notification)
