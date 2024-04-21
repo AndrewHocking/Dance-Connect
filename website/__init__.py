@@ -5,6 +5,8 @@ from os import path
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
+import bleach
+from bleach.linkifier import LinkifyFilter
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -44,6 +46,14 @@ def json_response(status_code: int, message: str, data: Any = None):
         "data": data
     }
     return output
+
+
+def sanitize_html(html_text):
+    allowed_tags = list(bleach.ALLOWED_TAGS)
+    allowed_tags.extend(['p', 'h2', 'h3', 'h4'])
+    cleaner = bleach.Cleaner(
+        tags=allowed_tags, filters=[LinkifyFilter])
+    return cleaner.clean(html_text)
 
 
 def create_app():

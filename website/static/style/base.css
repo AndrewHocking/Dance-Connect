@@ -284,6 +284,16 @@ body {
     color: white;
 }
 
+.ck-editor__editable_inline {
+    min-height: 200px;
+}
+
+label.required:after { 
+   content:"*";
+   color:red;
+   font-weight: bold;
+}
+
 /*** Responsive design ***/
 
 /* For extra extra wide screens (e.g. very large desktops), i.e. Bootstrap's "xxl" breakpoint: */

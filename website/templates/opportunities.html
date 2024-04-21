@@ -76,8 +76,11 @@
                     <div class="badge rounded-pill text-bg-{{post_type[opportunity.type.name]}}">{{opportunity.type.value}}</div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="card-subtitle text-truncate text-body-secondary">{{opportunity.organizer}}</h6>
-                    <h6 class="card-subtitle text-body-secondary">{{opportunity.start_date.strftime("Starting %b %e")}}</h6>
+                    <h6 class="card-subtitle text-truncate text-body-secondary me-2">{{opportunity.organizer}}</h6>
+                    <h6 class="card-subtitle text-body-secondary text-end">
+                        <p class="mb-0 d-block d-md-inline">Starting </p>
+                        <span class="">{{opportunity.start_date.strftime("%b %e")}}</span>
+                    </h6>
                 </div>
                 <small>
                     <div class="d-flex align-items-center">

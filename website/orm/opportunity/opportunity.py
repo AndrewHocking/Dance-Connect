@@ -49,7 +49,10 @@ def create_opportunity_post(
     if conflict is not None:
         return json_response(409, "A posting with the same title and organizer already exists.", conflict)
 
-    today: datetime = datetime.now(timezone.utc)
+    today: datetime = datetime.now()
+    if not is_paid:
+        pay = None
+
     new_post = Opportunity(
         type=type,
         title=title,
@@ -181,3 +184,99 @@ def get_opportunity_by_organizer_and_title(organizer: str, title: str):
         return json_response(404, f"No opportunity post with organizer {organizer} and title {title} were found")
 
     return json_response(200, f"Opportunity post has been found.", opportunity)
+
+
+def update_opportunity_post(
+        id: int,
+        type: PostType,
+        title: str,
+        organizer: str,
+        closing_date: datetime,
+
+        location_type: LocationType,
+        location: str,
+        start_date: datetime,
+        is_paid: bool,
+
+        display_description: str,
+        description: str,
+        requirements: str,
+        compensation: str,
+        application_details: str,
+
+        tags: List[str] = list(),
+        end_date: datetime = None,
+        pay: str = None,
+        term_type: TermType = None,
+        number_positions: int = None,
+        responsibilities: str = None,
+        additional_info: str = None,
+        application_link: str = None
+):
+    # Check if the post exists
+    opportunity = db.session.query(Opportunity).filter_by(id=id).first()
+    if opportunity is None:
+        return json_response(404, f"This opportunity post doesn't exist.", id)
+
+    # Check if a different post already uses this (title, organizer) pair
+    matching_opportunity = db.session.query(Opportunity).filter(and_(
+        func.lower(Opportunity.title) == func.lower(title),
+        func.lower(Opportunity.organizer) == func.lower(organizer)
+    )).first()
+    if matching_opportunity is not None and matching_opportunity.id != opportunity.id:
+        return json_response(409, f"Another opportunity post is already exists with this title and organization", matching_opportunity)
+
+    opportunity.type = type
+    opportunity.title = title
+    opportunity.organizer = organizer
+    opportunity.closing_date = organizer
+
+    opportunity.location_type = location_type
+    opportunity.location = location
+    opportunity.start_date = start_date
+    opportunity.is_paid = is_paid
+
+    opportunity.display_description = display_description
+    opportunity.description = description
+    opportunity.requirements = requirements
+    opportunity.compensation = compensation
+    opportunity.application_details = application_details
+
+    if end_date is not None:
+        opportunity.end_date = end_date
+    if pay is not None:
+        opportunity.pay = pay
+    if term_type is not None:
+        opportunity.term = term_type
+    if number_positions is not None:
+        opportunity.number_positions = number_positions
+    if responsibilities is not None:
+        opportunity.responsibilities = responsibilities
+    if additional_info is not None:
+        opportunity.additional_info = additional_info
+    if application_link is not None:
+        opportunity.application_link = application_link
+
+    if tags is not None:
+        opportunity.tags = list()
+        for tag in tags:
+            create_opportunity_tag(tag, opportunity, False)
+
+    today: datetime = datetime.now()
+    opportunity.last_modified = today
+
+    db.session.add(opportunity)
+    db.session.commit()
+
+    return json_response(200, "Opportunity updated successfully.", opportunity)
+
+
+def delete_opportunity_post(id: int):
+    opportunity = db.session.query(Opportunity).filter_by(id=id).first()
+    if opportunity is None:
+        return json_response(404, f"Opportunity doesn't exist")
+
+    db.session.delete(opportunity)
+    db.session.commit()
+
+    return json_response(200, f"Opportunity successfully deleted.")
