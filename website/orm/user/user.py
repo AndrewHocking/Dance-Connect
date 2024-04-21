@@ -48,7 +48,6 @@ def create_user(
         user_type=UserType.INDIVIDUAL,
         pronouns=pronouns,
         bio=bio,
-        profile_picture_url="",
         tags=list(),
         socials=list(),
         received_notifications=list(),
@@ -214,7 +213,6 @@ def update_socials_link(user_id: int, type: str, handle: str):
             SocialMedia.user == user_id,
             func.lower(SocialMedia.social_media) == func.lower(type)
         ))
-
 
     if socials_link.first() is None:
         return create_socials_link(user_id, type, handle)

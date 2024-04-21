@@ -63,12 +63,8 @@
         <div class="row mb-4">
             <div class="col-12 col-md-5 col-xl-3">
                 <div class="rounded mb-4 overflow-hidden ratio ratio-1x1">
-                    {% if person.profile_picture_url == "" %}
                     <img src="{{url_for('static', filename='images/placeholder.jpg')}}" class="img-fluid"
                         alt="{{person.display_name}}" />
-                    {% else %}
-                    <img src="{{ person.profile_picture_url }}" alt="{{person.display_name}}" class="img-fluid">
-                    {% endif %}
                 </div>
                 <!-- CONTACTS BLOCK -->
                 {% block edit_person_EditContacts %}
@@ -100,13 +96,13 @@
                         class="row align-items-center ps-3 py-1 text-decoration-none">
                         <div class="col-auto p-0">
                             <div
-                                class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
+                                class="p-1 bg-icon-background rounded text-light d-flex justify-content-center social-icon">
                                 <i class="bi bi-{{ icon_name }}"></i>
                             </div>
                         </div>
-                        <div class="col-10 ps-2 text-no-wrap text-truncate text-body">
-                            {{
-                            handle }}
+                        <div class="col-10 ps-2 text-no-wrap text-truncate">
+                            <a href="{{ url_prefix }}{{ handle.replace('https://', '', 1).replace('http://', '', 1) }}">{{
+                                handle }}</a>
                         </div>
                     </a>
                     {% endfor %}

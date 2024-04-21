@@ -134,8 +134,7 @@ def person(username):
     for social in person.socials:
         socialMediaDic[social.social_media] = social.handle
 
-    # print(socialMediaDic)
-    print(person.profile_picture_url)
+    print(socialMediaDic)
 
     edit = False
 
@@ -155,7 +154,6 @@ def person(username):
         affiliations=affiliations,
         edit=edit,
         socials=socialMediaDic,
-
     )
 
 
@@ -241,17 +239,16 @@ def edit_person(username):
                 threads, "threads"], [tiktok, "tiktok"], [twitter, "twitter"], [facebook, "facebook"], ]
 
             for social in socialListofList:
-                if update_socials_link(person.id, social[1], social[0])["status_code"] == 404 and social[0] != "":
-                    create_socials_link(person.id, social[1], social[0])
+                if update_socials_link(id, social[1], social[0])["status_code"] == 404 and social[0] != "":
+                    create_socials_link(id, social[1], social[0])
 
             # check password and update if all good
-            print("\n\n\n\n\n\n")
-            print("current_pass" + ":"+str(current_pass)+":")
-            print("new_pass" + ":"+str(new_pass)+":")
-            print("confirm_pass" + ":"+str(confirm_pass)+":")
-            print("person.password" + ":"+str(person.password)+":")
-            print("\n\n\n\n\n\n")
-            if (person.password != current_pass or new_pass != confirm_pass) and (current_pass != "" or new_pass != "" or confirm_pass != ""):
+            if current_pass != "" and new_pass != "" and confirm_pass != "" and person.password == current_pass and new_pass == confirm_pass:
+                update_user(
+                    user_id=id,
+                    password=new_pass,
+                )
+            else:
                 flash(
                     "Password did not match or current password is incorrect", "error"
                 )
@@ -266,11 +263,6 @@ def edit_person(username):
                     edit=edit,
                     tag_name_list=tag_name_list,
                     socials=socialMediaDic,
-                )
-            else:
-                update_user(
-                    user_id=person.id,
-                    password=new_pass,
                 )
 
             # check new account login email and update if all good
@@ -294,12 +286,12 @@ def edit_person(username):
                 )
             else:
                 update_user(
-                    user_id=person.id,
+                    user_id=id,
                     password=new_pass,
                 )
 
             # Check for unique username
-            if update_user(user_id=person.id, username=uniqueUsername)["status_code"] == 400:
+            if update_user(user_id=id, username=uniqueUsername)["status_code"] == 400:
                 flash("Username already taken", "error")
                 return render_template(
                     "edit_person.html",
@@ -317,7 +309,7 @@ def edit_person(username):
 
             # if all okay, then update everyone
             update_user(
-                user_id=person.id,
+                user_id=id,
                 display_name=display_name,
                 pronouns=pronouns,
                 bio=request.form.get("bioTextArea", ""),
@@ -325,7 +317,7 @@ def edit_person(username):
             )
             # person.bio = request.form.get("bioTextArea", "")
             # person.save()
-            return redirect(url_for("people.person", username=person.username))
+            return redirect(url_for("people.person", id=id))
 
     return render_template(
         "edit_person.html",
