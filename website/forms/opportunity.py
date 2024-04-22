@@ -1,6 +1,5 @@
 import enum
 from flask_wtf import FlaskForm
-from flask_ckeditor import CKEditorField
 
 from wtforms import StringField, SubmitField, SelectField, BooleanField, FormField, TextAreaField, URLField, DateField, IntegerField
 from wtforms.validators import DataRequired, Length, URL, ValidationError, NumberRange

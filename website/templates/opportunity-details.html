@@ -59,7 +59,11 @@
             </div>
             {% endif %}
             {% if opportunity.number_positions %}
-            <h5 class="my-2">Available Positions: {{opportunity.number_positions}}</h5>
+            <h5 class="my-2">
+                <i class="mx-1 bi bi-people"></i>
+                <strong>{{opportunity.number_positions}}</strong>
+                Open Position{{"s" if opportunity.number_positions > 1 else ""}}
+            </h5>
             {% endif %}
         </div>
 
@@ -131,7 +135,7 @@
         <div class="col-12 mt-5 mb-3">
             <div class="row gy-4"> <!-- CONTENT ROW START -->
                 <div class="col-12 col-md-auto">
-                    <div id="content-table" class="bg-body-tertiary list-group p-2">
+                    <div id="content-table" class="bg-body-tertiarybg-body-tertiary list-group p-2">
                         <div class="h4 mb-0 pt-2 pb-3 ps-3 pe-5">Contents</div>
                         <a class="list-group-item list-group-item-action pe-5" href="#description">Description</a>
                         {% if opportunity.responsibilities %}
