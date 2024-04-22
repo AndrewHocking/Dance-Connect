@@ -16,7 +16,8 @@
 </div>
 {% else %}
 <div class="form-floating">
-    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea" id="bioTextArea">{{ bio|default('') }}</textarea>
+    <textarea class="form-control" placeholder="Leave a comment here" name="bioTextArea"
+        id="bioTextArea">{{ bio|default('') }}</textarea>
     <label for="bioTextArea">Enter your bio</label>
 </div>
 {% endif %}
@@ -33,7 +34,8 @@
         <input type="text" class="form-control" name="pronouns" placeholder="Pronouns" value="{{ person.pronouns }}">
     </div>
     <div class="col-auto justify-content-start p-0 m-2">
-        <input type="text" class="form-control" name="uniqueUsername" placeholder="Unique username" value="{{ person.username }}">
+        <input type="text" class="form-control" name="uniqueUsername" placeholder="Unique username"
+            value="{{ person.username }}">
     </div>
 </div>
 {% endblock %}
@@ -41,6 +43,10 @@
 
 
 {% block edit_person_EditContacts %}
+<div class="mb-3">
+    <label for="profilePicture" class="form-label">Upload Profile Picture</label>
+    <input class="form-control" type="file" id="profilePicture" name="profilePicture" accept="image/*">
+</div>
 <div class="p-3 bg-body-tertiary rounded text-decoration-none">
     <h4>Contact</h4>
     <div class="row align-items-center ps-3 py-1">
@@ -50,7 +56,8 @@
             </div>
         </div>
         <div class="col ps-2">
-            <input type="text" class="form-control" name="website" placeholder="Website" id="website" value="{{ socials['website']|default('') }}">
+            <input type="text" class="form-control" name="website" placeholder="Website" id="website"
+                value="{{ socials['website']|default('') }}">
         </div>
     </div>
     <div class="row align-items-center ps-3 py-1">
@@ -60,7 +67,8 @@
             </div>
         </div>
         <div class="col ps-2">
-            <input type="text" class="form-control" name="instagram" placeholder="Instagram handle" value="{{ socials['instagram']|default('') }}">
+            <input type="text" class="form-control" name="instagram" placeholder="Instagram handle"
+                value="{{ socials['instagram']|default('') }}">
         </div>
     </div>
     <div class="row align-items-center ps-3 py-1">
@@ -70,7 +78,8 @@
             </div>
         </div>
         <div class="col ps-2">
-            <input type="text" class="form-control" name="email" placeholder="email" value="{{ socials['email']|default('') }}">
+            <input type="text" class="form-control" name="email" placeholder="email"
+                value="{{ socials['email']|default('') }}">
         </div>
     </div>
     <div class="row align-items-center ps-3 py-1">
@@ -80,7 +89,8 @@
             </div>
         </div>
         <div class="col ps-2">
-            <input type="text" class="form-control" name="threads" placeholder="Threads handle" value="{{ socials['threads']|default('') }}">
+            <input type="text" class="form-control" name="threads" placeholder="Threads handle"
+                value="{{ socials['threads']|default('') }}">
         </div>
     </div>
     <div class="row align-items-center ps-3 py-1">
@@ -90,7 +100,8 @@
             </div>
         </div>
         <div class="col ps-2">
-            <input type="text" class="form-control" name="tiktok" placeholder="Tiktok handle" value="{{ socials['tiktok']|default('') }}">
+            <input type="text" class="form-control" name="tiktok" placeholder="Tiktok handle"
+                value="{{ socials['tiktok']|default('') }}">
         </div>
     </div>
     <div class="row align-items-center ps-3 py-1">
@@ -100,7 +111,8 @@
             </div>
         </div>
         <div class="col ps-2">
-            <input type="text" class="form-control" name="twitter" placeholder="Twitter handle" value="{{ socials['twitter']|default('') }}">
+            <input type="text" class="form-control" name="twitter" placeholder="Twitter handle"
+                value="{{ socials['twitter']|default('') }}">
         </div>
     </div>
     <div class="row align-items-center ps-3 py-1">
@@ -110,7 +122,8 @@
             </div>
         </div>
         <div class="col ps-2">
-            <input type="text" class="form-control" name="facebook" placeholder="Facebook URL" value="{{ socials['facebook']|default('') }}">
+            <input type="text" class="form-control" name="facebook" placeholder="Facebook URL"
+                value="{{ socials['facebook']|default('') }}">
         </div>
     </div>
 </div>
@@ -135,7 +148,8 @@
 
 {% block edit_person_tags %}
 <div class="form-floating">
-    <textarea class="form-control" placeholder="Enter tags here" name="tags" id="person_tags">{{ tag_name_list|join(',')|default('') }}</textarea>
+    <textarea class="form-control" placeholder="Enter tags here" name="tags"
+        id="person_tags">{{ tag_name_list|join(',')|default('') }}</textarea>
     <label for="tags">Enter tags separated by commas here</label>
 </div>
 {% endblock %}

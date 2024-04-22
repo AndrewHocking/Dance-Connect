@@ -73,6 +73,8 @@ class User(db.Model, UserMixin):
     pronouns: Mapped[str]
     bio: Mapped[str]
     user_type: Mapped['UserType']
+    profile_picture_url: Mapped[str]
+    profile_picture_id: Mapped[str]
     tags: Mapped[List['UserTag']] = relationship(
         'UserTag', secondary="user_tag_relationships", back_populates='users')
     socials: Mapped[List['SocialMedia']] = relationship('SocialMedia')

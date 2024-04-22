@@ -5,7 +5,8 @@
 {% block content %}
 <div class="container">
     {% if edit %}
-    <form action="{{ url_for('people.edit_person', username=person.username) }}" method="POST">
+    <form action="{{ url_for('people.edit_person', username=person.username) }}" method="POST"
+        enctype="multipart/form-data">
         {% endif %}
         <div class="row align-items-center mb-4">
             <div class="col">
@@ -57,8 +58,12 @@
         <div class="row mb-4">
             <div class="col-12 col-md-5 col-xl-3">
                 <div class="rounded mb-4 overflow-hidden ratio ratio-1x1">
+                    {% if person.profile_picture_url == "" %}
                     <img src="{{url_for('static', filename='images/placeholder.jpg')}}" class="img-fluid"
                         alt="{{person.display_name}}" />
+                    {% else %}
+                    <img src="{{ person.profile_picture_url }}" alt="{{person.display_name}}" class="img-fluid">
+                    {% endif %}
                 </div>
                 <!-- CONTACTS BLOCK -->
                 {% block edit_person_EditContacts %}
@@ -123,7 +128,9 @@
                     <p class="h4">Events</p>
                     <div class="row overflow-x-scroll">
                         {% from 'macros.html' import grid_item %}
+                        {% if events_contributed != None or events_contributed|length != 0 %}
                         {% for contributed in events_contributed %}
+                        {% if contributed.event.occurrences|length != 0%}
                         <div class="col-auto">
                             {{ grid_item(
                             image_src=url_for('static',
@@ -137,12 +144,15 @@
                             event_id=contributed.event.id)
                             ) }}
                         </div>
+                        {% endif %}
                         {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
                 <div class="pb-4">
                     <p class="h4">Affiliated</p>
                     <div class="row-10 d-flex flex-no-wrap overflow-x-scroll ">
+                        {% if affiliations != None %}
                         {% for affiliation in affiliations %}
                         <div class="col-auto">
                             {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'),
@@ -154,6 +164,7 @@
                         </div>
                         {% endfor %}
                     </div>
+                    {% endif %}
                 </div>
             </div> <!-- RIGHT BLOCK END -->
         </div> <!-- BODY ROW END -->

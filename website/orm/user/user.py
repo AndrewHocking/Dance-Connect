@@ -48,6 +48,8 @@ def create_user(
         user_type=UserType.INDIVIDUAL,
         pronouns=pronouns,
         bio=bio,
+        profile_picture_url="",
+        profile_picture_id="",
         tags=list(),
         socials=list(),
         received_notifications=list(),
@@ -123,6 +125,8 @@ def update_user(
     socials: List[SocialMedia] = None,
     user_type: UserType = None,
     tags: List[str] = None,
+    profile_picture_url=None,
+    profile_picture_id=None,
 ):
     user: User = db.session.query(User).get(user_id)
     if user is None:
@@ -166,6 +170,12 @@ def update_user(
         user.tags.clear()
         for tag in tags:
             create_user_tag(tag, user, False)
+
+    if profile_picture_url is not None:
+        user.profile_picture_url = profile_picture_url
+
+    if profile_picture_id is not None:
+        user.profile_picture_id = profile_picture_id
 
     db.session.add(user)
     db.session.commit()
