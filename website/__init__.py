@@ -48,9 +48,9 @@ def json_response(status_code: int, message: str, data: Any = None):
     return output
 
 
-def sanitize_html(html_text):
+def sanitize_html(html_text, additional_tags: list[str] = []):
     allowed_tags = list(bleach.ALLOWED_TAGS)
-    allowed_tags.extend(['p', 'h2', 'h3', 'h4'])
+    allowed_tags.extend(['p', 'h2', 'h3', 'h4'] + additional_tags)
     cleaner = bleach.Cleaner(
         tags=allowed_tags, filters=[LinkifyFilter])
     return cleaner.clean(html_text)

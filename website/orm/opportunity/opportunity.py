@@ -229,7 +229,7 @@ def update_opportunity_post(
     opportunity.type = type
     opportunity.title = title
     opportunity.organizer = organizer
-    opportunity.closing_date = organizer
+    opportunity.closing_date = closing_date
 
     opportunity.location_type = location_type
     opportunity.location = location

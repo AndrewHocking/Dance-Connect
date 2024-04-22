@@ -216,6 +216,10 @@ def create_opportunity():
             flash(resp["message"],
                   category='error')
             return render_template("create-opportunity.html", user=current_user, form=form)
+        else:
+            flash("Opportunity Post Successfully Created",
+                  category='success')
+            return redirect(url_for('opportunities.opportunity', organizer=organization, title=title))
 
     return render_template("create-opportunity.html", user=current_user, form=form)
 
