@@ -7,6 +7,7 @@ from ...models.user import User, UserType, UserTag, SocialMedia
 from sqlalchemy import asc, desc, or_, and_, func
 
 # Creates a new User object
+#
 
 
 def create_user(
