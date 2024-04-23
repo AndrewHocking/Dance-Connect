@@ -160,9 +160,13 @@ body {
     background-color: #d6eef8;
 }
 
-
 .notifications-badge {
     transform: translate(-5px, -50%);
+}
+
+.opportunity-post-content {
+    height: 50vh;
+    overflow-y: scroll;
 }
 
 .user-circle .rounded-circle,
@@ -278,6 +282,16 @@ body {
 .bg-nav {
     background-color: var(--nav-background);
     color: white;
+}
+
+.ck-editor__editable_inline {
+    min-height: 200px;
+}
+
+label.required:after { 
+   content:"*";
+   color:red;
+   font-weight: bold;
 }
 
 /*** Responsive design ***/
