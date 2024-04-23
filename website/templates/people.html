@@ -44,12 +44,12 @@
     {% for person in people %}
     <div class="col-auto">
         {{ grid_item(
-            image_src=url_for('static',
-            filename='images/placeholder.jpg'),
-            title=person.display_name,
-            subtitle="@"+person.username,
-            href=url_for('people.person',
-            username=person.username)
+        image_src=url_for('static', filename='images/placeholder.jpg') if person.profile_picture_url == "" else
+        person.profile_picture_url,
+        title=person.display_name,
+        subtitle="@"+person.username,
+        href=url_for('people.person',
+        username=person.username)
         ) }}
     </div>
     {% endfor %}
