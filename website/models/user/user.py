@@ -1,5 +1,6 @@
 import enum
 from typing import List
+from flask import url_for
 from sqlalchemy import Boolean, Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -85,3 +86,10 @@ class User(db.Model, UserMixin):
     contributor_association: Mapped[List['EventContributor']] = relationship(
         'EventContributor', back_populates='user')
     # TODO: add profile_picture: Mapped[str] = mapped_column(String, nullable=False, default="default.jpg")
+
+    # @hybrid_property
+    def get_profile_pic_url(self):
+        if self.profile_picture_url == "":
+            return url_for("static", filename="images/placeholder.jpg")
+        return self.profile_picture_url
+        # <img src="{{person.get_profile_pic_url}}">
