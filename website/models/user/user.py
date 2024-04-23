@@ -6,7 +6,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from flask_login import UserMixin  # adds login_manager required methods
 from .user_tag import UserTag
 from ..event import Event, EventContributor
-from ..opportunity import Opportunity
 from ... import db, login_manager
 
 Base = declarative_base()
@@ -84,7 +83,5 @@ class User(db.Model, UserMixin):
     events_contributed: Mapped[List['Event']] = relationship(
         'Event', secondary="event_contributors", back_populates="contributors", viewonly=True)
     contributor_association: Mapped[List['EventContributor']] = relationship(
-        'EventContributor', back_populates='user', cascade="all, delete-orphan")
-    opportunity_posts: Mapped[List['Opportunity']] = relationship(
-        'Opportunity', back_populates='poster', cascade='all, delete-orphan')
+        'EventContributor', back_populates='user')
     # TODO: add profile_picture: Mapped[str] = mapped_column(String, nullable=False, default="default.jpg")

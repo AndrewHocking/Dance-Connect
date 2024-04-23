@@ -157,11 +157,6 @@ body {
     }
 }
 
-.opportunity-post-content {
-    height: 50vh;
-    overflow-y: scroll;
-}
-
 .user-circle .rounded-circle,
 .user-circle.rounded-circle {
     width: 100px;
@@ -250,96 +245,4 @@ body {
 
 .stretched-link-container {
     transform: rotate(0);
-}
-
-.page-link:not(.active) {
-    color: var(--pink);
-}
-
-.page-link.active {
-    color: white;
-    background-color: var(--pink);
-    border-color: var(--pink);
-    font-weight: bold;
-}
-
-.page-link:not(.active):hover {
-    color: var(--dark-pink);
-}
-
-.form-check-input:checked {
-    background-color: var(--pink);
-    border-color: var(--pink);
-}
-
-.bg-nav {
-    background-color: var(--nav-background);
-    color: white;
-}
-
-.ck-editor__editable_inline {
-    min-height: 200px;
-}
-
-label.required:after { 
-   content:"*";
-   color:red;
-   font-weight: bold;
-}
-
-/*** Responsive design ***/
-
-/* For extra extra wide screens (e.g. very large desktops), i.e. Bootstrap's "xxl" breakpoint: */
-@media only screen and (min-width: 1401px) {
-    /* body {
-        background-color: red;
-    } */
-}
-
-/* For extra wide screens (e.g. large desktops), i.e. Bootstrap's "xl" breakpoint: */
-@media only screen and (max-width: 1400px) {
-    /* body {
-        background-color: orange;
-    } */
-}
-
-/* For wide screens (e.g. desktops), i.e. Bootstrap's "lg" breakpoint: */
-@media only screen and (max-width: 1200px) {
-    /* body {
-        background-color: yellow;
-    } */
-}
-
-/* For medium-sized screens (e.g. tablets), i.e. Bootstrap's "md" breakpoint: */
-@media only screen and (max-width: 992px) {
-    .navbar-collapse.show {
-        padding-bottom: 10px;
-    }
-
-    .notifications-badge {
-        transform: translateY(-5%);
-    }
-
-    /* body {
-        background-color: green;
-    } */
-}
-
-/* For narrow screens (e.g. mobile phones), i.e. Bootstrap's "sm" breakpoint: */
-@media only screen and (max-width: 768px) {
-    #form-filter {
-        background-color: var(--filters-background);
-        /* equivalent to .bg-body-tertiary */
-    }
-
-    /* body {
-        background-color: blue;
-    } */
-}
-
-/* For very narrow screens, i.e. Bootstrap's "xs" breakpoint: */
-@media only screen and (max-width: 576px) {
-    /* body {
-        background-color: purple;
-    } */
 }
