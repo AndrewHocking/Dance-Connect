@@ -112,6 +112,36 @@ def read_single_user(username: str):
     return json_response(200, f"User {user.display_name} found.", user)
 
 
+def check_user_exists(username: str):
+    """
+    Check if a user exists by their username
+
+    :param username: The username to check
+    :return: A JSON response
+    """
+    user = db.session.query(User).filter_by(username=username).first()
+
+    if user is None:
+        return json_response(404, "No user found")
+
+    return json_response(200, f"User {user.display_name} found.", user)
+
+
+def check_email_exists(email: str):
+    """
+    Check if a user exists by their email
+
+    :param email: The email to check
+    :return: A JSON response
+    """
+    user = db.session.query(User).filter_by(email=email).first()
+
+    if user is None:
+        return json_response(404, "No user found")
+
+    return json_response(200, f"User {user.display_name} found.", user)
+
+
 # Updates a user with the given variables. Pass None to leave a variable unchanged.
 def update_user(
     user_id: int,
@@ -128,16 +158,37 @@ def update_user(
     profile_picture_url=None,
     profile_picture_id=None,
 ):
+    """
+    Update a user with the given variables. Pass None to leave a variable unchanged.
+
+    NOTE: This function does not check if the user exists. Please ensure that the user exists before calling this function.
+    NOTE: This function does not check if the email is already in use. Please ensure that the email is unique before calling this function.
+
+    """
     user: User = db.session.query(User).get(user_id)
     if user is None:
         return json_response(404, "User not found.", user_id)
 
-    if username is not None and username != user.username:
-        conflict = db.session.query(User).filter_by(username=username).first()
-        if conflict is None:
-            user.username = username
-        else:
-            return json_response(400, "Username already taken.", username)
+    if username is not None:
+        user.username = username
+
+    # if username is not None and username != user.username:
+    #     conflict = db.session.query(User).filter_by(username=username).first()
+    #     if conflict is None:
+    #         user.username = username
+    #     else:
+    #         return json_response(400, "Username already taken.", username)
+
+    # userEmailCheck: User = db.session.query(User).get(email)
+    # if userEmailCheck is not None:
+    #     return json_response(400, "Username already taken.", username)
+
+    # if email is not None and email != user.email:
+    #     conflict = db.session.query(User).filter_by(email=email).first()
+    #     if conflict is None:
+    #         user.email = email
+    #     else:
+    #         return json_response(400, "Email already in use.", email)
 
     if email is not None:
         user.email = email

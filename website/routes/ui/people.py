@@ -3,7 +3,7 @@ from flask import current_app
 from flask_login import current_user
 
 from ...orm.event.event_contributor import get_affilliations
-from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link
+from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link, check_user_exists, check_email_exists
 from ...forms.people_filter import (
     PeopleFilter,
     Roles,
@@ -141,7 +141,7 @@ def person(username):
     for social in person.socials:
         socialMediaDic[social.social_media] = social.handle
 
-    print(socialMediaDic)
+    # print(socialMediaDic)
 
     edit = False
 
@@ -326,55 +326,110 @@ def edit_person(username):
                 # TODO ideally desroy cdn object since it won't be used again...
 
         # check password and update if all good
-        if (person.password != current_pass or new_pass != confirm_pass) and (current_pass != "" or new_pass != "" or confirm_pass != ""):
-            flash(
-                "Password did not match or current password is incorrect", "error"
-            )
-            # return redirect(url_for("people.edit_person", id=id))
-            return render_template(
-                "edit_person.html",
-                user=current_user,
-                person=person,
-                bio=newBio,
-                events=events,
-                affiliations=affiliations,
-                edit=edit,
-                tag_name_list=tag_name_list,
-                socials=socialMediaDic,
-            )
-        else:
-            update_user(
-                user_id=person.id,
-                password=new_pass,
-            )
+        # did user want to change password?
+        if (current_pass != "" or new_pass != "" or confirm_pass != ""):
+            # check if current password is correct and new password matches
+            if (person.password != current_pass or new_pass != confirm_pass):
+                flash(
+                    "Password did not match or current password is incorrect", "error"
+                )
+                return render_template(
+                    "edit_person.html",
+                    user=current_user,
+                    person=person,
+                    bio=newBio,
+                    events=events,
+                    affiliations=affiliations,
+                    edit=edit,
+                    tag_name_list=tag_name_list,
+                    socials=socialMediaDic,
+                )
+            else:
+                update_user(
+                    user_id=person.id,
+                    password=new_pass,
+                )
+                print("password updated")
+
+        # if (person.password != current_pass or new_pass != confirm_pass) and (current_pass != "" or new_pass != "" or confirm_pass != ""):
+        #     flash(
+        #         "Password did not match or current password is incorrect", "error"
+        #     )
+        #     # return redirect(url_for("people.edit_person", id=id))
+        #     return render_template(
+        #         "edit_person.html",
+        #         user=current_user,
+        #         person=person,
+        #         bio=newBio,
+        #         events=events,
+        #         affiliations=affiliations,
+        #         edit=edit,
+        #         tag_name_list=tag_name_list,
+        #         socials=socialMediaDic,
+        #     )
+        # else:
+        #     update_user(
+        #         user_id=person.id,
+        #         password=new_pass,
+        #     )
+        #     print("password updated")
 
         # check new account login email and update if all good
-        if (socialMediaDic.get("email") != current_login_email or new_email != confirm_email) and (
-            current_login_email != "" or new_email != "" or confirm_email != ""
-        ):
-            flash(
-                "Emails did not match or current email verification is incorrect", "error"
-            )
-            # return redirect(url_for("people.edit_person", id=id))
-            return render_template(
-                "edit_person.html",
-                user=current_user,
-                person=person,
-                bio=newBio,
-                events=events,
-                affiliations=affiliations,
-                edit=edit,
-                tag_name_list=tag_name_list,
-                socials=socialMediaDic,
-            )
-        else:
-            update_user(
-                user_id=person.id,
-                password=new_pass,
-            )
+        # if (socialMediaDic.get("email") != current_login_email or new_email != confirm_email) and (
+        #     current_login_email != "" or new_email != "" or confirm_email != ""
+        # ):
+
+        # check if person wanted to change login email
+        if (current_login_email != "" or new_email != "" or confirm_email != ""):
+            # check if current email is correct and new email matches and new email is unique
+            if (person.email != current_login_email or new_email != confirm_email) and (check_email_exists(email=new_email)["status_code"] == 404):
+                flash(
+                    "Emails did not match or current email verification is incorrect", "error"
+                )
+                return render_template(
+                    "edit_person.html",
+                    user=current_user,
+                    person=person,
+                    bio=newBio,
+                    events=events,
+                    affiliations=affiliations,
+                    edit=edit,
+                    tag_name_list=tag_name_list,
+                    socials=socialMediaDic,
+                )
+            else:
+                update_user(
+                    user_id=person.id,
+                    email=new_email,
+                )
+                print("email updated")
+        # if (person.email != current_login_email or new_email != confirm_email) and (
+        #     current_login_email != "" or new_email != "" or confirm_email != ""
+        # ) and (check_email_exists(email=new_email)["status_code"] == 404):
+        #     flash(
+        #         "Emails did not match or current email verification is incorrect", "error"
+        #     )
+        #     # return redirect(url_for("people.edit_person", id=id))
+        #     return render_template(
+        #         "edit_person.html",
+        #         user=current_user,
+        #         person=person,
+        #         bio=newBio,
+        #         events=events,
+        #         affiliations=affiliations,
+        #         edit=edit,
+        #         tag_name_list=tag_name_list,
+        #         socials=socialMediaDic,
+        #     )
+        # else:
+        #     update_user(
+        #         user_id=person.id,
+        #         email=new_email,
+        #     )
+        #     print("email updated")
 
         # Check for unique username
-        if update_user(user_id=person.id, username=uniqueUsername)["status_code"] == 400:
+        if check_user_exists(username=username)["status_code"] == 404:
             flash("Username already taken", "error")
             return render_template(
                 "edit_person.html",
@@ -415,6 +470,15 @@ def edit_person(username):
     )
 
 
-def allowed_file(filename):
+def allowed_file(filename) -> bool:
+    """
+    Check if the file is allowed to be uploaded
+
+    Args:
+        filename (str): the name of the file
+
+    Returns: 
+        bool: True if the file is allowed to be uploaded, False otherwise
+    """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
