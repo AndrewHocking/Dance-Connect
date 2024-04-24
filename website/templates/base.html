@@ -43,7 +43,7 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ url_for('events.event_create') }}">Create a new event</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('events.event_create') }}">Post a new event</a></li>
                             <li><a class="dropdown-item" href="#">My events</a></li>
                         </ul>
                     </div>
@@ -57,8 +57,11 @@
                             <span class="nav-label">Opportunities</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('opportunities.opportunities_list') }}">New opportunities</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('opportunities.create_opportunity') }}">Create a new opportunity post</a>
+                            <li><a class="dropdown-item" href="{{ url_for('opportunities.opportunities_list') }}">All opportunities</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url_for('opportunities.create_opportunity') }}">Post a new opportunity</a>
                             </li>
                         </ul>
                     </div>

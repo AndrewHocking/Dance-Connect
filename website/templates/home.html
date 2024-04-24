@@ -14,10 +14,10 @@
             <div class="lead">Discover • Inspire • Connect</div>
         </div>
     </div>
-    <div class="row justify-content-center align-items-center bg-nav">
+    {# <div class="row justify-content-center align-items-center bg-nav">
         <hr class="w-100 mx-auto my-1" />
     </div>
-    {# <nav class="navbar navbar-dark row justify-content-center align-items-center bg-nav py-2 gx-5">
+    <nav class="navbar navbar-dark row justify-content-center align-items-center bg-nav py-2 gx-5">
         <div class="nav-item dropdown col-auto text-center px-2">
             <a class="nav-link btn" id="events" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-calendar-week-fill h4"></i>
@@ -62,7 +62,7 @@
                 <div class="col-auto">
                     <ul class="pagination m-0">
                         <li class="page-item">
-                            <button id="prev-event-btn" disabled class="btn btn-sm btn-primary rounded-end-0">
+                            <button id="prev-event-btn" class="btn btn-sm btn-primary rounded-end-0 disabled">
                                 <i class="bi bi-arrow-left-short bi-bold h4"></i>
                             </button>
                         </li>
@@ -146,18 +146,18 @@
         for (let element of document.getElementsByClassName("home-card-contributor-list")) {
             if (element.scrollWidth > element.clientWidth) {
                 for (let button of element.parentElement.parentElement.getElementsByClassName("contributors-scroll-btn")) {
-                    element.classList.add("overflown");
+                    element.classList.add("overflow-x-scroll");
                     button.hidden = false;
                     button.firstElementChild.addEventListener("click", function () {
                         if (button.firstElementChild.classList.contains("contributors-scroll-forward-btn"))
-                            element.scrollLeft += 100;
+                            element.scrollLeft += element.clientWidth;
                         else if (button.firstElementChild.classList.contains("contributors-scroll-backward-btn"))
-                            element.scrollLeft -= 100;
+                            element.scrollLeft -= element.clientWidth;
                     });
                 }
             } else {
                 for (let button of element.parentElement.parentElement.getElementsByClassName("contributors-scroll-btn")) {
-                    element.classList.remove("overflown");
+                    element.classList.remove("overflow-x-scroll");
                     button.hidden = true;
                 }
             }
@@ -181,9 +181,9 @@
         document.getElementById(`event${eventIndex}`).hidden = true;
         eventIndex++;
         document.getElementById(`event${eventIndex}`).hidden = false;
-        document.getElementById('prev-event-btn').disabled = false;
+        document.getElementById('prev-event-btn').classList.remove("disabled");
         if (eventIndex == totalEvents - 1) {
-            document.getElementById('next-event-btn').disabled = true;
+            document.getElementById('next-event-btn').classList.add("disabled");
         }
 
         if (eventIndex < totalEvents - 1 && eventIndex >= loadedEvents - 1
@@ -225,9 +225,9 @@
         document.getElementById(`event${eventIndex}`).hidden = true;
         eventIndex--;
         document.getElementById(`event${eventIndex}`).hidden = false;
-        document.getElementById('next-event-btn').disabled = false;
+        document.getElementById('next-event-btn').classList.remove("disabled");
         if (eventIndex == 0) {
-            document.getElementById('prev-event-btn').disabled = true;
+            document.getElementById('prev-event-btn').classList.add("disabled");
         }
         setoverflown();
     });

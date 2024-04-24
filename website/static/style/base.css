@@ -292,6 +292,10 @@ body {
     overflow: hidden;
 }
 
+.home-card-contributor-list {
+    scroll-behavior: smooth;
+}
+
 .ck-editor__editable_inline {
     min-height: 200px;
 }
@@ -345,6 +349,10 @@ label.required:after {
     #form-filter {
         background-color: var(--filters-background);
         /* equivalent to .bg-body-tertiary */
+    }
+
+    .home-card-contributor-info {
+        max-width: 140px;
     }
 
     /* body {
