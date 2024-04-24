@@ -329,7 +329,7 @@ def event_edit(event_id: int):
         occurrences = []
         for i in range(0, int(form.get("num_occurrences")) + 1):
             start_time = datetime.strptime(
-                f"{form.get(f'occurrence-{i}-date')} {form.get(f'occurrence-{i}-start-time')}", " % Y-%m-%d % H: % M")
+                f"{form.get(f'occurrence-{i}-date')} {form.get(f'occurrence-{i}-start-time')}", "%Y-%m-%d %H:%M")
             end_time = datetime.strptime(f"{form.get(f'occurrence-{i}-date')} {form.get(f'occurrence-{i}-end-time')}",
                                          "%Y-%m-%d %H:%M") if form.get(f'occurrence-{i}-end-time') != "" else None
             is_relaxed_performance = form.get(
