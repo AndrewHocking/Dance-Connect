@@ -1,8 +1,10 @@
+import os
 from flask import Blueprint, render_template, request, redirect, url_for
+from flask import current_app
 from flask_login import current_user
 
 from ...orm.event.event_contributor import get_affilliations
-from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link
+from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link, check_email_exists
 from ...forms.people_filter import (
     PeopleFilter,
     Roles,
@@ -10,6 +12,12 @@ from ...forms.people_filter import (
     fill_filter_data,
 )
 from flask import flash
+
+from werkzeug.utils import secure_filename
+
+from ...cloud.cdn import CDN, ALLOWED_EXTENSIONS
+
+MAX_FILE_SIZE = 1024 * 1024 * 10  # 10MB
 
 
 people = Blueprint("people", __name__)
@@ -159,9 +167,6 @@ def person(username):
 
 @people.route("/<username>/edit/", methods=["GET", "POST"])
 def edit_person(username):
-    if not current_user.is_authenticated or current_user.username != username:
-        return redirect(url_for("people.person", username=username))
-
     person: User = read_single_user(username=username)["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_contributed))
@@ -185,74 +190,89 @@ def edit_person(username):
     affiliations: list[User] = read_users()["data"]
     if person in affiliations:
         affiliations.remove(person)
-    if request.method == "POST":
-        if request.form["submit"] == "Save":
-            newBio = request.form.get("bioTextArea", "")
-            display_name = request.form.get("display_name", "")
-            pronouns = request.form.get("pronouns", "")
-            uniqueUsername = request.form.get("uniqueUsername", "")
+    if request.method == "POST" and request.form["submit"] == "Save":
 
-            website = request.form.get("website", "")
-            if website.startswith("http://") or website.startswith("https://"):
-                website = website[website.find("://") + 3:]
+        newBio = request.form.get("bioTextArea", "")
+        display_name = request.form.get("display_name", "")
+        pronouns = request.form.get("pronouns", "")
+        uniqueUsername = request.form.get("uniqueUsername", "")
 
-            instagram = request.form.get("instagram", "")
+        website = request.form.get("website", "")
+        if website.startswith("http://") or website.startswith("https://"):
+            website = website[website.find("://") + 3:]
 
-            if instagram.startswith("@"):  # url works without @
-                instagram = instagram[1:]
+        instagram = request.form.get("instagram", "")
 
-            email = request.form.get("email", "")
+        if instagram.startswith("@"):  # url works without @
+            instagram = instagram[1:]
 
-            threads = request.form.get("threads", "")  # url works with @
-            if threads.startswith("@"):
-                threads = threads[1:]
+        email = request.form.get("email", "")
 
-            if threads.find("@") != -1:
-                threads = threads[0:threads.find("@")]
+        threads = request.form.get("threads", "")  # url works with @
+        if threads.startswith("@"):
+            threads = threads[1:]
 
-            tiktok = request.form.get("tiktok", "")
+        if threads.find("@") != -1:
+            threads = threads[0:threads.find("@")]
 
-            if tiktok.startswith("@"):  # url works with @
-                tiktok = tiktok[1:]
+        tiktok = request.form.get("tiktok", "")
 
-            twitter = request.form.get("twitter", "")  # url works without @
-            if twitter.startswith("@"):
-                twitter = twitter[1:]
+        if tiktok.startswith("@"):  # url works with @
+            tiktok = tiktok[1:]
 
-            facebook = request.form.get("facebook", "")
+        twitter = request.form.get("twitter", "")  # url works without @
+        if twitter.startswith("@"):
+            twitter = twitter[1:]
 
-            current_pass = request.form.get("current_password", "")
-            new_pass = request.form.get("new_password", "")
-            confirm_pass = request.form.get("confirm_new_password", "")
+        facebook = request.form.get("facebook", "")
 
-            current_login_email = request.form.get("current_login_email", "")
-            new_email = request.form.get("new_login_email", "")
-            confirm_email = request.form.get("confirm_new_login_email", "")
+        current_pass = request.form.get("current_password", "")
+        new_pass = request.form.get("new_password", "")
+        confirm_pass = request.form.get("confirm_new_password", "")
 
-            tags = request.form.get("tags", "")
-            tag_list = tags.split(",")
-            tag_list = [tag.strip() for tag in tag_list]
-            tag_list = [tag for tag in tag_list if tag != ""]
+        current_login_email = request.form.get("current_login_email", "")
+        new_email = request.form.get("new_login_email", "")
+        confirm_email = request.form.get("confirm_new_login_email", "")
 
-            # list of handle and social media types
-            socialListofList = [[website, "website"], [instagram, "instagram"], [email, "email"], [
-                threads, "threads"], [tiktok, "tiktok"], [twitter, "twitter"], [facebook, "facebook"], ]
+        tags = request.form.get("tags", "")
+        tag_list = tags.split(",")
+        tag_list = [tag.strip() for tag in tag_list]
+        tag_list = [tag for tag in tag_list if tag != ""]
 
-            for social in socialListofList:
-                if social[0] != "" and update_socials_link(person.id, social[1], social[0])["status_code"] == 404:
-                    create_socials_link(person.id, social[1], social[0])
+        # list of handle and social media types
+        socialListofList = [[website, "website"], [instagram, "instagram"], [email, "email"], [
+            threads, "threads"], [tiktok, "tiktok"], [twitter, "twitter"], [facebook, "facebook"], ]
 
-            # check password and update if all good
-            if person.password == current_pass and new_pass == confirm_pass:
-                update_user(
-                    user_id=person.id,
-                    password=new_pass,
-                )
-            elif current_pass != "" and new_pass != "" and confirm_pass != "":
-                flash(
-                    "Password did not match or current password is incorrect", "error"
-                )
-                # return redirect(url_for("people.edit_person", id=id))
+        for social in socialListofList:
+            if (social[0] != "") and (update_socials_link(person.id, social[1], social[0])["status_code"] == 404 and social[0] != ""):
+                create_socials_link(person.id, social[1], social[0])
+
+        file = request.files['profilePicture']
+        # handle file upload
+        if file.filename != "" and 'profilePicture' in request.files:
+            temp_error_flag = False
+
+            current_app.config['UPLOAD_FOLDER'] = './website/cloud/temp'
+            # app.config['UPLOAD_FOLDER'] = '/cloud/temp/'
+
+            # according to co-pilot, this is a secure way to handle file uploads
+            # this uses the werkzeug.utils library
+            filename = secure_filename(file.filename)
+
+            # Check if file was uploaded and that the type and size is correct
+            if not file:
+                flash("No file uploaded", "error")
+                temp_error_flag = True
+
+            if not allowed_file(file.filename):
+                flash("File type not allowed", "error")
+                temp_error_flag = True
+
+            if file.content_length > MAX_FILE_SIZE:
+                flash("File size too large", "error")
+                temp_error_flag = True
+
+            if temp_error_flag:
                 return render_template(
                     "edit_person.html",
                     user=current_user,
@@ -264,15 +284,54 @@ def edit_person(username):
                     tag_name_list=tag_name_list,
                     socials=socialMediaDic,
                 )
+            else:
+                # save file to temp folder
+                file.save(os.path.join(
+                    current_app.config['UPLOAD_FOLDER'], filename))
+                # upload file to cloudflare
+                cdn = CDN()
+                output = cdn.upload(os.path.join(
+                    current_app.config['UPLOAD_FOLDER'], filename))
 
-            # check new account login email and update if all good
-            if (socialMediaDic.get("email") != current_login_email or new_email != confirm_email) and (
-                current_login_email != "" or new_email != "" or confirm_email != ""
-            ):
-                flash(
-                    "Emails did not match or current email verification is incorrect", "error"
+                if len(output["errors"]) > 0:
+                    flash("Error uploading file to cloudflare", "error")
+                    return render_template(
+                        "edit_person.html",
+                        user=current_user,
+                        person=person,
+                        bio=newBio,
+                        events=events,
+                        affiliations=affiliations,
+                        edit=edit,
+                        tag_name_list=tag_name_list,
+                        socials=socialMediaDic,
+                    )
+
+                # if user has profile picture in cloud then delete it!
+                if person.profile_picture_id != "":
+                    delete_output = cdn.delete(person.profile_picture_id)
+                # TODO CHECK IF DELETE WORKED!!!
+
+                # TODO allow for selection of which variant to use instead of always the first one
+                update_user(
+                    user_id=person.id,
+                    profile_picture_url=output["result"]["variants"][0],
+                    profile_picture_id=output["result"]["id"]
                 )
-                # return redirect(url_for("people.edit_person", id=id))
+
+                # purge temp folder
+                cdn.empty_temp_folder()
+
+                # TODO ideally desroy cdn object since it won't be used again...
+
+        # check password and update if all good
+        # did user want to change password?
+        if (current_pass != "" or new_pass != "" or confirm_pass != ""):
+            # check if current password is correct and new password matches
+            if (person.password != current_pass or new_pass != confirm_pass):
+                flash(
+                    "Password did not match or current password is incorrect", "error"
+                )
                 return render_template(
                     "edit_person.html",
                     user=current_user,
@@ -290,9 +349,13 @@ def edit_person(username):
                     password=new_pass,
                 )
 
-            # Check for unique username
-            if update_user(user_id=person.id, username=uniqueUsername)["status_code"] == 400:
-                flash("Username already taken", "error")
+        # check if person wanted to change login email
+        if (current_login_email != "" or new_email != "" or confirm_email != ""):
+            # check if current email is correct and new email matches and new email is unique
+            if (person.email != current_login_email or new_email != confirm_email) and (check_email_exists(email=new_email)["status_code"] != 404):
+                flash(
+                    "Emails did not match or current email verification is incorrect", "error"
+                )
                 return render_template(
                     "edit_person.html",
                     user=current_user,
@@ -304,20 +367,45 @@ def edit_person(username):
                     tag_name_list=tag_name_list,
                     socials=socialMediaDic,
                 )
+            else:
+                update_user(
+                    user_id=person.id,
+                    email=new_email,
+                )
 
-            # TODO add error message for when the password is of invalid format
-
-            # if all okay, then update everyone
+        # Check for unique username, if so then allow udpate
+        if read_single_user(username=uniqueUsername)["status_code"] != 404:
+            flash("Username already taken", "error")
+            return render_template(
+                "edit_person.html",
+                user=current_user,
+                person=person,
+                bio=newBio,
+                events=events,
+                affiliations=affiliations,
+                edit=edit,
+                tag_name_list=tag_name_list,
+                socials=socialMediaDic,
+            )
+        else:
             update_user(
                 user_id=person.id,
-                display_name=display_name,
-                pronouns=pronouns,
-                bio=request.form.get("bioTextArea", ""),
-                tags=tag_list,
+                username=uniqueUsername,
             )
-            # person.bio = request.form.get("bioTextArea", "")
-            # person.save()
-            return redirect(url_for("people.person", username=username))
+
+        # TODO add error message for when the password is of invalid format
+
+        # if all okay, then update everyone
+        update_user(
+            user_id=person.id,
+            display_name=display_name,
+            pronouns=pronouns,
+            bio=request.form.get("bioTextArea", ""),
+            tags=tag_list,
+        )
+        # person.bio = request.form.get("bioTextArea", "")
+        # person.save()
+        return redirect(url_for("people.person", username=person.username))
 
     return render_template(
         "edit_person.html",
@@ -330,3 +418,17 @@ def edit_person(username):
         tag_name_list=tag_name_list,
         socials=socialMediaDic,
     )
+
+
+def allowed_file(filename) -> bool:
+    """
+    Check if the file is allowed to be uploaded
+
+    Args:
+        filename (str): the name of the file
+
+    Returns: 
+        bool: True if the file is allowed to be uploaded, False otherwise
+    """
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

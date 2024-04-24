@@ -1,5 +1,6 @@
 import enum
 from typing import List
+from flask import url_for
 from sqlalchemy import Boolean, Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.declarative import declarative_base
@@ -10,6 +11,7 @@ from .user_tag import UserTag
 from ..event import Event, EventContributor
 from ..opportunity import Opportunity
 from ... import db, login_manager
+# from sqlalchemy.ext.hybrid import hybrid_property
 
 Base = declarative_base()
 
@@ -44,6 +46,8 @@ class User(db.Model, UserMixin):
     pronouns: Mapped[str]
     bio: Mapped[str]
     user_type: Mapped['UserType']
+    profile_picture_url: Mapped[str]
+    profile_picture_id: Mapped[str]
     tags: Mapped[List['UserTag']] = relationship(
         'UserTag', secondary="user_tag_relationships", back_populates='users', cascade="all, delete")
     socials: Mapped[List['SocialMedia']] = relationship(
@@ -57,3 +61,10 @@ class User(db.Model, UserMixin):
     opportunity_posts: Mapped[List['Opportunity']] = relationship(
         'Opportunity', back_populates='poster', cascade='all, delete-orphan')
     # TODO: add profile_picture: Mapped[str] = mapped_column(String, nullable=False, default="default.jpg")
+
+    # @hybrid_property
+    def get_profile_pic_url(self):
+        if self.profile_picture_url == "":
+            return url_for("static", filename="images/placeholder.jpg")
+        return self.profile_picture_url
+        # <img src="{{person.get_profile_pic_url}}">
