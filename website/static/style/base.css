@@ -5,6 +5,7 @@
     --nav-highlight: #43a5cf;
     --background-blue: 217, 237, 245;
     --filters-background: #f8f9fa;
+    scroll-behavior: smooth;
 }
 
 :root[data-bs-theme="dark"] {
@@ -92,11 +93,11 @@ body {
 }
 
 /* .btn.show, */
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:hover,
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active:hover,
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active,
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item:active:hover,
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item:active {
+.dropdown .dropdown-menu * .dropdown-item.bg-icon-background:hover,
+.dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active:hover,
+.dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active,
+.dropdown .dropdown-menu * .dropdown-item:active:hover,
+.dropdown .dropdown-menu * .dropdown-item:active {
     background-color: var(--dark-pink);
     border-color: var(--dark-pink);
     color: white;
@@ -278,6 +279,13 @@ body {
 .bg-nav {
     background-color: var(--nav-background);
     color: white;
+}
+
+.home-card-event-description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
 }
 
 /*** Responsive design ***/

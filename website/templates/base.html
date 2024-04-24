@@ -14,7 +14,8 @@
         <title>{% block title %}Home{% endblock %} | DanceConnect</title>
     </head>
 
-    <body class="d-none">
+    <body>
+        {% if not hide_navbar %}
         <nav class="navbar sticky-top navbar-expand-lg navbar-dark mt-4 px-md-5 px-3 shadow">
             <a id="logo" class="navbar-brand d-flex align-items-center pe-3" href="{{ url_for('views.home') }}">
                 <img id="logo-img" class="rounded-circle p-1 shadow-lg bg-white" src="{{url_for('static', filename='images/logo.png')}}"
@@ -37,8 +38,7 @@
                             <span class="nav-label">Events</span>
                         </a>
                         <ul class="dropdown-menu">
-                            {# <li><a class="dropdown-item" href="{{ url_for('events.events_list') }}">Upcoming events</a></li> #}
-                            <li><a class="dropdown-item" href="{{ url_for('views.demo_event_list') }}">Upcoming events</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('events.events_list') }}">Upcoming events</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('events.events_calendar') }}">Event calendar</a></li>
                             <li>
                                 <hr class="dropdown-divider">
@@ -47,21 +47,20 @@
                             <li><a class="dropdown-item" href="#">My events</a></li>
                         </ul>
                     </div>
-                    {# <a class="nav-link" id="people" href="{{ url_for('people.people_list') }}" title="People"> #}
-                        <a class="nav-link" id="people" href="{{ url_for('views.demo_people_list') }}" title="People">
-                            <i id="people-icon" class="nav-icon d-lg-none me-1 bi bi-people"></i>
-                            <span class="nav-label">People</span>
-                        </a>
-                        <a class="nav-link" id="opportunities" href="{{ url_for('opportunities.opportunities_list') }}" title="Opportunities">
-                            <i id="opportunities-icon" class="nav-icon d-lg-none me-1 bi bi-briefcase"></i>
-                            <span class="nav-label">Opportunities</span>
-                        </a>
+                    <a class="nav-link" id="people" href="{{ url_for('people.people_list') }}" title="People">
+                        <i id="people-icon" class="nav-icon d-lg-none me-1 bi bi-people"></i>
+                        <span class="nav-label">People</span>
+                    </a>
+                    <a class="nav-link" id="opportunities" href="{{ url_for('opportunities.opportunities_list') }}" title="Opportunities">
+                        <i id="opportunities-icon" class="nav-icon d-lg-none me-1 bi bi-briefcase"></i>
+                        <span class="nav-label">Opportunities</span>
+                    </a>
                 </div>
                 <div class="navbar-nav navbar-right">
-                    {# <a class="nav-link" id="debug" href="{{ url_for('debug.debug') }}" title="Debug">
+                    <a class="nav-link" id="debug" href="{{ url_for('debug.debug') }}" title="Debug">
                         <i id="debug-icon" class="nav-icon me-1 bi bi-bug"></i>
                         <span class="nav-label d-lg-none">Debug</span>
-                    </a> #}
+                    </a>
                     <div class="dropdown">
                         <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"
                             aria-label="Colour Scheme" data-bs-auto-close="true" title="Colour Scheme">
@@ -102,28 +101,28 @@
                         </span>
                         {% endif %}
                     </a>
-                    {# <a class="nav-link" id="profile" href="{{ url_for('people.person', username=user.username) }}" title="Profile"> #}
-                        <a class="nav-link" id="profile" href="{{ url_for('views.demo_user', username=user.username) }}" title="Profile">
-                            <i id="profile-icon" class="nav-icon d-lg-none me-1 bi bi-person"></i>
-                            <span class="nav-label">Profile</span>
-                        </a>
-                        <a class="nav-link" id="logout" href="{{ url_for('auth.logout') }}" title="Log out">
-                            <i id="logout-icon" class="nav-icon d-lg-none me-1 bi bi-door-closed"></i>
-                            <span class="nav-label">Log Out</span>
-                        </a>
-                        {% else %}
-                        <a class="nav-link" id="login" href="{{ url_for('auth.login') }}">
-                            <i id="login-icon" class="nav-icon d-lg-none me-1 bi bi-door-open"></i>
-                            <span class="nav-label">Log In</span>
-                        </a>
-                        <a class="nav-link" id="sign-up" href="{{ url_for('auth.sign_up') }}">
-                            <i id="sign-up-icon" class="nav-icon d-lg-none me-1 bi bi-person-add"></i>
-                            <span class="nav-label">Sign Up</span>
-                        </a>
-                        {% endif %}
+                    <a class="nav-link" id="profile" href="{{ url_for('people.person', username=user.username) }}" title="Profile">
+                        <i id="profile-icon" class="nav-icon d-lg-none me-1 bi bi-person"></i>
+                        <span class="nav-label">Profile</span>
+                    </a>
+                    <a class="nav-link" id="logout" href="{{ url_for('auth.logout') }}" title="Log out">
+                        <i id="logout-icon" class="nav-icon d-lg-none me-1 bi bi-door-closed"></i>
+                        <span class="nav-label">Log Out</span>
+                    </a>
+                    {% else %}
+                    <a class="nav-link" id="login" href="{{ url_for('auth.login') }}">
+                        <i id="login-icon" class="nav-icon d-lg-none me-1 bi bi-door-open"></i>
+                        <span class="nav-label">Log In</span>
+                    </a>
+                    <a class="nav-link" id="sign-up" href="{{ url_for('auth.sign_up') }}">
+                        <i id="sign-up-icon" class="nav-icon d-lg-none me-1 bi bi-person-add"></i>
+                        <span class="nav-label">Sign Up</span>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
+        {% endif %}
 
         <div id="flash-area" class="container d-flex justify-content-center">
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -148,6 +147,11 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
+            <noscript>
+                <div class="alert alert-warning mt-5 d-inline-block text-center" role="alert">
+                    JavaScript is disabled in your browser. Some features may not work as expected.
+                </div>
+            </noscript>
         </div>
 
         <div class="base container-lg px-2 px-md-3 py-3">
@@ -282,11 +286,6 @@
                     navbar.classList.remove("shrink");
                     logo.classList.remove("shrink");
                 }
-            });
-
-            window.addEventListener("load", function () {
-                const body = document.getElementsByTagName("body")[0];
-                body.classList.remove("d-none");
             });
 
         </script>

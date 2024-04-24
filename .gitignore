@@ -3,3 +3,4 @@
 .vscode/**
 /secrets/*
 .DS_Store
+website/secrets/keys.json
