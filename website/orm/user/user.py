@@ -102,30 +102,12 @@ def read_users(
 
     return json_response(200, f"{len(users)} users found.", users)
 
-
 # Returns a single User by their id. Returns null if no such user exists.
+
+
 def read_single_user(username: str):
-    user = db.session.query(User).filter_by(username=username).first()
-
-    if user is None:
-        return json_response(404, "No user found")
-
-    return json_response(200, f"User {user.display_name} found.", user)
-
-
-def get_user_by_email_or_username(query: str):
-    user = db.session.query(User).filter(
-        or_(User.email == query, User.username == query)).first()
-
-    if user is None:
-        return json_response(404, "No user found")
-
-    return json_response(200, f"User {user.display_name} found.", user)
-
-
-def check_user_exists(username: str):
     """
-    Check if a user exists by their username
+    Check if a user exists by their username and returns the user object if found
     :param username: The username to check
     :return: A JSON response
     """
@@ -137,13 +119,43 @@ def check_user_exists(username: str):
     return json_response(200, f"User {user.display_name} found.", user)
 
 
+# def check_username_exists(username: str):
+#     """
+#     Check if a user exists by their username and returns the user object if found
+#     :param username: The username to check
+#     :return: A JSON response
+#     """
+#     user = db.session.query(User).filter_by(username=username).first()
+
+#     if user is None:
+#         return json_response(404, "No user found")
+
+#     return json_response(200, f"User {user.display_name} found.")
+
+
 def check_email_exists(email: str):
     """
     Check if a user exists by their email
+
     :param email: The email to check
     :return: A JSON response
     """
     user = db.session.query(User).filter_by(email=email).first()
+
+    if user is None:
+        return json_response(404, "No user found")
+
+    return json_response(200, f"User {user.display_name} found.")
+
+
+def get_user_by_email_or_username(query: str):
+    user = db.session.query(User).filter(
+        or_(User.email == query, User.username == query)).first()
+
+    if user is None:
+        return json_response(404, "No user found")
+
+    return json_response(200, f"User {user.display_name} found.", user)
 
 
 # Updates a user with the given variables. Pass None to leave a variable unchanged.

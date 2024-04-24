@@ -4,7 +4,7 @@ from flask import current_app
 from flask_login import current_user
 
 from ...orm.event.event_contributor import get_affilliations
-from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link, check_user_exists, check_email_exists
+from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link, check_email_exists
 from ...forms.people_filter import (
     PeopleFilter,
     Roles,
@@ -352,7 +352,7 @@ def edit_person(username):
         # check if person wanted to change login email
         if (current_login_email != "" or new_email != "" or confirm_email != ""):
             # check if current email is correct and new email matches and new email is unique
-            if (person.email != current_login_email or new_email != confirm_email) and (check_email_exists(email=new_email)["status_code"] == 404):
+            if (person.email != current_login_email or new_email != confirm_email) and (check_email_exists(email=new_email)["status_code"] != 404):
                 flash(
                     "Emails did not match or current email verification is incorrect", "error"
                 )
@@ -373,8 +373,8 @@ def edit_person(username):
                     email=new_email,
                 )
 
-        # Check for unique username
-        if check_user_exists(username=username)["status_code"] == 404:
+        # Check for unique username, if so then allow udpate
+        if read_single_user(username=uniqueUsername)["status_code"] != 404:
             flash("Username already taken", "error")
             return render_template(
                 "edit_person.html",
@@ -386,6 +386,11 @@ def edit_person(username):
                 edit=edit,
                 tag_name_list=tag_name_list,
                 socials=socialMediaDic,
+            )
+        else:
+            update_user(
+                user_id=person.id,
+                username=uniqueUsername,
             )
 
         # TODO add error message for when the password is of invalid format
