@@ -185,10 +185,10 @@ def create_event_submit():
     occurrences = []
     for i in range(0, int(request.form.get("num_occurrences")) + 1):
         occurrences.append(OccurrenceTuple(
-            start_time=datetime.strptime(f"{request.form.get(f"occurrence-{i}-date")} {
-                request.form.get(f"occurrence-{i}-start-time")}", "%Y-%m-%d %H:%M"),
-            end_time=datetime.strptime(f"{request.form.get(f"occurrence-{i}-date")} {
-                request.form.get(f"occurrence-{i}-end-time")}", "%Y-%m-%d %H:%M") if request.form.get(f"occurrence-{i}-end-time") != "" else None,
+            start_time=datetime.strptime(
+                f"{request.form.get(f'occurrence-{i}-date')} {request.form.get(f'occurrence-{i}-start-time')}", "%Y-%m-%d %H:%M"),
+            end_time=datetime.strptime(f"{request.form.get(f'occurrence-{i}-date')} {request.form.get(f'occurrence-{i}-end-time')}",
+                                       "%Y-%m-%d %H:%M") if request.form.get(f"occurrence-{i}-end-time") != "" else None,
             is_relaxed_performance=request.form.get(
                 f"occurrence-{i}-is-relaxed-performance"),
             is_photosensitivity_friendly=request.form.get(
@@ -328,10 +328,10 @@ def event_edit(event_id: int):
                                                     "is_photosensitivity_friendly", "is_hearing_accessible", "is_visually_accessible"])
         occurrences = []
         for i in range(0, int(form.get("num_occurrences")) + 1):
-            start_time = datetime.strptime(f"{form.get(
-                f'occurrence-{i}-date')} {form.get(f'occurrence-{i}-start-time')}", "%Y-%m-%d %H:%M")
-            end_time = datetime.strptime(f"{form.get(f'occurrence-{i}-date')} {form.get(f'occurrence-{
-                i}-end-time')}", "%Y-%m-%d %H:%M") if form.get(f'occurrence-{i}-end-time') != "" else None
+            start_time = datetime.strptime(
+                f"{form.get(f'occurrence-{i}-date')} {form.get(f'occurrence-{i}-start-time')}", " % Y-%m-%d % H: % M")
+            end_time = datetime.strptime(f"{form.get(f'occurrence-{i}-date')} {form.get(f'occurrence-{i}-end-time')}",
+                                         "%Y-%m-%d %H:%M") if form.get(f'occurrence-{i}-end-time') != "" else None
             is_relaxed_performance = form.get(
                 f'occurrence-{i}-is-relaxed-performance')
             is_photosensitivity_friendly = form.get(
@@ -387,8 +387,7 @@ def event_edit(event_id: int):
         tag_list = ", ".join([tag.name for tag in event.tags])
         venue_name = event.venue_name
         venue_address = event.venue_address
-        venue_is_mobility_aid_accessible = f"{
-            event.venue_is_mobility_aid_accessible}"
+        venue_is_mobility_aid_accessible = f"{event.venue_is_mobility_aid_accessible}"
         accessibility_notes = event.accessibility_notes
         min_ticket_price = event.min_ticket_price
         max_ticket_price = event.max_ticket_price
