@@ -3,8 +3,6 @@ from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 
-from website.orm.event.event_tag import read_event_tag
-
 from ...models.event.event import Event
 from ...models.event.event_contributor import EventContributor
 from ...models.notification.notification import EventRequestNotification
@@ -13,7 +11,6 @@ from ...orm.event.event_contributor import connect_user_to_event, get_event_cont
 from ...orm.notification.notifications import get_event_request_notification, add_event_request_notification, delete_notification
 from ...forms.events import CreateEventForm, CreateEventOccurrenceForm
 from ...forms.event_filter import EventFilterForm
-
 
 events = Blueprint('events', __name__)
 
@@ -247,7 +244,7 @@ def event_details(event_id: int):
 
     occurrences = {}
     for occurrence in event.occurrences:
-        date = occurrence.start_time.strftime("%A, %B %e")
+        date = occurrence.start_time.strftime("%A, %B %-d")
         if date not in occurrences:
             occurrences[date] = []
         occurrences[date].append(occurrence)
@@ -432,3 +429,13 @@ def event_delete(event_id: int):
     delete_event(event)
     flash('Event deleted!', category='success')
     return redirect(url_for('events.events_list'))
+
+
+@events.route('/home-card/<int:index>/', methods=['POST'])
+def event_home_card(index: int):
+    results = search_events(limit=1, offset=index)
+    if results.get("data") is None:
+        return "", 404
+    else:
+        event, occurrence_count = results.get("data")[0]
+    return render_template("event-home-card.html", user=current_user, event=event, occurrence_count=occurrence_count)
