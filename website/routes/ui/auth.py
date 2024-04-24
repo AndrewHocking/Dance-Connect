@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
+from ... import bcrypt
 from ...models.user import User
 from ...forms.auth import SignUpForm, LogInForm
 from ...orm.user.user import create_user, get_user_by_email_or_username
@@ -15,7 +16,7 @@ def login():
         password = request.form.get('password')
 
         response = get_user_by_email_or_username(email)
-        if response["status_code"] == 200 and response["data"].password == password:
+        if response["status_code"] == 200 and bcrypt.check_password_hash(pw_hash=response["data"].password, password=password):
             flash('Logged in successfully!', category='success')
             login_user(response["data"], remember=True)
             return redirect(url_for('views.home'))
@@ -41,7 +42,6 @@ def sign_up():
         password1 = request.form.get('password')
         password2 = request.form.get('confirm_password')
 
-        # TODO: Hash passwords
         if password1 != password2:
             flash('Passwords don\'t match.', category='error')
         else:

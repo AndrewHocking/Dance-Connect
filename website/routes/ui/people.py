@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import current_user
 
+from ... import bcrypt
 from ...orm.event.event_contributor import get_affilliations
 from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link
 from ...forms.people_filter import (
@@ -243,7 +244,7 @@ def edit_person(username):
                     create_socials_link(person.id, social[1], social[0])
 
             # check password and update if all good
-            if person.password == current_pass and new_pass == confirm_pass:
+            if bcrypt.check_password_hash(pw_hash=person.password, password=current_pass) and new_pass == confirm_pass:
                 update_user(
                     user_id=person.id,
                     password=new_pass,
