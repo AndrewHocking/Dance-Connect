@@ -103,8 +103,8 @@
             <div class="card-body">
                 <p class="card-text mb-2">{{opportunity.display_description}}</p>
                 {% if opportunity.tags|length > 0 %}
-                <div class="d-flex align-items-center overflow-x-scroll">
-                    <i class="bi bi-tags-fill me-1"></i>
+                <div class="d-flex align-items-center flex-wrap">
+                    <i class="bi bi-tags-fill me-1 mb-1"></i>
                     {% for tag in opportunity.tags %}
                     <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{tag.name}}</button>
                     {%endfor%}

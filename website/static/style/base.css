@@ -301,9 +301,8 @@ body {
 }
 
 label.required:after {
-    content: "*";
-    color: red;
-    font-weight: bold;
+    content: " ✽ ";
+    color: var(--pink);
 }
 
 /*** Responsive design ***/

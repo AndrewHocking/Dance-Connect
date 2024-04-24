@@ -5,13 +5,13 @@ from wtforms.validators import DataRequired, Length, NumberRange
 
 class CreateEventOccurrenceForm(FlaskForm):
     date = DateField(
-        label="Date ✽",
+        label="Date",
         name="occurrence-occurrence_number-date",
         render_kw={"class": "form-control date"},
         validators=[DataRequired()]
     )
     start_time = TimeField(
-        label="Start Time ✽",
+        label="Start Time",
         name="occurrence-occurrence_number-start-time",
         render_kw={"class": "form-control time"},
         validators=[DataRequired()]
@@ -45,7 +45,7 @@ class CreateEventOccurrenceForm(FlaskForm):
 
 class CreateEventForm(FlaskForm):
     title = StringField(
-        label="Event Title ✽",
+        label="Event Title",
         validators=[DataRequired(), Length(
             min=1, max=100, message="Must be between 1 and 100 characters.")],
         name="title",
@@ -53,7 +53,7 @@ class CreateEventForm(FlaskForm):
                    "class": "form-control"}
     )
     description = TextAreaField(
-        label="Event Description ✽",
+        label="Event Description",
         validators=[DataRequired(), Length(
             max=10000, message="Maximum 10,000 characters.")],
         name="description",
@@ -85,7 +85,7 @@ class CreateEventForm(FlaskForm):
             "placeholder": "e.g. 4141 Sugarplum Dr., Toronto, M4Y 2E5", "class": "form-control"}
     )
     venue_is_mobility_aid_accessible = RadioField(
-        label="Venue Accessibility ✽",
+        label="Venue Accessibility",
         validators=[DataRequired()],
         name="venue_is_mobility_aid_accessible",
         choices=[('False', 'This venue is NOT fully accessible to users of wheelchairs and other mobility devices.'),

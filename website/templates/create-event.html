@@ -4,18 +4,18 @@
 <div class="container">
     <div class="page-header mb-3">
         <h1>{{ "Edit Event" if edit else "Create Event" }}</h1>
-        <div class="form-text">Fields labelled <strong>✽</strong> are required</div>
+        <div class="form-text">Fields labelled <label class="required"></label> are required</div>
     </div>
     <form autocomplete="off" method="POST"
         action="{{ url_for('events.event_edit', event_id=event_id) if edit else url_for('events.create_event_submit') }}">
         <fieldset class="form-group mb-3">
             <legend>Event Information</legend>
             <div class="form-group mb-3">
-                {{ event_form.title.label() }}
+                {{ event_form.title.label(class_="form-label required") }}
                 {{ event_form.title() }}
             </div>
             <div class="form-group mb-3">
-                {{ event_form.description.label() }}
+                {{ event_form.description.label(class_="form-label required") }}
                 {{ event_form.description() }}
             </div>
             <div class="form-group mb-3">
@@ -52,6 +52,7 @@
                 </div>
             </div>
         </fieldset>
+        <hr />
         <fieldset class="form-group mb-3">
             <legend>Event Times</legend>
             {{ event_form.num_occurrences() }}
@@ -72,6 +73,7 @@
                 </div>
             </div>
         </fieldset>
+        <hr />
         <fieldset class="form-group mb-3">
             <legend>Venue Information</legend>
             <div class="form-group mb-3">
@@ -87,7 +89,7 @@
                 </div>
                 <div class="row mt-2">
                     <div class="form-group mb-3">
-                        {{ event_form.venue_is_mobility_aid_accessible.label() }}
+                        {{ event_form.venue_is_mobility_aid_accessible.label(class_="form-label required") }}
                         {% for radio_option in event_form.venue_is_mobility_aid_accessible %}
                         <div class="form-check">
                             {{ radio_option(class_="form-check-input") }}
