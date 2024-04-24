@@ -49,6 +49,8 @@ def create_user(
         user_type=UserType.INDIVIDUAL,
         pronouns=pronouns,
         bio=bio,
+        profile_picture_url="",
+        profile_picture_id="",
         tags=list(),
         socials=list(),
         received_notifications=list(),
@@ -100,15 +102,50 @@ def read_users(
 
     return json_response(200, f"{len(users)} users found.", users)
 
-
 # Returns a single User by their id. Returns null if no such user exists.
+
+
 def read_single_user(username: str):
+    """
+    Check if a user exists by their username and returns the user object if found
+    :param username: The username to check
+    :return: A JSON response
+    """
     user = db.session.query(User).filter_by(username=username).first()
 
     if user is None:
         return json_response(404, "No user found")
 
     return json_response(200, f"User {user.display_name} found.", user)
+
+
+# def check_username_exists(username: str):
+#     """
+#     Check if a user exists by their username and returns the user object if found
+#     :param username: The username to check
+#     :return: A JSON response
+#     """
+#     user = db.session.query(User).filter_by(username=username).first()
+
+#     if user is None:
+#         return json_response(404, "No user found")
+
+#     return json_response(200, f"User {user.display_name} found.")
+
+
+def check_email_exists(email: str):
+    """
+    Check if a user exists by their email
+
+    :param email: The email to check
+    :return: A JSON response
+    """
+    user = db.session.query(User).filter_by(email=email).first()
+
+    if user is None:
+        return json_response(404, "No user found")
+
+    return json_response(200, f"User {user.display_name} found.")
 
 
 def get_user_by_email_or_username(query: str):
@@ -134,17 +171,27 @@ def update_user(
     socials: List[SocialMedia] = None,
     user_type: UserType = None,
     tags: List[str] = None,
+    profile_picture_url=None,
+    profile_picture_id=None,
 ):
+    """
+    Update a user with the given variables. Pass None to leave a variable unchanged.
+    NOTE: This function does not check if the user exists. Please ensure that the user exists before calling this function.
+    NOTE: This function does not check if the email is already in use. Please ensure that the email is unique before calling this function.
+    """
     user: User = db.session.query(User).get(user_id)
     if user is None:
         return json_response(404, "User not found.", user_id)
 
-    if username is not None and username != user.username:
-        conflict = db.session.query(User).filter_by(username=username).first()
-        if conflict is None:
-            user.username = username
-        else:
-            return json_response(409, "Username already taken.", username)
+    # if username is not None and username != user.username:
+    #     conflict = db.session.query(User).filter_by(username=username).first()
+    #     if conflict is None:
+    #         user.username = username
+    #     else:
+    #         return json_response(409, "Username already taken.", username)
+
+    if username is not None:
+        user.username = username
 
     if email is not None:
         user.email = email
@@ -177,6 +224,12 @@ def update_user(
         user.tags.clear()
         for tag in tags:
             create_user_tag(tag, user, False)
+
+    if profile_picture_url is not None:
+        user.profile_picture_url = profile_picture_url
+
+    if profile_picture_id is not None:
+        user.profile_picture_id = profile_picture_id
 
     db.session.add(user)
     db.session.commit()
