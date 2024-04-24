@@ -165,7 +165,7 @@ def person(username):
     )
 
 
-@people.route("/people/<username>/edit/", methods=["GET", "POST"])
+@people.route("/<username>/edit/", methods=["GET", "POST"])
 def edit_person(username):
     person: User = read_single_user(username=username)["data"]
     events = list(person.events_organized)
