@@ -1,354 +1,128 @@
-{% extends "base.html" %}
+{% extends "filtered-list-view.html" %}
 {% block title %}Opportunities{% endblock %}
-{% block content %}
-<form method="POST" class="container-lg">
-    <div class="row align-items-center mb-4">
-        <div class="col-12 col-md-4 col-xl-3">
-            <h1>Opportunities</h1>
+{% block header_text %}Opportunities{% endblock %}
+{% block filters %}
+<div class="form-group mb-3">
+    {{ filters.sort_option.label() }}
+    {{ filters.sort_option() }}
+</div>
+<div class="form-group mb-3">
+    <label class="form-label">{{ filters.opportunity_type.description }}</label>
+    {% for type in post_type %}
+    <div class="form-check">
+        {{ filters.opportunity_type.form[type] }}
+        {{ filters.opportunity_type.form[type].label(class_="form-check-label badge rounded-pill text-bg-" + post_type[type]) }}
+    </div>
+    {% endfor %}
+</div>
+<div class="form-group mb-3">
+    <label class="form-label">{{ filters.term_type.description }}</label>
+    {% for term in term_type %}
+    <div class="form-check">
+        {{ filters.term_type.form[term.name] }}
+        {{ filters.term_type.form[term.name].label(class_="form-check-label") }}
+    </div>
+    {% endfor %}
+</div>
+<div class="form-group mb-3">
+    <label class="form-label">{{ filters.location_type.description }}</label>
+    {% for location in location_type %}
+    <div class="form-check">
+        {{ filters.location_type.form[location.name] }}
+        {{ filters.location_type.form[location.name].label(class_="form-check-label") }}
+    </div>
+    {% endfor %}
+</div>
+<div class="form-group mb-3">
+    <label class="form-label">{{ filters.compensation_type.description }}</label>
+    <div class="form-check">
+        {{ filters.compensation_type.form.is_paid }}
+        {{ filters.compensation_type.form.is_paid.label(class_="form-check-label") }}
+    </div>
+</div>
+<div class="form-group mb-3">
+    <div class="row align-items-center py-1">
+        <div class="col-auto pe-0 me-1">
+            <label class="form-label m-0">Match</label>
         </div>
-        <div class="col-12 col-md-8 col-xl-9">
-            <div class="d-flex">
-                <div class="flex-grow-1 pr-2 input-group">
-                    <div class="form-floating">
-                        <input class="form-control" id="search" name="search" placeholder="Search" type="text" value="">
-                        <label for="search">Search</label>
-                    </div>
-                    <button class="btn btn-primary" id="search_button" name="search_button" type="submit" title="Search">
-                        <i class="bi bi-search bi-bold"></i>
-                        <span class="visually-hidden">Search</span>
-                    </button>
-                </div>
-            </div>
+        <div class="col-auto px-0 me-1">
+            {{ filters.match_all_tags() }}
         </div>
-    </div> <!-- HEADER ROW END -->
-
-    <div class="row mb-4">
-        <div class="col-12 col-md-4 col-xl-3 mb-4">
-            <div id="form-filter" class="row m-1 p-1 pt-3 pb-1 p-md-0 m-md-0 rounded">
-                <div id="filter-header" class="d-flex d-md-none align-items-center mb-3">
-                    <div class="h4 mb-0">Filters</div>
-                    <button class="btn btn-primary toggler-button ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#filter-collapse"
-                        aria-expanded="false" aria-controls="filter-collapse">
-                        <i class="bi bi-chevron-down item-collapsed"></i>
-                        <i class="bi bi-chevron-up item-expanded"></i>
-                    </button>
-                </div>
-
-                <div id="filter-collapse" class="collapse d-md-block mb-3 px-lg-0">
-
-                    <div class="form-group mb-3">
-                        <label for="sort">Sort</label>
-                        <select class="form-select" id="sort" name="sort" placeholder="">
-                            <option value="upcoming">Date Posted (New)</option>
-                            <option value="alpha-asc">Title (A-Z)</option>
-                            <option value="alpha-desc">Title (Z-A)</option>
-                        </select>
-                    </div>
-                    <label class="form-label mb-0">Type</label>
-                    <div class="form-group mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label badge rounded-pill text-bg-primary" for="check">Audition</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label badge rounded-pill text-bg-success" for="check">Open Call</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label badge rounded-pill text-bg-danger" for="check">Dance Job</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label badge rounded-pill text-bg-warning" for="check">Intensive</label>
-                        </div>
-                    </div>
-                    <label class="form-label mb-0">Compensation</label>
-                    <div class="form-group mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Hourly</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Daily</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Weekly</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Monthly</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Salary</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Unpaid</label>
-                        </div>
-                    </div>
-                    <label class="form-label mb-0">Term</label>
-                    <div class="form-group mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Contract</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Part-Time</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Full-Time</label>
-                        </div>
-                    </div><label class="form-label mb-0">Location</label>
-                    <div class="form-group mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">In-Person</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Remote</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" id="check" name="check" placeholder="" type="checkbox" value="y">
-                            <label class="form-check-label" for="check">Hybrid</label>
-                        </div>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <div class="row align-items-center py-1">
-                            <div class="col-auto pe-0 me-1">
-                                <label class="form-label m-0">Match</label>
-                            </div>
-                            <div class="col-auto px-0 me-1">
-                                <select class="form-select form-select-sm m-0" id="match_all_tags" name="match_all_tags" placeholder="">
-                                    <option selected="" value="any">any</option>
-                                    <option value="all">all</option>
-                                    <option value="none">none</option>
-                                </select>
-                            </div>
-                            <div class="col-auto ps-0">
-                                <label class="form-label m-0">of these tags</label>
-                            </div>
-                        </div>
-                        <textarea aria-describedby="tags-help-block" class="form-control" id="tags" name="tags"
-                            placeholder="e.g. ballet, hip hop, contemporary"></textarea>
-                        <div id="tags-help-block" class="form-text">Separate tags by commas.</div>
-                    </div>
-
-                    <input class="btn btn-primary w-100 mb-1" id="apply_filters" name="apply_filters" type="submit" value="Apply filters">
-                    <input class="btn btn-secondary w-100" id="clear_filters" name="clear_filters" type="submit" value="Clear filters">
-                </div>
-            </div>
+        <div class="col-auto ps-0">
+            <label class="form-label m-0">of these tags</label>
         </div>
-        <div class="col-12 col-md-8 col-xl-9">
-            <div class="row justify-content-center gy-3 mt-1">
-                <div class="col-12 mt-0 mb-3">
-                    <div class="card overflow-hidden">
-                        <div class="card-header pt-3 pb-2">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title text-truncate mb-0">
-                                    Theatrical Dance Audition</h5>
-                                <div class="badge rounded-pill text-bg-primary">Audition</div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="card-subtitle text-truncate text-body-secondary">Stage & Motion Theatre Co.</h6>
-                                <h6 class="card-subtitle text-body-secondary">Starting September 2024</h6>
-                            </div>
-                            <small>
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-cash me-2"></i>
-                                    <div>Hourly</div>
-                                    <i class="bi bi-clock ms-3 me-2"></i>
-                                    <div>Full-Time</div>
-                                    <i class="bi bi-geo-alt ms-3 me-2"></i>
-                                    <div>In-Person</div>
-                                </div>
-                            </small>
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">Looking for talented dancers for an upcoming theatrical production. Previous theatrical
-                                experience is preferred, but not required.</p>
-                            <div class="d-flex align-items-center overflow-x-hidden">
-                                <i class="bi bi-tags-fill me-1"></i>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">theatre</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">theatrical</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">stage play</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">musical</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mt-0 mb-3">
-                    <div class="card overflow-hidden">
-                        <div class="card-header pt-3 pb-2">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title text-truncate mb-0">
-                                    Contemporary Dance Teacher</h5>
-                                <div class="badge rounded-pill text-bg-danger">Dance Job</div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="card-subtitle text-truncate text-body-secondary">Elevate Dance Collective</h6>
-                                <h6 class="card-subtitle text-body-secondary">Starting July 2024</h6>
-                            </div>
-                            <small>
-                                <div class="d-flex mb-1 align-items-center">
-                                    <i class="bi bi-cash me-2"></i>
-                                    <div>Hourly</div>
-                                    <i class="bi bi-clock ms-3 me-2"></i>
-                                    <div>Part-Time</div>
-                                    <i class="bi bi-geo-alt ms-3 me-2"></i>
-                                    <div>In-Person</div>
-                                </div>
-                            </small>
-                        </div>
-                        <div class="card-body">
-
-                            <p class="card-text">Seeking an experienced contemporary dance instructor for weekend workshops. Passion for
-                                teaching required.</p>
-                            <div class="d-flex align-items-center overflow-x-hidden">
-                                <i class="bi bi-tags-fill me-1"></i>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">teaching</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">instructor</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">contemporary</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">workshop</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mt-0 mb-3">
-                    <div class="card overflow-hidden">
-                        <div class="card-header pt-3 pb-2">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title text-truncate mb-0">
-                                    Ballet Choreographer</h5>
-                                <div class="badge rounded-pill text-bg-danger">Dance Job</div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="card-subtitle text-truncate text-body-secondary">En Pointe Ballet Theatre</h6>
-                                <h6 class="card-subtitle text-body-secondary">Starting June 2024</h6>
-                            </div>
-                            <small>
-                                <div class="d-flex mb-1 align-items-center">
-                                    <i class="bi bi-cash me-2"></i>
-                                    <div>Weekly</div>
-                                    <i class="bi bi-clock ms-3 me-2"></i>
-                                    <div>Contract</div>
-                                    <i class="bi bi-geo-alt ms-3 me-2"></i>
-                                    <div>In-Person</div>
-                                </div>
-                            </small>
-                        </div>
-                        <div class="card-body">
-
-                            <p class="card-text">The ballet company requires a creative choreographer for the upcoming season. Must have a
-                                strong ballet background.</p>
-                            <div class="d-flex align-items-center overflow-x-hidden">
-                                <i class="bi bi-tags-fill me-1"></i>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">choreographer</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">ballet</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mt-0 mb-3">
-                    <div class="card overflow-hidden">
-                        <div class="card-header pt-3 pb-2">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title text-truncate mb-0">
-                                    Hip-Hop Dance Crew Auditions</h5>
-                                <div class="badge rounded-pill text-bg-primary">Audition</div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="card-subtitle text-truncate text-body-secondary">Street Rhythms Crew</h6>
-                                <h6 class="card-subtitle text-body-secondary">Starting ASAP</h6>
-                            </div>
-                            <small>
-                                <div class="d-flex mb-1 align-items-center">
-                                    <i class="bi bi-cash me-2"></i>
-                                    <div>Unpaid</div>
-                                    <i class="bi bi-clock ms-3 me-2"></i>
-                                    <div>Part-Time</div>
-                                    <i class="bi bi-geo-alt ms-3 me-2"></i>
-                                    <div>In-Person</div>
-                                </div>
-                            </small>
-                        </div>
-                        <div class="card-body">
-
-                            <p class="card-text">Dynamic hip-hop dance crew looking for new members. Bring your best moves and unique style to
-                                the audition.</p>
-                            <div class="d-flex align-items-center overflow-x-hidden">
-                                <i class="bi bi-tags-fill me-1"></i>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">hip-hop</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">street dance</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">breakdance</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 mt-0 mb-3">
-                    <div class="card overflow-hidden">
-                        <div class="card-header pt-3 pb-2">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h5 class="card-title text-truncate mb-0">
-                                    Cultural Dance Celebration Open Call</h5>
-                                <div class="badge rounded-pill text-bg-success">Open Call</div>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="card-subtitle text-truncate text-body-secondary">One World Dance Festival</h6>
-                                <h6 class="card-subtitle text-body-secondary">June 29, 2024</h6>
-                            </div>
-                            <small>
-                                <div class="d-flex mb-1 align-items-center">
-                                    <i class="bi bi-cash me-2"></i>
-                                    <div>Unpaid</div>
-                                    <i class="bi bi-clock ms-3 me-2"></i>
-                                    <div>Contract</div>
-                                    <i class="bi bi-geo-alt ms-3 me-2"></i>
-                                    <div>In-Person</div>
-                                </div>
-                            </small>
-                        </div>
-                        <div class="card-body">
-
-                            <p class="card-text">Seeking dancers for a cultural celebration event. Traditional and folk dancers encouraged.</p>
-                            <div class="d-flex align-items-center overflow-x-hidden">
-                                <i class="bi bi-tags-fill me-1"></i>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">cultural</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">folk</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">traditional</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">global</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">heritage</button>
-                                <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">festival</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="d-flex justify-content-center mt-3">
-                <ul class="pagination mx-auto">
-                    <li class="page-item">
-                        <a class="page-link disabled" href="#" aria-label="Previous" disabled="">
-                            <span aria-hidden="true"><i class="bi bi-arrow-left-short"></i></span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link active" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true"><i class="bi bi-arrow-right-short"></i></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div> <!-- ITEM LIST END -->
-    </div> <!-- ITEM ROW END -->
-</form>
+    </div>
+    {{ filters.tags() }}
+    <div id="tags-help-block" class="form-text">{{ filters.tags.description }}</div>
+</div>
+<div class="form-group">
+    <div class="col-12 ">
+        {{ filters.applyFilterSubmit }}
+        {{ filters.clearFilterSubmit }}
+    </div>
+</div>
 {% endblock %}
+
+
+{% block items_to_list %}
+    <div class="mt-4 mb-1">
+    {% for opportunity in opportunities %}
+    <div class="col-12 mt-0 mb-3">
+        <div class="card overflow-hidden border-{{post_type[opportunity.type.name]}} border-2">
+            <div class="card-header pt-3 pb-2 border-{{post_type[opportunity.type.name]}}">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title text-truncate mb-0">
+                        {{opportunity.title}}</h5>
+                    <div class="badge rounded-pill text-bg-{{post_type[opportunity.type.name]}}">{{opportunity.type.value}}</div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="card-subtitle text-truncate text-body-secondary me-2">{{opportunity.organizer}}</h6>
+                    <h6 class="card-subtitle text-body-secondary text-end">
+                        <p class="mb-0 d-block d-md-inline">Starting </p>
+                        <span class="">{{opportunity.start_date.strftime("%b %e")}}</span>
+                    </h6>
+                </div>
+                <small>
+                    <div class="d-flex align-items-center">
+                        {% if opportunity.is_paid %}
+                        <i class="bi bi-cash me-2"></i>
+                        <div class="me-3">Paid</div>
+                        {% endif %}
+                        {% if opportunity.term %}
+                        <i class="bi bi-clock me-2"></i>
+                        <div class="me-3">{{opportunity.term.value}}</div>
+                        {% endif %}
+                        <i class="bi bi-geo-alt me-2"></i>
+                        <div class="me-3">{{opportunity.location_type.value}}</div>
+                    </div>
+                </small>
+            </div>
+            <div class="card-body">
+                <p class="card-text mb-2">{{opportunity.display_description}}</p>
+                {% if opportunity.tags|length > 0 %}
+                <div class="d-flex align-items-center overflow-x-hidden">
+                    <i class="bi bi-tags-fill me-1"></i>
+                        {% for tag in opportunity.tags %}
+                        <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{tag.name}}</button>
+                        {%endfor%}
+                </div> 
+                {% endif %}
+            </div>
+            <a href="{{ url_for('opportunities.opportunity', organizer=opportunity.organizer, title=opportunity.title) }}" class="stretched-link"></a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+
+</script>
+
+{% endblock %}
+
+
+
+                

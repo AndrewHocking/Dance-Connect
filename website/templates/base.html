@@ -51,10 +51,17 @@
                         <i id="people-icon" class="nav-icon d-lg-none me-1 bi bi-people"></i>
                         <span class="nav-label">People</span>
                     </a>
-                    <a class="nav-link" id="opportunities" href="{{ url_for('opportunities.opportunities_list') }}" title="Opportunities">
-                        <i id="opportunities-icon" class="nav-icon d-lg-none me-1 bi bi-briefcase"></i>
-                        <span class="nav-label">Opportunities</span>
-                    </a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" id="opportunities" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i id="opportunities-icon" class="nav-icon d-lg-none me-1 bi bi-briefcase"></i>
+                            <span class="nav-label">Opportunities</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('opportunities.opportunities_list') }}">New opportunities</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('opportunities.create_opportunity') }}">Create a new opportunity post</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="navbar-nav navbar-right">
                     <a class="nav-link" id="debug" href="{{ url_for('debug.debug') }}" title="Debug">
@@ -173,7 +180,6 @@
 
         <script>
             document.addEventListener('DOMContentLoaded', (event) => {
-
                 function setColourScheme(colourScheme) {
                     if (colourScheme == null) {
                         colourScheme = "auto";
@@ -286,6 +292,11 @@
                     navbar.classList.remove("shrink");
                     logo.classList.remove("shrink");
                 }
+            });
+            window.addEventListener("load", function () {
+                const body = document.getElementsByTagName("body")[0];
+                body.classList.remove("visually-hidden");
+
             });
 
         </script>
