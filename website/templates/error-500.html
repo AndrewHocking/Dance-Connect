@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}505 - Internal Server Error{% endblock %}
+{% block content %}
+<div class="row gy-5 py-5">
+    <div class="col-12 col-md-4 position-relative m-0">
+        <div class="d-flex flex-column h-100 justify-content-center">
+            <h1 class="error_title text-center">500</h1>
+            <h3 class="text-center">Internal Server Error</h3>
+        </div>
+        
+        {# Desktop Vertical Border #}
+        <div class="d-none d-md-inline position-absolute start-100 top-50 translate-middle h-50">
+            <div class="bg-secondary ps-1 h-100"></div>
+        </div>
+    </div>
+
+    {# Mobile Horizontal Border #}
+    <div class="col-12 d-md-none">
+        <div class="bg-secondary pt-1 m-2"></div>
+    </div>
+
+    <div class="col-12 col-md">
+        <h1 class="text-center mb-3 fw-bold">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            ERROR
+        </h1>
+
+        <div class="fs-1 pt-3 pb-5 text-center">
+            <h2 class="d-inline text-center fw-normal mb-2"></h2>
+                <i class="bi bi-pc-display-horizontal position-relative me-2">
+                    <i class="bi bi-x-circle-fill fs-5 fw-bold text-danger bg-white position-absolute start-0 top-50 pe-1 translate-middle rounded-circle"></i>
+                </i>
+                Oops, something went wrong on the server.
+            </h2>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <h3 class="mb-3 fw-light">Try fixing the issue by:</h3>
+                <ul class="fw-normal">
+                    <li class="fs-6">Refreshing the page or trying later.</li>
+                    <li class="fs-6">Contacting the site owner: danceconnectgroup@gmail.com</li>
+                    <li class="fs-6">
+                        <div class="btn btn-primary form-text p-1 px-2" data-bs-toggle="modal" data-bs-target="#report-issue-modal">Reporting the issue</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="modal fade" id="report-issue-modal" tabindex="-1" aria-labelledby="report-issue-modal-label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="report-issue-modal-label">Report Issue</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{{ url_for('reports.submit_bug') }}">
+                            <div class="form-group mb-3">
+                                {{ form.title.label }}
+                                {{ form.title }}
+                            </div>
+                            <div class="form-group mb-3">
+                                {{ form.description.label }}
+                                {{ form.description }}
+                                <div id="description-help-block" class="form-text">{{ form.description.description }}</div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" name="cancel" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" name="submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.error_title{
+    font-size: 6em;
+}
+</style>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    $("form").bind("keypress", function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
