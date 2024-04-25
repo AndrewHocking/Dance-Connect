@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}404 - Page Not Found{% endblock %}
+{% block content %}
+<div class="row gy-5 py-5">
+    <div class="col-12 col-md-4">
+        <div class="d-flex flex-column justify-content-center border-end">
+            <h1 class="error_title text-center">404</h1>
+            <h3 class="text-center">Page Not Found</h3>
+        </div>
+    </div>
+    <div class="col-12 col-md-8">
+        <h1 class="text-center mb-3 fw-bold">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            ERROR
+        </h1>
+        <h2 class="text-center fw-normal mb-1">You've danced your way outside the site!</h2>
+        <h3 class="text-center fw-light mb-5">You will be led home in <span id="sec-remaining" class="fw-bold"></span> seconds...</h3>
+
+        <div class="row">
+            {% for i in range(12) %}
+                <div id="pos-{{i}}" class="position-relative col-1 text-nowrap text-center"></div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<style>
+.error_title{
+    font-size: 6em;
+}
+</style>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    var total_time = 11;
+    var timer_seconds = 11;
+    var prev_pos = null;
+
+    function decrement_timer() {
+        $("#sec-remaining").html(Math.floor(timer_seconds/2));
+        if (prev_pos != null) {
+            prev_pos.html('')
+        }
+
+        new_pos = total_time - timer_seconds;
+        if (new_pos < total_time) {
+            $(`#pos-${new_pos}`).html('<i class="bi bi-person-walking fs-1 position-absolute top-50 start-50 translate-middle"></i>');
+            prev_pos = $(`#pos-${new_pos}`);
+        }
+
+        timer_seconds -= 1;
+        if (timer_seconds >= 0) {
+            setTimeout(decrement_timer, 500);
+        }
+        else {
+            window.location = "{{ url_for('views.home') }}"
+        }
+    }
+
+    $(`#pos-${total_time}`).html('<i class="bi bi-house fs-2 position-absolute top-50 start-50 translate-middle"></i>')
+    decrement_timer();
+
+    
+</script>
+{% endblock %}
