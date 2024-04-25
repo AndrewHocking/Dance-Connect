@@ -141,6 +141,8 @@ def create_opportunity():
         term = request.form.get(form.term.name)
         for e in TermType:
             term = e if term == e.name else term
+        if term == 'None':
+            term = None
 
         location_type = request.form.get(form.location_type.name)
         location_type = [e for e in LocationType if e.name == location_type][0]

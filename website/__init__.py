@@ -71,6 +71,7 @@ def create_app():
     from .routes.ui.debug import debug_route
     from .routes.ui.notifications import notifications
     from .routes.ui.opportunities import opportunities
+    from .routes.ui.errors import not_found_handler
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
@@ -79,6 +80,7 @@ def create_app():
     app.register_blueprint(debug_route, url_prefix='/')
     app.register_blueprint(notifications, url_prefix='/')
     app.register_blueprint(opportunities, url_prefix='/opportunities')
+    app.register_error_handler(404, not_found_handler)
 
     with app.app_context():
         db.create_all()
