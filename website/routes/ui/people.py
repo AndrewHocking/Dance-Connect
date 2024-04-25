@@ -252,8 +252,6 @@ def edit_person(username):
         # handle file upload
         if file.filename != "" and 'profilePicture' in request.files:
             temp_error_flag = False
-
-            current_app.config['UPLOAD_FOLDER'] = './website/cloud/temp'
             # app.config['UPLOAD_FOLDER'] = '/cloud/temp/'
 
             # according to co-pilot, this is a secure way to handle file uploads
