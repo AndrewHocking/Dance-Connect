@@ -107,15 +107,16 @@ vision." %}
 {% endmacro %}
 
 
-{% macro contributor_item(contributor, role) %}
-<a href="{{ url_for('people.person', username=contributor.user.username) }}"
+{% macro circle_item(primary, secondary, tertiary, href) %}
+<a href="{{ href }}"
     class="contributor-item col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body user-circle">
-    <div class="rounded-circle mx-auto overflow-hidden position-relative">
+    <div class="rounded-circle mx-auto overflow-hidden position-relative mb-1">
         <img src="{{url_for('static', filename='images/placeholder.jpg')}}"
-            class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle" alt="{{contributor.user.display_name}}" />
+            class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle" alt="{{primary}}" />
     </div>
-    <div class="text-center text-truncate w-100 fw-medium">{{contributor.user.display_name}}</div>
-    <div class="text-center text-truncate w-100 fw-light text-body-tertiary">{{contributor.role}}</div>
+    <div class="text-center text-truncate w-100 fw-medium">{{primary}}</div>
+    <div class="text-center text-truncate w-100 fw-light text-body-tertiary small">{{secondary}}</div>
+    <div class="text-center text-truncate w-100 text-body-secondary">{{tertiary}}</div>
 </a>
 {% endmacro %}
 
@@ -123,11 +124,11 @@ vision." %}
 {% macro event_contributors(contributors, limit) %}
 {% if limit %}
 {% for contributor in contributors[:limit] %}
-{{ contributor_item(contributor) }}
+{{ circle_item(primary=contributor.user.display_name, secondary='@'~contributor.user.username, tertiary=contributor.role, href=url_for('people.person', username=contributor.user.username)) }}
 {% endfor %}
 {% else %}
 {% for contributor in contributors %}
-{{ contributor_item(contributor) }}
+{{ circle_item(primary=contributor.user.display_name, secondary='@'~contributor.user.username, tertiary=contributor.role, href=url_for('people.person', username=contributor.user.username)) }}
 {% endfor %}
 {% endif %}
 {% endmacro %}
