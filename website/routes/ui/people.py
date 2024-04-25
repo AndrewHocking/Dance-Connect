@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask import current_app
 from flask_login import current_user
 
+from ... import bcrypt
 from ...orm.event.event_contributor import get_affilliations
 from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link, check_email_exists
 from ...forms.people_filter import (
@@ -251,8 +252,6 @@ def edit_person(username):
         # handle file upload
         if file.filename != "" and 'profilePicture' in request.files:
             temp_error_flag = False
-
-            current_app.config['UPLOAD_FOLDER'] = './website/cloud/temp'
             # app.config['UPLOAD_FOLDER'] = '/cloud/temp/'
 
             # according to co-pilot, this is a secure way to handle file uploads
@@ -328,7 +327,7 @@ def edit_person(username):
         # did user want to change password?
         if (current_pass != "" or new_pass != "" or confirm_pass != ""):
             # check if current password is correct and new password matches
-            if (person.password != current_pass or new_pass != confirm_pass):
+            if (not bcrypt.check_password_hash(pw_hash=person.password, password=current_pass) or new_pass != confirm_pass):
                 flash(
                     "Password did not match or current password is incorrect", "error"
                 )
@@ -343,11 +342,34 @@ def edit_person(username):
                     tag_name_list=tag_name_list,
                     socials=socialMediaDic,
                 )
+
             else:
-                update_user(
+                response = update_user(
                     user_id=person.id,
                     password=new_pass,
                 )
+
+                try:
+                    if response["data"].get("type") == "pwd_security":
+                        flash(response["message"],
+                              category=response["response_type"])
+                        pwd_errs = response["data"]["errs"]
+                        pwd_strength = response["data"]["strength"]
+                        return render_template(
+                            "edit_person.html",
+                            user=current_user,
+                            person=person,
+                            bio=newBio,
+                            events=events,
+                            affiliations=affiliations,
+                            edit=edit,
+                            tag_name_list=tag_name_list,
+                            socials=socialMediaDic,
+                            pwd_errs=pwd_errs,
+                            pwd_strength=pwd_strength
+                        )
+                except:
+                    pass
 
         # check if person wanted to change login email
         if (current_login_email != "" or new_email != "" or confirm_email != ""):

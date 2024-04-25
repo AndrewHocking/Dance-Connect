@@ -58,8 +58,10 @@ def sanitize_html(html_text, additional_tags: list[str] = []):
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'  # TODO: Change this
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+
+    config_type = 'DevelopmentConfig'
+    # config_type = 'ProductionConfig'
+    app.config.from_object(f'instance.config.{config_type}')
     db.init_app(app)
 
     from .routes.ui.views import views
@@ -82,6 +84,7 @@ def create_app():
         db.create_all()
 
     login_manager.init_app(app)
+    bcrypt.init_app(app)
 
     from .models.user import User
 

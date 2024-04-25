@@ -22,6 +22,11 @@
     <div class="form-floating mb-3">
         {{ form.confirm_password() }}
         {{ form.confirm_password.label() }}
+        {% if pwd_errs %}
+            {% from "macros.html" import set_password_field %}
+            {{ set_password_field(errs=pwd_errs, strength=pwd_strength) }}
+        {% endif %}
+        
     </div>
     <br />
     {{ form.submit(class_="btn btn-primary") }}
