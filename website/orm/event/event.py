@@ -83,6 +83,7 @@ def get_event(id: int):
 
 
 def search_events(
+    id: int = None,
     search: str = "",
     sort: str = "upcoming",
     venue_is_mobility_aid_accessible: bool = False,
@@ -95,7 +96,9 @@ def search_events(
     start_date: datetime = datetime.now(),
     end_date: datetime = None,
     tags: List[str] = list(),
-    match_all_tags: str = "any"
+    match_all_tags: str = "any",
+    limit: int = None,
+    offset: int = None,
 ):
     filtered_events = db.session.query(Event, func.count(distinct(EventOccurrence.id))).join(Event.occurrences).filter(
         (Event.title.ilike(f"%{search}%") |
@@ -111,6 +114,9 @@ def search_events(
         or_(EventOccurrence.is_visually_accessible ==
             is_visually_accessible, not is_visually_accessible),
     )
+
+    if id is not None:
+        filtered_events = filtered_events.filter(Event.id == id)
 
     if len(tags) > 0:
         if match_all_tags == "all":
@@ -148,7 +154,14 @@ def search_events(
     else:
         filtered_events = filtered_events.order_by(Event.title)
 
-    results = filtered_events.group_by(Event).all()
+    filtered_events = filtered_events.group_by(Event)
+
+    if limit is not None:
+        filtered_events = filtered_events.limit(limit)
+    if offset is not None:
+        filtered_events = filtered_events.offset(offset)
+
+    results = filtered_events.all()
     if results is None or len(results) == 0:
         return json_response(404, "No events found that match the given search criteria.", results)
 

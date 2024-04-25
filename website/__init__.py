@@ -58,8 +58,10 @@ def sanitize_html(html_text, additional_tags: list[str] = []):
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'  # TODO: Change this
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
+
+    config_type = 'DevelopmentConfig'
+    # config_type = 'ProductionConfig'
+    app.config.from_object(f'instance.config.{config_type}')
     db.init_app(app)
 
     from .routes.ui.views import views
@@ -69,6 +71,7 @@ def create_app():
     from .routes.ui.debug import debug_route
     from .routes.ui.notifications import notifications
     from .routes.ui.opportunities import opportunities
+    from .routes.ui.errors import not_found_handler
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
@@ -77,11 +80,13 @@ def create_app():
     app.register_blueprint(debug_route, url_prefix='/')
     app.register_blueprint(notifications, url_prefix='/')
     app.register_blueprint(opportunities, url_prefix='/opportunities')
+    app.register_error_handler(404, not_found_handler)
 
     with app.app_context():
         db.create_all()
 
     login_manager.init_app(app)
+    bcrypt.init_app(app)
 
     from .models.user import User
 
