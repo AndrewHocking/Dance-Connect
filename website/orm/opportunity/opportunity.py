@@ -158,15 +158,14 @@ def get_opportunity_posts(
             query2 = posts.filter(not_(Opportunity.tags.any()))
             posts = posts.join(Opportunity.tags).filter(query).union(query2)
 
-    if sort_method:
-        if sort_method == "recent":
-            posts = posts.order_by(Opportunity.date_posted)
-        elif sort_method == "alpha-asc":
-            posts = posts.order_by(Opportunity.title)
-        elif sort_method == "alpha-desc":
-            posts = posts.order_by(Opportunity.title.desc())
-        else:
-            posts = posts.order_by(Opportunity.date_posted)
+    if sort_method == "recent":
+        posts = posts.order_by(Opportunity.date_posted.desc())
+    elif sort_method == "alpha-asc":
+        posts = posts.order_by(Opportunity.title)
+    elif sort_method == "alpha-desc":
+        posts = posts.order_by(Opportunity.title.desc())
+    else:
+        posts = posts.order_by(Opportunity.date_posted.desc())
 
     posts = posts.all()
 

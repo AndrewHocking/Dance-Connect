@@ -248,7 +248,7 @@ def create_demo_users():
         response = create_user(
             username=user["username"],
             email=user["email"],
-            password=user["password"],
+            password=user["password"] + "@A1",
             display_name=user["display_name"],
             pronouns=user["pronouns"],
             bio=user["bio"],

@@ -152,3 +152,39 @@ vision." %}
     </div>
 </div>
 {% endmacro %}
+
+
+{% macro set_password_field(errs, strength) %}
+{% if strength == "Strong" %}
+{% set bg = "text-bg-success" %}
+{% elif strength == "Moderate" %}
+{% set bg = "text-bg-warning" %}
+{% else %}
+{% set bg = "text-bg-danger" %}
+{% endif %}
+
+<div class="row my-2">
+    <div class="col-12">
+        <div class="d-flex flex-row form-text align-items-center">
+            <small>
+                <div class="rounded {{bg}} px-2 me-2" style="padding-block:2px">
+                    <p class="mb-0 align-middle fw-medium">{{strength}}</p></small>
+                </div>
+            </small>
+            {% if errs|length > 0 %}
+                <div class="text-danger">Requirements</div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if errs|length > 0 %}
+    <div class="col-12">
+        <ul class="form-text m-0">
+            {% for err in errs %}
+            <li class="text-danger text-wrap">{{err.value}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}

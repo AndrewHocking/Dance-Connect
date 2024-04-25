@@ -139,6 +139,10 @@
     <input type="password" class="form-control mb-2" name="current_password" placeholder="Current password">
     <input type="password" class="form-control my-2" name="new_password" placeholder="Enter new password">
     <input type="password" class="form-control bt-2" name="confirm_new_password" placeholder="Re-enter new password">
+    {% if pwd_errs %}
+        {% from "macros.html" import set_password_field %}
+        {{ set_password_field(errs=pwd_errs, strength=pwd_strength) }}
+    {% endif %}
     <p class="h5 pt-3">Account Email</p>
     <input type="text" class="form-control mb-2" name="current_login_email" placeholder="Current login email">
     <input type="text" class="form-control mb-2" name="new_login_email" placeholder="New login email">
