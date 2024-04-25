@@ -125,7 +125,7 @@ def read_single_user(username: str):
 #     :param username: The username to check
 #     :return: A JSON response
 #     """
-#     user = db.session.query(User).filter_by(username=username)
+#     user = db.session.query(User).filter_by(username=username).first()
 
 #     if user is None:
 #         return json_response(404, "No user found")
