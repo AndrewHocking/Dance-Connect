@@ -5,6 +5,7 @@
     --nav-highlight: #43a5cf;
     --background-blue: 217, 237, 245;
     --filters-background: #f8f9fa;
+    scroll-behavior: smooth;
 }
 
 :root[data-bs-theme="dark"] {
@@ -92,11 +93,11 @@ body {
 }
 
 /* .btn.show, */
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:hover,
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active:hover,
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active,
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item:active:hover,
-.navbar-nav .dropdown .dropdown-menu * .dropdown-item:active {
+.dropdown .dropdown-menu * .dropdown-item.bg-icon-background:hover,
+.dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active:hover,
+.dropdown .dropdown-menu * .dropdown-item.bg-icon-background:active,
+.dropdown .dropdown-menu * .dropdown-item:active:hover,
+.dropdown .dropdown-menu * .dropdown-item:active {
     background-color: var(--dark-pink);
     border-color: var(--dark-pink);
     color: white;
@@ -284,14 +285,24 @@ body {
     color: white;
 }
 
+.home-card-event-description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+.home-card-contributor-list {
+    scroll-behavior: smooth;
+}
+
 .ck-editor__editable_inline {
     min-height: 200px;
 }
 
-label.required:after { 
-   content:"*";
-   color:red;
-   font-weight: bold;
+label.required:after {
+    content: " ✽ ";
+    color: var(--pink);
 }
 
 /*** Responsive design ***/
@@ -337,6 +348,10 @@ label.required:after {
     #form-filter {
         background-color: var(--filters-background);
         /* equivalent to .bg-body-tertiary */
+    }
+
+    .home-card-contributor-info {
+        max-width: 140px;
     }
 
     /* body {

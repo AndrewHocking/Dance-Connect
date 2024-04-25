@@ -71,8 +71,7 @@ def accept_event_request_notification(notification_id: int):
 
     return json_response(
         200,
-        f"Successfully accepted user {
-            requesting_user.display_name}'s request to be added to event {notification.event.title}",
+        f"Successfully accepted user {requesting_user.display_name}'s request to be added to event {notification.event.title}",
         notification.event
     )
 

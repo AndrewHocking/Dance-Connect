@@ -3,8 +3,6 @@ from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 
-from website.orm.event.event_tag import read_event_tag
-
 from ...models.event.event import Event
 from ...models.event.event_contributor import EventContributor
 from ...models.notification.notification import EventRequestNotification
@@ -13,7 +11,6 @@ from ...orm.event.event_contributor import connect_user_to_event, get_event_cont
 from ...orm.notification.notifications import get_event_request_notification, add_event_request_notification, delete_notification
 from ...forms.events import CreateEventForm, CreateEventOccurrenceForm
 from ...forms.event_filter import EventFilterForm
-
 
 events = Blueprint('events', __name__)
 
@@ -185,10 +182,10 @@ def create_event_submit():
     occurrences = []
     for i in range(0, int(request.form.get("num_occurrences")) + 1):
         occurrences.append(OccurrenceTuple(
-            start_time=datetime.strptime(f"{request.form.get(f"occurrence-{i}-date")} {
-                request.form.get(f"occurrence-{i}-start-time")}", "%Y-%m-%d %H:%M"),
-            end_time=datetime.strptime(f"{request.form.get(f"occurrence-{i}-date")} {
-                request.form.get(f"occurrence-{i}-end-time")}", "%Y-%m-%d %H:%M") if request.form.get(f"occurrence-{i}-end-time") != "" else None,
+            start_time=datetime.strptime(
+                f"{request.form.get(f'occurrence-{i}-date')} {request.form.get(f'occurrence-{i}-start-time')}", "%Y-%m-%d %H:%M"),
+            end_time=datetime.strptime(f"{request.form.get(f'occurrence-{i}-date')} {request.form.get(f'occurrence-{i}-end-time')}",
+                                       "%Y-%m-%d %H:%M") if request.form.get(f"occurrence-{i}-end-time") != "" else None,
             is_relaxed_performance=request.form.get(
                 f"occurrence-{i}-is-relaxed-performance"),
             is_photosensitivity_friendly=request.form.get(
@@ -247,7 +244,7 @@ def event_details(event_id: int):
 
     occurrences = {}
     for occurrence in event.occurrences:
-        date = occurrence.start_time.strftime("%A, %B %e")
+        date = occurrence.start_time.strftime("%A, %B %-d")
         if date not in occurrences:
             occurrences[date] = []
         occurrences[date].append(occurrence)
@@ -328,10 +325,10 @@ def event_edit(event_id: int):
                                                     "is_photosensitivity_friendly", "is_hearing_accessible", "is_visually_accessible"])
         occurrences = []
         for i in range(0, int(form.get("num_occurrences")) + 1):
-            start_time = datetime.strptime(f"{form.get(
-                f'occurrence-{i}-date')} {form.get(f'occurrence-{i}-start-time')}", "%Y-%m-%d %H:%M")
-            end_time = datetime.strptime(f"{form.get(f'occurrence-{i}-date')} {form.get(f'occurrence-{
-                i}-end-time')}", "%Y-%m-%d %H:%M") if form.get(f'occurrence-{i}-end-time') != "" else None
+            start_time = datetime.strptime(
+                f"{form.get(f'occurrence-{i}-date')} {form.get(f'occurrence-{i}-start-time')}", "%Y-%m-%d %H:%M")
+            end_time = datetime.strptime(f"{form.get(f'occurrence-{i}-date')} {form.get(f'occurrence-{i}-end-time')}",
+                                         "%Y-%m-%d %H:%M") if form.get(f'occurrence-{i}-end-time') != "" else None
             is_relaxed_performance = form.get(
                 f'occurrence-{i}-is-relaxed-performance')
             is_photosensitivity_friendly = form.get(
@@ -387,8 +384,7 @@ def event_edit(event_id: int):
         tag_list = ", ".join([tag.name for tag in event.tags])
         venue_name = event.venue_name
         venue_address = event.venue_address
-        venue_is_mobility_aid_accessible = f"{
-            event.venue_is_mobility_aid_accessible}"
+        venue_is_mobility_aid_accessible = f"{event.venue_is_mobility_aid_accessible}"
         accessibility_notes = event.accessibility_notes
         min_ticket_price = event.min_ticket_price
         max_ticket_price = event.max_ticket_price
@@ -432,3 +428,13 @@ def event_delete(event_id: int):
     delete_event(event)
     flash('Event deleted!', category='success')
     return redirect(url_for('events.events_list'))
+
+
+@events.route('/home-card/<int:index>/', methods=['POST'])
+def event_home_card(index: int):
+    results = search_events(limit=1, offset=index)
+    if results.get("data") is None:
+        return "", 404
+    else:
+        event, occurrence_count = results.get("data")[0]
+    return render_template("event-home-card.html", user=current_user, event=event, occurrence_count=occurrence_count)

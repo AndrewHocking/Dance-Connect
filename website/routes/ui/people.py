@@ -398,7 +398,7 @@ def edit_person(username):
                 )
 
         # Check for unique username, if so then allow udpate
-        if read_single_user(username=uniqueUsername)["status_code"] != 404:
+        if read_single_user(username=uniqueUsername)["status_code"] != 404 and uniqueUsername != person.username:
             flash("Username already taken", "error")
             return render_template(
                 "edit_person.html",

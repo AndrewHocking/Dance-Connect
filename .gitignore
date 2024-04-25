@@ -4,3 +4,4 @@
 /secrets/*
 .DS_Store
 instance/*
+website/secrets/keys.json

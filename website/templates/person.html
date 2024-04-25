@@ -5,8 +5,7 @@
 {% block content %}
 <div class="container">
     {% if edit %}
-    <form action="{{ url_for('people.edit_person', username=person.username) }}" method="POST"
-        enctype="multipart/form-data">
+    <form action="{{ url_for('people.edit_person', username=person.username) }}" method="POST" enctype="multipart/form-data">
         {% endif %}
         <div class="row align-items-center mb-4">
             <div class="col">
@@ -36,8 +35,7 @@
                     </div>
                     {% for tag in person.tags %}
                     <form class="col-auto mb-1" action="{{ url_for('people.people_list') }}" method="POST">
-                        <button name="tags" value="{{ tag.name }}"
-                            class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name
+                        <button name="tags" value="{{ tag.name }}" class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name
                             }}</button>
                     </form>
                     {% endfor %}
@@ -95,8 +93,7 @@
                     <a href="{{ url_prefix }}{{ handle.replace('https://', '', 1).replace('http://', '', 1) }}"
                         class="row align-items-center ps-3 py-1 text-decoration-none">
                         <div class="col-auto p-0">
-                            <div
-                                class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
+                            <div class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
                                 <i class="bi bi-{{ icon_name }}"></i>
                             </div>
                         </div>
@@ -134,16 +131,13 @@
                         {% if contributed.event.occurrences|length != 0%}
                         <div class="col-auto me-2">
                             {{ grid_item(
-                            image_src=url_for('static',
-                            filename='images/placeholder.jpg'),
-                            title=contributed.event.title,
-                            subtitle=contributed.role,
-                            text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %e, %l:%M %p'))
-                            if contributed.event.next_occurrence else ("Last: " ~
-                            (contributed.event.occurrences|last).start_time.strftime('%b %e, %l:%M %p')) if
-                            contributed.event.occurrences|length > 0 else "",
-                            href=url_for('events.event_details',
-                            event_id=contributed.event.id)
+                                image_src=url_for('static',
+                                filename='images/placeholder.jpg'),
+                                title=contributed.event.title,
+                                subtitle=contributed.role,
+                                text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.occurrences|length > 0 else "",
+                                href=url_for('events.event_details',
+                                    event_id=contributed.event.id)
                             ) }}
                         </div>
                         {% endif %}

@@ -65,14 +65,15 @@
 
 
 {% block items_to_list %}
-    <div class="mt-4 mb-1">
+<div class="mt-4 mb-1">
     {% for opportunity in opportunities %}
     <div class="col-12 mt-0 mb-3">
         <div class="card overflow-hidden border-{{post_type[opportunity.type.name]}} border-2">
             <div class="card-header pt-3 pb-2 border-{{post_type[opportunity.type.name]}}">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h5 class="card-title text-truncate mb-0">
-                        {{opportunity.title}}</h5>
+                        {{opportunity.title}}
+                    </h5>
                     <div class="badge rounded-pill text-bg-{{post_type[opportunity.type.name]}}">{{opportunity.type.value}}</div>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-2">
@@ -83,29 +84,31 @@
                     </h6>
                 </div>
                 <small>
-                    <div class="d-flex align-items-center">
-                        {% if opportunity.is_paid %}
-                        <i class="bi bi-cash me-2"></i>
-                        <div class="me-3">Paid</div>
-                        {% endif %}
-                        {% if opportunity.term %}
-                        <i class="bi bi-clock me-2"></i>
-                        <div class="me-3">{{opportunity.term.value}}</div>
-                        {% endif %}
-                        <i class="bi bi-geo-alt me-2"></i>
-                        <div class="me-3">{{opportunity.location_type.value}}</div>
-                    </div>
+                    <small>
+                        <div class="d-flex align-items-center">
+                            {% if opportunity.is_paid %}
+                            <i class="bi bi-cash me-2"></i>
+                            <div class="me-3">Paid</div>
+                            {% endif %}
+                            {% if opportunity.term %}
+                            <i class="bi bi-clock me-2"></i>
+                            <div class="me-3">{{opportunity.term.value}}</div>
+                            {% endif %}
+                            <i class="bi bi-geo-alt me-2"></i>
+                            <div class="me-3">{{opportunity.location_type.value}}</div>
+                        </div>
+                    </small>
                 </small>
             </div>
             <div class="card-body">
                 <p class="card-text mb-2">{{opportunity.display_description}}</p>
                 {% if opportunity.tags|length > 0 %}
-                <div class="d-flex align-items-center overflow-x-hidden">
-                    <i class="bi bi-tags-fill me-1"></i>
-                        {% for tag in opportunity.tags %}
-                        <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{tag.name}}</button>
-                        {%endfor%}
-                </div> 
+                <div class="d-flex align-items-center flex-wrap">
+                    <i class="bi bi-tags-fill me-1 mb-1"></i>
+                    {% for tag in opportunity.tags %}
+                    <button class="ms-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{tag.name}}</button>
+                    {%endfor%}
+                </div>
                 {% endif %}
             </div>
             <a href="{{ url_for('opportunities.opportunity', organizer=opportunity.organizer, title=opportunity.title) }}" class="stretched-link"></a>
@@ -122,7 +125,3 @@
 </script>
 
 {% endblock %}
-
-
-
-                
