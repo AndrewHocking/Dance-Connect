@@ -1,7 +1,236 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
-{% block content %}
-<div class="page-header mb-3">
-    <h1>Home</h1>
+{% block outer_content %}
+<div class="contentbox border shadow bg-body rounded-5 overflow-hidden my-2 mt-lg-4">
+    <div class="row justify-content-center align-items-center bg-nav p-4">
+        <div class="col-auto">
+            <div class="bg-light rounded-circle p-2" style="width: 100px; height: 100px;">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="DanceConnect Logo" class="img-fluid">
+            </div>
+        </div>
+        <div class="col-auto text-center">
+            <h1 class="m-0 fw-medium display-5">DanceConnect</h1>
+            <hr class="w-75 mx-auto my-1" />
+            <div class="lead">Discover • Inspire • Connect</div>
+        </div>
+    </div>
+    {# <div class="row justify-content-center align-items-center bg-nav">
+        <hr class="w-100 mx-auto my-1" />
+    </div>
+    <nav class="navbar navbar-dark row justify-content-center align-items-center bg-nav py-2 gx-5">
+        <div class="nav-item dropdown col-auto text-center px-2">
+            <a class="nav-link btn" id="events" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-calendar-week-fill h4"></i>
+                <div>Events</div>
+            </a>
+            <ul class="dropdown-menu" style="width: min-content;">
+                <li><a class="dropdown-item" href="{{ url_for('events.events_list') }}">Upcoming events</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('events.events_calendar') }}">Event calendar</a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="{{ url_for('events.event_create') }}">Create a new event</a></li>
+                <li><a class="dropdown-item" href="#">My events</a></li>
+            </ul>
+        </div>
+        <div class="nav-item col-auto text-center px-2">
+            <a class="nav-link btn" href="{{ url_for('people.people_list') }}" title="People">
+                <i class="bi bi-people-fill h4"></i>
+                <div>People</div>
+            </a>
+        </div>
+        <div class="nav-item col-auto text-center px-2">
+            <a class="nav-link btn" href="{{ url_for('opportunities.opportunities_list') }}" title="Opportunities">
+                <i class="bi bi-briefcase-fill h4"></i>
+                <div>Careers</div>
+            </a>
+        </div>
+    </nav> #}
+    <div class="row p-4 p-lg-5 mb-2">
+        <div id="event-carousel" class="container">
+            <div class="row align-items-center mb-2">
+                <div class="col">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <h2 class="m-0">Upcoming Events</h2>
+                        </div>
+                        <div class="col-auto">
+                            <a href="{{ url_for('events.events_list') }}" class="badge btn btn-primary rounded-pill h5 m-0">View all</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <ul class="pagination m-0">
+                        <li class="page-item">
+                            <button id="prev-event-btn" class="btn btn-sm btn-primary rounded-end-0 disabled">
+                                <i class="bi bi-arrow-left-short bi-bold h4"></i>
+                            </button>
+                        </li>
+                        <div class="vr bg-body"></div>
+                        <li class="page-item">
+                            <button id="next-event-btn" class="btn btn-sm btn-primary rounded-start-0">
+                                <i class="bi bi-arrow-right-short bi-bold h4"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {% for event, occurrence_count in events %}
+            <div id="event{{ loop.index0 }}" class="w-100 bg-body-tertiary rounded p-4" {{"hidden" if not loop.first else "" }}>
+                {% include 'event-home-card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="modal fade" id="view-all-contributors-modal" tabindex="-1" aria-labelledby="view-all-contributors-modal-label" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div hidden class="hidden" id="model-event-id"></div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="view-all-contributors-modal-label">Contributors</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row justify-content-center">
+                            <div class="spinner-border text-secondary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const viewAllContributorsModal = document.getElementById('view-all-contributors-modal')
+    if (viewAllContributorsModal) {
+        viewAllContributorsModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget
+            const eventTitle = button.getAttribute('data-bs-event-title')
+            const id = button.getAttribute('data-bs-event-id')
+
+            const loadedId = viewAllContributorsModal.querySelector('#model-event-id')
+            if (loadedId.textContent != id) {
+                loadedId.textContent = id
+
+                const modalTitle = viewAllContributorsModal.querySelector('.modal-title')
+                modalTitle.textContent = `Contributors for ${eventTitle}`
+
+                const modalBodyInput = viewAllContributorsModal.querySelector('.modal-body .row')
+                fetch(`/events/${id}/contributors`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }).then(function (response) {
+                    if (response.ok) {
+                        response.text().then(function (content) {
+                            modalBodyInput.innerHTML = content;
+                        });
+                    } else {
+                        console.error("Error: " + response.status + " – Failed to load contributors.");
+                    }
+                });
+            }
+        })
+    }
+</script>
+<script>
+    function setoverflown() {
+        for (let element of document.getElementsByClassName("home-card-contributor-list")) {
+            if (element.scrollWidth > element.clientWidth) {
+                for (let button of element.parentElement.parentElement.getElementsByClassName("contributors-scroll-btn")) {
+                    element.classList.add("overflow-x-scroll");
+                    button.hidden = false;
+                    button.firstElementChild.addEventListener("click", function () {
+                        if (button.firstElementChild.classList.contains("contributors-scroll-forward-btn"))
+                            element.scrollLeft += element.clientWidth;
+                        else if (button.firstElementChild.classList.contains("contributors-scroll-backward-btn"))
+                            element.scrollLeft -= element.clientWidth;
+                    });
+                }
+            } else {
+                for (let button of element.parentElement.parentElement.getElementsByClassName("contributors-scroll-btn")) {
+                    element.classList.remove("overflow-x-scroll");
+                    button.hidden = true;
+                }
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        setoverflown();
+    });
+
+    $(window).resize(function () {
+        setoverflown();
+    });
+</script>
+<script>
+    var eventIndex = 0;
+    var loadedEvents = 2;
+    var totalEvents = parseInt("{{ events_count }}");
+
+    document.getElementById('next-event-btn').addEventListener('click', function () {
+        document.getElementById(`event${eventIndex}`).hidden = true;
+        eventIndex++;
+        document.getElementById(`event${eventIndex}`).hidden = false;
+        document.getElementById('prev-event-btn').classList.remove("disabled");
+        if (eventIndex == totalEvents - 1) {
+            document.getElementById('next-event-btn').classList.add("disabled");
+        }
+
+        if (eventIndex < totalEvents - 1 && eventIndex >= loadedEvents - 1
+            && document.getElementById(`event${eventIndex + 1}`) == null) {
+            const newDiv = document.createElement("div");
+            newDiv.id = `event${eventIndex + 1}`;
+            newDiv.className = "w-100 bg-body-tertiary rounded p-4";
+            newDiv.hidden = true;
+            const spinnerContainer = document.createElement("div");
+            spinnerContainer.className = "row justify-content-center";
+            newDiv.appendChild(spinnerContainer);
+            const spinner = document.createElement("div");
+            spinner.className = "spinner-border text-secondary";
+            spinner.role = "status";
+            spinner.innerHTML = '<span class="visually-hidden">Loading...</span>';
+            spinnerContainer.appendChild(spinner);
+            document.getElementById('event-carousel').appendChild(newDiv);
+
+            fetch(`/events/home-card/${eventIndex + 1}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }).then(function (response) {
+                if (response.ok) {
+                    response.text().then(function (content) {
+                        document.getElementById(`event${eventIndex + 1}`).innerHTML = content;
+                        loadedEvents++;
+                    });
+                } else {
+                    console.error("Error: " + response.status + " – Failed to load event card.");
+                }
+            });
+        }
+        setoverflown();
+    });
+
+    document.getElementById('prev-event-btn').addEventListener('click', function () {
+        document.getElementById(`event${eventIndex}`).hidden = true;
+        eventIndex--;
+        document.getElementById(`event${eventIndex}`).hidden = false;
+        document.getElementById('next-event-btn').classList.remove("disabled");
+        if (eventIndex == 0) {
+            document.getElementById('prev-event-btn').classList.add("disabled");
+        }
+        setoverflown();
+    });
+</script>
+
 {% endblock %}

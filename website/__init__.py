@@ -5,6 +5,8 @@ from os import path
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
+import bleach
+from bleach.linkifier import LinkifyFilter
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -46,6 +48,14 @@ def json_response(status_code: int, message: str, data: Any = None):
     return output
 
 
+def sanitize_html(html_text, additional_tags: list[str] = []):
+    allowed_tags = list(bleach.ALLOWED_TAGS)
+    allowed_tags.extend(['p', 'h2', 'h3', 'h4'] + additional_tags)
+    cleaner = bleach.Cleaner(
+        tags=allowed_tags, filters=[LinkifyFilter])
+    return cleaner.clean(html_text)
+
+
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'  # TODO: Change this
@@ -58,13 +68,15 @@ def create_app():
     from .routes.ui.events import events
     from .routes.ui.debug import debug_route
     from .routes.ui.notifications import notifications
+    from .routes.ui.opportunities import opportunities
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
-    app.register_blueprint(people, url_prefix='/')
+    app.register_blueprint(people, url_prefix='/people')
     app.register_blueprint(events, url_prefix='/events')
     app.register_blueprint(debug_route, url_prefix='/')
     app.register_blueprint(notifications, url_prefix='/')
+    app.register_blueprint(opportunities, url_prefix='/opportunities')
 
     with app.app_context():
         db.create_all()

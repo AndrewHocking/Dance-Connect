@@ -7,6 +7,7 @@ from ...models.user import User, UserType, UserTag, SocialMedia
 from sqlalchemy import asc, desc, or_, and_, func
 
 # Creates a new User object
+#
 
 
 def create_user(
@@ -48,6 +49,8 @@ def create_user(
         user_type=UserType.INDIVIDUAL,
         pronouns=pronouns,
         bio=bio,
+        profile_picture_url="",
+        profile_picture_id="",
         tags=list(),
         socials=list(),
         received_notifications=list(),
@@ -99,10 +102,55 @@ def read_users(
 
     return json_response(200, f"{len(users)} users found.", users)
 
-
 # Returns a single User by their id. Returns null if no such user exists.
-def read_single_user(user_id: int):
-    user = db.session.query(User).filter_by(id=user_id).first()
+
+
+def read_single_user(username: str):
+    """
+    Check if a user exists by their username and returns the user object if found
+    :param username: The username to check
+    :return: A JSON response
+    """
+    user = db.session.query(User).filter_by(username=username).first()
+
+    if user is None:
+        return json_response(404, "No user found")
+
+    return json_response(200, f"User {user.display_name} found.", user)
+
+
+# def check_username_exists(username: str):
+#     """
+#     Check if a user exists by their username and returns the user object if found
+#     :param username: The username to check
+#     :return: A JSON response
+#     """
+#     user = db.session.query(User).filter_by(username=username).first()
+
+#     if user is None:
+#         return json_response(404, "No user found")
+
+#     return json_response(200, f"User {user.display_name} found.")
+
+
+def check_email_exists(email: str):
+    """
+    Check if a user exists by their email
+
+    :param email: The email to check
+    :return: A JSON response
+    """
+    user = db.session.query(User).filter_by(email=email).first()
+
+    if user is None:
+        return json_response(404, "No user found")
+
+    return json_response(200, f"User {user.display_name} found.")
+
+
+def get_user_by_email_or_username(query: str):
+    user = db.session.query(User).filter(
+        or_(User.email == query, User.username == query)).first()
 
     if user is None:
         return json_response(404, "No user found")
@@ -123,17 +171,27 @@ def update_user(
     socials: List[SocialMedia] = None,
     user_type: UserType = None,
     tags: List[str] = None,
+    profile_picture_url=None,
+    profile_picture_id=None,
 ):
+    """
+    Update a user with the given variables. Pass None to leave a variable unchanged.
+    NOTE: This function does not check if the user exists. Please ensure that the user exists before calling this function.
+    NOTE: This function does not check if the email is already in use. Please ensure that the email is unique before calling this function.
+    """
     user: User = db.session.query(User).get(user_id)
     if user is None:
         return json_response(404, "User not found.", user_id)
 
-    if username is not None and username != user.username:
-        conflict = db.session.query(User).filter_by(username=username).first()
-        if conflict is None:
-            user.username = username
-        else:
-            return json_response(400, "Username already taken.", username)
+    # if username is not None and username != user.username:
+    #     conflict = db.session.query(User).filter_by(username=username).first()
+    #     if conflict is None:
+    #         user.username = username
+    #     else:
+    #         return json_response(409, "Username already taken.", username)
+
+    if username is not None:
+        user.username = username
 
     if email is not None:
         user.email = email
@@ -167,6 +225,12 @@ def update_user(
         for tag in tags:
             create_user_tag(tag, user, False)
 
+    if profile_picture_url is not None:
+        user.profile_picture_url = profile_picture_url
+
+    if profile_picture_id is not None:
+        user.profile_picture_id = profile_picture_id
+
     db.session.add(user)
     db.session.commit()
 
@@ -183,7 +247,7 @@ def create_socials_link(user_id: int, type: str, handle: str):
         .first()
 
     if conflict is not None:
-        return json_response(400, f"User aleady has an existing social media handle <{conflict.handle}> for this platform.")
+        return json_response(409, f"User aleady has an existing social media handle <{conflict.handle}> for this platform.")
 
     new_socials = SocialMedia(
         user=user_id,
@@ -194,7 +258,7 @@ def create_socials_link(user_id: int, type: str, handle: str):
     db.session.add(new_socials)
     db.session.commit()
 
-    return json_response(200, f"New social media handle {handle} added for user on platform {type}", new_socials)
+    return json_response(201, f"New social media handle {handle} added for user on platform {type}", new_socials)
 
 
 def update_socials_link(user_id: int, type: str, handle: str):
@@ -202,10 +266,10 @@ def update_socials_link(user_id: int, type: str, handle: str):
         .filter(and_(
             SocialMedia.user == user_id,
             func.lower(SocialMedia.social_media) == func.lower(type)
-        )) \
+        ))
 
     if socials_link.first() is None:
-        return json_response(404, f"User {user_id} does not have an existing handle on platform {type}")
+        return create_socials_link(user_id, type, handle)
 
     if handle == "":
         db.session.delete(socials_link.first())

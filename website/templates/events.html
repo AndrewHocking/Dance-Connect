@@ -2,44 +2,72 @@
 {% block title %}Events{% endblock %}
 {% block header_text %}Events{% endblock %}
 {% block filters %}
-{% if user.is_authenticated %}
-<a href="{{ url_for('events.event_create') }}" class="btn btn-primary mb-3 w-100">Create a new event</a>
-{% endif %}
 <div class="form-group mb-3">
     {{ filters.sort.label() }}
     {{ filters.sort() }}
 </div>
-<label class="form-label">Accessibility</label>
+<label class="form-label mb-0">Accessibility</label>
+<div class="form-text mt-0 pt-0 mb-1">Click the <i class="bi bi-question-circle" aria-label="question mark icon"></i> for more information</div>
 <div class="form-group mb-3">
     <div class="form-check">
-        {{ filters.accessible_venue() }}
-        {{ filters.accessible_venue.label(class_="form-check-label") }}
+        {{ filters.venue_is_mobility_aid_accessible() }}
+        {{ filters.venue_is_mobility_aid_accessible.label(class_="form-check-label") }}
+        <a data-bs-content="Events with venues that are listed as being fully accessible for individuals who use mobility aids, such as wheelchairs."
+            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Mobility Aid Accessible Venue">
+            <i class="bi bi-question-circle"></i>
+        </a>
     </div>
     <div class="form-check">
-        {{ filters.asl_interpreter() }}
-        {{ filters.asl_interpreter.label(class_="form-check-label") }}
+        {{ filters.is_relaxed_performance() }}
+        {{ filters.is_relaxed_performance.label(class_="form-check-label") }}
+        <a data-bs-content="<p>Relaxed performances are adapted shows for those who find standard theater settings challenging. This can include changes to lighting and audio volume, as well as relaxing theatre &quot;rules&quot;.</p><a href='https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed'
+                    title='What is a relaxed performance?' target='_blank' rel='noopener noreferrer'>Click here to learn more.</a>" tabindex="0"
+            title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Relaxed Performance" data-bs-html="true">
+            <i class="bi bi-question-circle"></i>
+        </a>
     </div>
     <div class="form-check">
-        {{ filters.relaxed_performance() }}
-        {{ filters.relaxed_performance.label(class_="form-check-label") }}
-        <a href="https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed"
-            title="What is a relaxed performance?" target="_blank" rel="noopener noreferrer">
+        {{ filters.is_photosensitivity_friendly() }}
+        {{ filters.is_photosensitivity_friendly.label(class_="form-check-label") }}
+        <a data-bs-content="Any lighting effects used during photosensitivity-friendly events should be safe for individuals who experience photosensitivity."
+            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Photosensitivity-Friendly">
+            <i class="bi bi-question-circle"></i>
+        </a>
+    </div>
+    <div class="form-check">
+        {{ filters.is_hearing_accessible() }}
+        {{ filters.is_hearing_accessible.label(class_="form-check-label") }}
+        <a data-bs-content="Events that are hearing accessible are, or have been modified to be, accessible for individuals who are deaf or hard of hearing."
+            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Hearing Accessible">
+            <i class="bi bi-question-circle"></i>
+        </a>
+    </div>
+    <div class="form-check">
+        {{ filters.is_visually_accessible() }}
+        {{ filters.is_visually_accessible.label(class_="form-check-label") }}
+        <a data-bs-content="Events that are visually accessible are, or have been modified to be, accessible for individuals who are blind or have low vision."
+            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Visually Accessible">
             <i class="bi bi-question-circle"></i>
         </a>
     </div>
 </div>
 <label class="form-label">Ticket prices</label>
 <div class="form-group mb-3">
-    <div class="input-group">
+    <div class="input-group mb-1">
         <span class="input-group-text">
-            <div class="text-center" style="width: 30px;">Min</div>
+            <div class="text-center price-prefix">Min</div>
         </span>
         <span class="input-group-text">$</span>
         {{ filters.min_ticket_price() }}
     </div>
     <div class="input-group">
         <span class="input-group-text">
-            <div class="text-center" style="width: 30px;">Max</div>
+            <div class="text-center price-prefix">Max</div>
         </span>
         <span class="input-group-text">$</span>
         {{ filters.max_ticket_price() }}
@@ -47,27 +75,31 @@
 </div>
 <label class="form-label">Date range</label>
 <div class="form-group mb-3">
-    <div class="input-group">
+    <div class="input-group mb-1">
         <span class="input-group-text">
-            <div class="text-center" style="width: 40px;">Start</div>
+            <div class="text-center date-prefix">Start</div>
         </span>
         {{ filters.start_date() }}
     </div>
     <div class="input-group">
         <span class="input-group-text">
-            <div class="text-center" style="width: 40px;">End</div>
+            <div class="text-center date-prefix">End</div>
         </span>
         {{ filters.end_date() }}
     </div>
 </div>
 <div class="form-group mb-3">
-    <div class="form-label">{{ filters.tags.label() }}</div>
-    {% for choice in filters.match_all_tags %}
-    <div class="form-check form-check-inline">
-        {{ choice(class_="form-check-input") }}
-        {{ choice.label(class_="form-check-label") }}
+    <div class="row align-items-center py-1">
+        <div class="col-auto pe-0 me-1">
+            <label class="form-label m-0">Match</label>
+        </div>
+        <div class="col-auto px-0 me-1">
+            {{ filters.match_all_tags() }}
+        </div>
+        <div class="col-auto ps-0">
+            <label class="form-label m-0">of these tags</label>
+        </div>
     </div>
-    {% endfor %}
     {{ filters.tags() }}
     <div id="tags-help-block" class="form-text">{{ filters.tags.description }}</div>
 </div>
@@ -75,11 +107,32 @@
 
 {% block items_to_list %}
 {% from "macros.html" import grid_item %}
-{% for event in events %}
+{% if not events %}
 <div class="col-auto">
-    {{ grid_item(image_src=url_for('static', filename='images/placeholder.jpg'), title=event.title,
-    subtitle=(((event.occurrences|length)|string)+" occurrences" if event.occurrences|length != 1 else
-    (event.occurrences[0].start_time.strftime("%A, %B %e"))), tags=event.tags, href="/events/"+(event.id|string)) }}
+    <p class="text-center my-5 mx-2">No events found matching the search criteria</p>
+</div>
+{% endif %}
+{% for event, occurrence_count in events %}
+<div class="col-auto mx-xxl-2 mx-xl-0">
+    {{ grid_item(
+        image_src=url_for('static',
+        filename='images/placeholder.jpg'),
+        title=event.title,
+        subtitle=(event.next_occurrence.start_time.strftime("%b %e, %-I:%M %p") if event.next_occurrence else ""),
+        text=("+"+((occurrence_count-1)|string)+" more time" if occurrence_count != 1 else "") + ("s" if occurrence_count > 2 else ""),
+        href=url_for('events.event_details',
+        event_id=event.id)
+    ) }}
 </div>
 {% endfor %}
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+    const popover = new bootstrap.Popover('.popover-dismiss', {
+        trigger: 'focus'
+    });
+</script>
 {% endblock %}

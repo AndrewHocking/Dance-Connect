@@ -14,7 +14,7 @@ def create_event_occurrence(
     is_visually_accessible: bool,
     commit_db_after_creation: bool = True
 ):
-    while end_time < start_time:
+    while end_time and end_time < start_time:
         end_time = end_time + timedelta(days=1)
 
     new_occurrence = EventOccurrence(
@@ -35,7 +35,9 @@ def create_event_occurrence(
     return json_response(201, "Event occurrence created successfully.", new_occurrence)
 
 
-def read_event_occurrence():
-    # TODO: Add filters
-    event_occurrences = db.session.query(EventOccurrence).all()
-    return json_response(200, f"{len(event_occurrences)} event occurrences found.", event_occurrences)
+def delete_event_occurrence(event_occurrence: EventOccurrence, commit_db_after_deletion: bool = True):
+    db.session.delete(event_occurrence)
+    if commit_db_after_deletion:
+        db.session.commit()
+
+    return json_response(200, "Event occurrence deleted successfully.")

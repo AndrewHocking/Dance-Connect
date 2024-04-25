@@ -13,9 +13,9 @@
                         {{ filters.search() }}
                         {{ filters.search.label() }}
                     </div>
-                    <button class="btn btn-primary" id="search_button" name="search_button" type="submit"
-                        style="min-width: 58px;">
-                        <i class="bi bi-search"></i>
+                    <button class="btn btn-primary" id="search_button" name="search_button" type="submit" title="Search">
+                        <i class="bi bi-search bi-bold"></i>
+                        <span class="visually-hidden">Search</span>
                     </button>
                 </div>
             </div>
@@ -27,14 +27,14 @@
             <div id="form-filter" class="row m-1 p-1 pt-3 pb-1 p-md-0 m-md-0 rounded">
                 <div id="filter-header" class="d-flex d-md-none align-items-center mb-3">
                     <div class="h4 mb-0">Filters</div>
-                    <button class="btn btn-primary toggler-button ms-auto" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#filter-collapse" aria-expanded="false" aria-controls="filter-collapse">
+                    <button class="btn btn-primary toggler-button ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#filter-collapse"
+                        aria-expanded="false" aria-controls="filter-collapse">
                         <i class="bi bi-chevron-down item-collapsed"></i>
                         <i class="bi bi-chevron-up item-expanded"></i>
                     </button>
                 </div>
 
-                <div id="filter-collapse" class="collapse d-md-block mb-3">
+                <div id="filter-collapse" class="collapse d-md-block mb-3 px-lg-0">
                     {% block filters %}{% endblock %}
                     {{ filters.apply_filters(class_="btn btn-primary w-100 mb-1") }}
                     {{ filters.clear_filters(class_="btn btn-secondary w-100") }}
@@ -44,6 +44,23 @@
         <div class="col-12 col-md-8 col-xl-9">
             <div class="row justify-content-center gy-3">
                 {% block items_to_list %}{% endblock %}
+            </div>
+            <div class="d-flex justify-content-center mt-3">
+                <ul class="pagination mx-auto">
+                    <li class="page-item">
+                        <a class="page-link disabled" href="#" aria-label="Previous" disabled>
+                            <span aria-hidden="true"><i class="bi bi-arrow-left-short"></i></span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link active" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true"><i class="bi bi-arrow-right-short"></i></span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div> <!-- ITEM LIST END -->
     </div> <!-- ITEM ROW END -->

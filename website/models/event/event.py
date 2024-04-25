@@ -1,6 +1,8 @@
+from datetime import datetime
 from ... import db
 from sqlalchemy import Boolean, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 from typing import List, Optional
 from .event_tag import EventTag
 from .event_occurrence import EventOccurrence
@@ -18,7 +20,7 @@ class Event(db.Model):
     description: Mapped[str]
     url: Mapped[str]
     tags: Mapped[List['EventTag']] = relationship(
-        'EventTag', secondary="event_tag_relationships", back_populates='events')
+        'EventTag', secondary="event_tag_relationships", back_populates='events', cascade="all, delete")
     venue_name: Mapped[str]
     venue_address: Mapped[str]
     venue_is_mobility_aid_accessible: Mapped[bool] = mapped_column(Boolean)
@@ -26,11 +28,21 @@ class Event(db.Model):
     min_ticket_price: Mapped[Optional[float]]
     max_ticket_price: Mapped[Optional[float]]
     occurrences: Mapped[List['EventOccurrence']] = relationship(
-        'EventOccurrence', back_populates='event')
+        'EventOccurrence', back_populates='event', order_by="asc(EventOccurrence.start_time)", cascade="all, delete-orphan")
     contributors: Mapped[List['User']] = relationship(
         'User', secondary="event_contributors", back_populates="events_contributed", viewonly=True)
     contributor_association: Mapped[List['EventContributor']] = relationship(
-        'EventContributor', back_populates='event')
+        'EventContributor', back_populates='event', cascade="all, delete-orphan")
     request_notifications: Mapped[List['EventRequestNotification']] = relationship(
-        'EventRequestNotification', back_populates="event")
+        'EventRequestNotification', back_populates="event", cascade="all, delete-orphan")
     # TODO: add media gallery
+
+    @hybrid_property
+    def next_occurrence(self) -> Optional[EventOccurrence]:
+        chronological_list = self.occurrences
+        chronological_list.sort(
+            key=lambda occurrence: occurrence.start_time)
+        for occurrence in chronological_list:
+            if occurrence.start_time > datetime.now():
+                return occurrence
+        return None

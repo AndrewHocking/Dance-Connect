@@ -6,6 +6,11 @@ import os
 import shutil
 from PIL import Image
 
+# TODO: HERE TO MODIFY ACCEPTED FILE FORMATS
+ALLOWED_EXTENSIONS = ("png", "gif", "jpeg", "svg", "jpg")
+
+TEMP_FOLDER = "./website/cloud/temp/"
+
 
 class CDN:
     """
@@ -117,7 +122,7 @@ class CDN:
                 return self._error_message("Image size is greater than 10MB")
 
             # check file formats
-            if not path.lower().endswith((".png", ".gif", ".jpeg", ".svg", "jpg")):
+            if not path.lower().endswith(ALLOWED_EXTENSIONS):
                 return self._error_message("Invalid file format")
 
             upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1".format(
@@ -232,7 +237,7 @@ class CDN:
                 + self.get_image_details(image_id)["result"]["filename"]
             )
 
-            path = "./cloud/temp/{}".format(fileName)
+            path = TEMP_FOLDER + fileName
 
             upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v1/{image_id}/blob".format(
                 account_id=self._account_hash, image_id=image_id
@@ -251,30 +256,30 @@ class CDN:
         except Exception as e:
             return "ERROR_FAIL: " + str(e)
 
-    def test(self) -> dict:
-        # TODO add iterative request to get all images
-        """
-        Downloads the original file from cloudflare's image CDN and saves it within a temporary folder.
-        Please delete file in temporary folder after use!!! (CDN.empty_temp_folder())
+    # def test(self) -> dict:
+    #     # TODO add iterative request to get all images
+    #     """
+    #     Downloads the original file from cloudflare's image CDN and saves it within a temporary folder.
+    #     Please delete file in temporary folder after use!!! (CDN.empty_temp_folder())
 
-        Args:
-            image_id (str): The ID of the image to download.
+    #     Args:
+    #         image_id (str): The ID of the image to download.
 
-        Returns:
-            str: The path to the downloaded file or an error message that prefixes with: "ERROR_FAIL" followed by the error message.
-        """
-        try:
-            upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v2".format(
-                account_id=self._account_hash
-            )
-            header = {
-                "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
-            }
-            response = requests.get(upload_url, headers=header)
-            return response.json()
+    #     Returns:
+    #         str: The path to the downloaded file or an error message that prefixes with: "ERROR_FAIL" followed by the error message.
+    #     """
+    #     try:
+    #         upload_url = "https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v2".format(
+    #             account_id=self._account_hash
+    #         )
+    #         header = {
+    #             "Authorization": "Bearer {apiToken}".format(apiToken=self._key),
+    #         }
+    #         response = requests.get(upload_url, headers=header)
+    #         return response.json()
 
-        except Exception as e:
-            return "ERROR_FAIL: " + str(e)
+    #     except Exception as e:
+    #         return "ERROR_FAIL: " + str(e)
 
     def empty_temp_folder(self) -> bool:
         """
@@ -284,7 +289,7 @@ class CDN:
             bool: True if the folder was emptied successfully, False otherwise.
         """
         try:
-            folder = "./cloud/temp/"
+            folder = TEMP_FOLDER
             for filename in os.listdir(folder):
                 file_path = os.path.join(folder, filename)
                 try:
@@ -325,7 +330,7 @@ def main():
     https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v2
     """
     cdn = CDN()
-    # print(cdn.download_original("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
+    print(cdn.download_original("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
     # cdn.empty_temp_folder()
     # print(cdn.test())
     # print(cdn.get_image_details("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
