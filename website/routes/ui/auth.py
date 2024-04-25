@@ -53,6 +53,16 @@ def sign_up():
                 flash('Account created!', category='success')
                 return redirect(url_for('views.home'))
             else:
+                try:
+                    if response["data"].get("type") == "pwd_security":
+                        flash(response["message"],
+                              category=response["response_type"])
+                        pwd_errs = response["data"]["errs"]
+                        pwd_strength = response["data"]["strength"]
+                        return render_template("sign-up.html", user=current_user, form=form, pwd_errs=pwd_errs, pwd_strength=pwd_strength)
+                except:
+                    pass
+
                 flash(response["message"], category=response["response_type"])
 
     return render_template("sign-up.html", user=current_user, form=form)

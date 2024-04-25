@@ -14,21 +14,21 @@ class SignUpForm(FlaskForm):
     display_name = StringField(
         label="Display name",
         validators=[InputRequired(), Length(
-            min=10, max=35, message="Name must be 10 to 35 characters long.")],
+            max=35, message="Name must be 10 to 35 characters long.")],
         name="display_name",
         render_kw={"placeholder": "Jane Doe", "class": "form-control"}
     )
     password = PasswordField(
         label="Password",
         validators=[InputRequired(), Length(
-            min=10, max=72, message="Password must be 10 to 72 characters long.")],
+            max=72, message="Password must be 10 to 72 characters long.")],
         name="password",
         render_kw={"placeholder": "hunter2", "class": "form-control"}
     )
     confirm_password = PasswordField(
         label="Confirm password",
         validators=[InputRequired(), Length(
-            min=10, max=72, message="Confirm Password must be 10 to 72 characters long.")],
+            max=72, message="Confirm Password must be 10 to 72 characters long.")],
         name="confirm_password",
         render_kw={"placeholder": "hunter2", "class": "form-control"}
     )
@@ -50,7 +50,7 @@ class LogInForm(FlaskForm):
     password = PasswordField(
         label="Password",
         validators=[InputRequired(), Length(
-            min=10, max=72, message="Password must be 10 to 72 characters long.")],
+            max=72, message="Password must be 10 to 72 characters long.")],
         name="password",
         render_kw={"placeholder": "hunter2", "class": "form-control"}
     )

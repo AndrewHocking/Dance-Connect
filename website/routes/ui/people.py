@@ -344,11 +344,34 @@ def edit_person(username):
                     tag_name_list=tag_name_list,
                     socials=socialMediaDic,
                 )
+
             else:
-                update_user(
+                response = update_user(
                     user_id=person.id,
                     password=new_pass,
                 )
+
+                try:
+                    if response["data"].get("type") == "pwd_security":
+                        flash(response["message"],
+                              category=response["response_type"])
+                        pwd_errs = response["data"]["errs"]
+                        pwd_strength = response["data"]["strength"]
+                        return render_template(
+                            "edit_person.html",
+                            user=current_user,
+                            person=person,
+                            bio=newBio,
+                            events=events,
+                            affiliations=affiliations,
+                            edit=edit,
+                            tag_name_list=tag_name_list,
+                            socials=socialMediaDic,
+                            pwd_errs=pwd_errs,
+                            pwd_strength=pwd_strength
+                        )
+                except:
+                    pass
 
         # check if person wanted to change login email
         if (current_login_email != "" or new_email != "" or confirm_email != ""):

@@ -1,5 +1,7 @@
+import enum
 import string
-from typing import List
+import re
+from typing import List, Tuple
 
 from .user_tag import create_user_tag
 from ... import db, bcrypt, json_response
@@ -21,10 +23,12 @@ def create_user(
 ):
     if len(email) < 5:
         return json_response(400, "Email must be greater than 5 characters.")
-    elif len(display_name) < 1:
+    elif len(display_name.strip()) < 1:
         return json_response(400, "Display name must be at least 1 character.")
-    elif len(password) < 8:
-        return json_response(400, "Password must be at least 7 characters.")
+
+    pwd_errs, pwd_strength = validate_password(password)
+    if len(pwd_errs) > 0:
+        return json_response(400, "Password is not secure.", {"type": "pwd_security", "errs": pwd_errs, "strength": pwd_strength})
 
     conflict = db.session.query(User).filter_by(email=email).first()
     if conflict is not None:
@@ -198,6 +202,10 @@ def update_user(
         user.email = email
 
     if password is not None:
+        pwd_errs, pwd_strength = validate_password(password)
+        if len(pwd_errs) > 0:
+            return json_response(400, "Password is not secure.", {"type": "pwd_security", "errs": pwd_errs, "strength": pwd_strength})
+
         hashed_password = bcrypt.generate_password_hash(
             password).decode('utf-8')
         user.password = hashed_password
@@ -287,3 +295,43 @@ def update_socials_link(user_id: int, type: str, handle: str):
     db.session.commit()
 
     return json_response(200, f"User {user_id}'s {type} handle has been updated to {handle}", socials_link.first())
+
+
+class PASSWORD_ERRORS(enum.Enum):
+    LENGTH_ERR: str = "Password must be at least 8 characters long."
+    LOWER_CASE_ERR: str = "Password must have lowercase characters."
+    UPPER_CASE_ERR: str = "Password must have uppercase characters."
+    DIGIT_ERR: str = "Password must contain at least one digit (0-9)."
+    SYMBOL_ERR: str = "Password must contain a non-alphanumerical character."
+
+
+def validate_password(password: str) -> Tuple[list[PASSWORD_ERRORS], str]:
+    errs = []
+    strength = ''
+
+    password_strengths = {
+        0: 'Strong',
+        1: 'Moderate',
+        2: 'Poor',
+        3: 'Weak',
+        4: 'Very Weak',
+    }
+
+    if len(password) < 8:
+        errs.append(PASSWORD_ERRORS.LENGTH_ERR)
+        strength = 'Very Weak'
+        return (errs, strength)
+
+    if re.search(r"\d", password) is None:
+        errs.append(PASSWORD_ERRORS.DIGIT_ERR)
+
+    if re.search(r"[A-Z]", password) is None:
+        errs.append(PASSWORD_ERRORS.UPPER_CASE_ERR)
+
+    if re.search(r"[a-z]", password) is None:
+        errs.append(PASSWORD_ERRORS.LOWER_CASE_ERR)
+
+    if re.search(r"(?![A-Z]|[a-z]|\d).+", password) is None:
+        errs.append(PASSWORD_ERRORS.SYMBOL_ERR)
+
+    return (errs, password_strengths[len(errs)])
