@@ -2,18 +2,29 @@
 {% block title %}404 - Page Not Found{% endblock %}
 {% block content %}
 <div class="row gy-5 py-5">
-    <div class="col-12 col-md-4">
-        <div class="d-flex flex-column justify-content-center border-end">
+    <div class="col-12 col-md-4 position-relative">
+        <div class="d-flex flex-column justify-content-center">
             <h1 class="error_title text-center">404</h1>
             <h3 class="text-center">Page Not Found</h3>
         </div>
+        
+        {# Desktop Vertical Border #}
+        <div class="d-none d-md-inline position-absolute start-100 top-50 translate-middle h-75">
+            <div class="bg-secondary ps-1 h-75"></div>
+        </div>
     </div>
-    <div class="col-12 col-md-8">
-        <h1 class="text-center mb-3 fw-bold">
+
+    {# Mobile Horizontal Border #}
+    <div class="col-12 d-md-none">
+        <div class="bg-secondary pt-1 m-2"></div>
+    </div>
+
+    <div class="col-12 col-md">
+        <h1 class="text-center mb-4 fw-bold">
             <i class="bi bi-exclamation-triangle-fill me-2"></i>
             ERROR
         </h1>
-        <h2 class="text-center fw-normal mb-1">You've danced your way outside the site!</h2>
+        <h2 class="text-center fw-normal mb-2">You've danced your way outside the site!</h2>
         <h3 class="text-center fw-light mb-5">You will be led home in <span id="sec-remaining" class="fw-bold"></span> seconds...</h3>
 
         <div class="row">
@@ -53,7 +64,7 @@
             setTimeout(decrement_timer, 500);
         }
         else {
-            window.location = "{{ url_for('views.home') }}"
+            //window.location = "{{ url_for('views.home') }}"
         }
     }
 
