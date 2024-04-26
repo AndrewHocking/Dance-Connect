@@ -45,8 +45,8 @@ def create_demo_users():
             "pronouns": "he/him",
             "bio": "Hip-hop enthusiast. Always ready to break it down on the dance floor.",
             "tags": ["hip hop", "dancer"],
-            "profile_picture_url": "https://imagedelivery.net/ieKvjIrSdSi118m2pamc8g/588fbe45-6c17-4248-a436-0e6167316900/public",
-            "profile_picture_id": "588fbe45-6c17-4248-a436-0e6167316900",
+            "profile_picture_url": "https://imagedelivery.net/ieKvjIrSdSi118m2pamc8g/19329467-2c5b-4a52-33de-047689cdbe00/public",
+            "profile_picture_id": "19329467-2c5b-4a52-33de-047689cdbe00",
         },
         {
             "display_name": "Luna Vega",
