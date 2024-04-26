@@ -1,6 +1,6 @@
 from collections import namedtuple
 from datetime import datetime
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, abort, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 
 from ...models.event.event import Event
@@ -236,7 +236,10 @@ def create_event_submit():
 
 @events.route('/<int:event_id>/', methods=['GET'])
 def event_details(event_id: int):
-    event: Event = get_event(event_id).get("data")
+    response = get_event(event_id)
+    if response.get("status_code") != 200:
+        abort(404)
+    event: Event = response.get("data")
     contributors: EventContributor = get_event_contributors(
         event_id).get("data")
     event_request_notification: EventRequestNotification = get_event_request_notification(
@@ -256,7 +259,10 @@ def event_details(event_id: int):
 @events.route('/<int:event_id>/join/', methods=['POST'])
 @login_required
 def join_event(event_id: int):
-    event = get_event(event_id).get("data")
+    response = get_event(event_id)
+    if response.get("status_code") != 200:
+        abort(404)
+    event: Event = response.get("data")
     if event.organizer == current_user:
         connect_user_to_event(user=current_user, event=event,
                               role=request.form.get("role", ""))
@@ -273,8 +279,14 @@ def join_event(event_id: int):
 @events.route('/<int:event_id>/cancel-join-request/', methods=['POST'])
 @login_required
 def cancel_event_join_request(event_id: int):
-    notification = get_event_request_notification(
-        event_id=event_id, sender_id=current_user.id).get("data")
+    response = get_event(event_id)
+    if response.get("status_code") != 200:
+        abort(404)
+    response = get_event_request_notification(
+        event_id=event_id, sender_id=current_user.id)
+    if response.get("status_code") != 200:
+        abort(404)
+    notification: EventRequestNotification = response.get("data")
     delete_notification(notification.id)
     flash('Request cancelled!', category='success')
     return redirect(url_for('events.event_details', event_id=event_id))
@@ -283,7 +295,10 @@ def cancel_event_join_request(event_id: int):
 @events.route('/<int:event_id>/leave/', methods=['POST'])
 @login_required
 def leave_event(event_id: int):
-    event: Event = get_event(event_id).get("data")
+    response = get_event(event_id)
+    if response.get("status_code") != 200:
+        abort(404)
+    event: Event = response.get("data")
     remove_user_from_event(event=event, user=current_user)
     flash('You are no longer listed as a contributor for this event.',
           category='success')
@@ -292,6 +307,10 @@ def leave_event(event_id: int):
 
 @events.route('/<int:event_id>/contributors/', methods=['POST'])
 def event_contributors(event_id: int):
+    response = get_event(event_id)
+    if response.get("status_code") != 200:
+        abort(404)
+
     contributors: EventContributor = get_event_contributors(
         event_id).get("data")
 
@@ -304,7 +323,11 @@ def event_contributors(event_id: int):
 @events.route('/<int:event_id>/edit/', methods=['GET', 'POST'])
 @login_required
 def event_edit(event_id: int):
-    event = get_event(event_id).get("data")
+    response = get_event(event_id)
+    if response.get("status_code") != 200:
+        abort(404)
+    event: Event = response.get("data")
+    
     if event.organizer != current_user:
         flash('You are not the organizer of this event.', category='error')
         return redirect(url_for('events.event_details', event_id=event_id))
@@ -420,7 +443,11 @@ def event_edit(event_id: int):
 @ events.route('/<int:event_id>/delete/', methods=['POST'])
 @ login_required
 def event_delete(event_id: int):
-    event = get_event(event_id).get("data")
+    response = get_event(event_id)
+    if response.get("status_code") != 200:
+        abort(404)
+    event: Event = response.get("data")
+
     if event.organizer != current_user:
         flash('You are not the organizer of this event.', category='error')
         return redirect(url_for('events.event_details', event_id=event_id))
@@ -434,7 +461,7 @@ def event_delete(event_id: int):
 def event_home_card(index: int):
     results = search_events(limit=1, offset=index)
     if results.get("data") is None:
-        return "", 404
+        abort(404)
     else:
         event, occurrence_count = results.get("data")[0]
     return render_template("event-home-card.html", user=current_user, event=event, occurrence_count=occurrence_count)

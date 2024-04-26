@@ -1,10 +1,12 @@
 import os
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, abort, render_template, request, redirect, url_for
 from flask import current_app
 from flask_login import current_user
 
+from website.models.event import EventContributor, Event
+
 from ... import bcrypt
-from ...orm.event.event_contributor import get_affilliations
+from ...orm.event.event_contributor import get_affiliations, get_future_contributions, get_past_contributions
 from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link, check_email_exists
 from ...forms.people_filter import (
     PeopleFilter,
@@ -136,8 +138,14 @@ def people_list(search, sort, filters):
 
 @people.route("/<username>/", methods=["GET"])
 def person(username):
-    person: User = read_single_user(username=username)["data"]
-    events_contributed = person.contributor_association
+    response = read_single_user(username=username)
+    if response["status_code"] == 404:
+        abort(404)
+    
+    person: User = response["data"]
+
+    future_events = get_future_contributions(person.id)["data"] or []
+    past_events = get_past_contributions(person.id)["data"] or []
 
     socialMediaDic = {}
     for social in person.socials:
@@ -151,24 +159,56 @@ def person(username):
     if person.bio != "":
         bio = person.bio
 
-    affiliations = get_affilliations(person.id)["data"] or []
+    affiliations = get_affiliations(person.id)["data"] or []
 
     return render_template(
         "person.html",
         user=current_user,
         person=person,
         bio=bio,
-        events_contributed=events_contributed,
-        events_organized=person.events_organized,
+        future_events=future_events,
+        past_events=past_events,
         affiliations=affiliations,
         edit=edit,
         socials=socialMediaDic,
     )
+    
+    
+@people.route("/<username>/contributions", methods=["POST"])
+def person_contributions(username):
+    response = read_single_user(username=username)
+    if response["status_code"] == 404:
+        abort(404)
+    person: User = response["data"]
+    
+    future_events = get_future_contributions(person.id)["data"] or []
+    past_events = get_past_contributions(person.id)["data"] or []
+
+    return render_template("person-contributions.html", user=current_user, future_events=future_events, past_events=past_events)
+
+
+@people.route("/<username>/affiliations", methods=["POST"])
+def person_affiliations(username):
+    response = read_single_user(username=username)
+    if response["status_code"] == 404:
+        abort(404)
+    person: User = response["data"]
+
+    affiliations = get_affiliations(person.id)["data"] or []
+
+    return render_template("person-affiliations.html", user=current_user, affiliations=affiliations)
 
 
 @people.route("/<username>/edit/", methods=["GET", "POST"])
 def edit_person(username):
-    person: User = read_single_user(username=username)["data"]
+    if current_user.is_anonymous or username != current_user.username:
+        return redirect(url_for("people.person", username=username))
+    
+    response = read_single_user(username=username)
+    if response["status_code"] == 404:
+        abort(404)
+        
+    person: User = response["data"]
     events = list(person.events_organized)
     events.extend(list(person.events_contributed))
     # form = PeopleFilter()
@@ -241,8 +281,8 @@ def edit_person(username):
         tag_list = [tag for tag in tag_list if tag != ""]
 
         # list of handle and social media types
-        socialListofList = [[website, "website"], [instagram, "instagram"], [email, "email"], [
-            threads, "threads"], [tiktok, "tiktok"], [twitter, "twitter"], [facebook, "facebook"], ]
+        socialListofList = [[website, "website"], [instagram, "instagram"], [threads, "threads"],
+                            [tiktok, "tiktok"], [twitter, "twitter"], [facebook, "facebook"], [email, "email"], ]
 
         for social in socialListofList:
             if (social[0] != "") and (update_socials_link(person.id, social[1], social[0])["status_code"] == 404 and social[0] != ""):

@@ -31,11 +31,12 @@
             <div class="px-md-5">
                 {% for notification in event_notifications.notification_list %}
                 <div class="row pt-2 pb-4 py-md-2">
-                    <div class="col order-1 d-flex align-items-center text-wrap">
-                        <img class="rounded-circle p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                    <a href="{{ url_for('people.person', username=notification.sender.username) }}"
+                        class="col order-1 d-flex align-items-center text-wrap text-reset text-decoration-none">
+                        <img class="rounded-circle p-1 me-2 notification-img" src="{{ notification.sender.get_profile_pic_url() }}"
                             alt="{{notification.sender.display_name}}" />
                         <div class="h5 m-0">{{ notification.sender.display_name }}</div>
-                    </div>
+                    </a>
                     <div class="col order-4 order-md-2 d-flex flex-row align-items-center flex-wrap">
                         <span class="h6 m-0 fw-bold">Role:&nbsp </span>
                         <div class="h6 m-0 text-wrap">{{ notification.role }}</div>
@@ -77,16 +78,18 @@
 
             {% for notification in notifications %}
             <div class="row pt-1 pb-3 py-md-2 px-3 px-lg-4">
-                <div class="col d-flex flex-row align-items-center">
+                <a href="{{ url_for('events.event_details', event_id=notification.event.id) }}"
+                    class="col d-flex flex-row align-items-center text-reset text-decoration-none">
                     <img class="rounded-3 p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
-                        alt="DanceConnect Logo" />
+                        alt="{{ notification.event.title }}" />
                     <div class="h6 m-0">{{ notification.event.title }}</div>
-                </div>
-                <div class="col d-flex flex-row align-items-center">
-                    <img class="rounded-circle p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
-                        alt="DanceConnect Logo" />
+                </a>
+                <a href="{{ url_for('people.person', username=notification.recipient.username) }}"
+                    class="col d-flex flex-row align-items-center text-reset text-decoration-none">
+                    <img class="rounded-circle p-1 me-2 notification-img" src="{{ notification.recipient.get_profile_pic_url() }}"
+                        alt="{{ notification.recipient.display_name }}" />
                     <div class="h6 m-0">{{ notification.recipient.display_name }}</div>
-                </div>
+                </a>
                 <div class="col h6 m-0 d-flex align-items-center">
                     {{ notification.role }}
                 </div>
@@ -103,13 +106,13 @@
                 <div class="col-12 mb-1 d-flex flex-row align-items-center">
                     <div class="fw-bold h6 mb-0 me-2 me-sm-5 notification-title">Event</div>
                     <img class="rounded-3 p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
-                        alt="DanceConnect Logo" />
+                        alt="{{ notification.event.title }}" />
                     <div class="h6 mb-0">{{ notification.event.title }}</div>
                 </div>
                 <div class="col-12 mb-1 d-flex flex-row align-items-center">
                     <div class="fw-bold h6 mb-0 me-2 me-sm-5 notification-title">Organizer</div>
-                    <img class="rounded-circle p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
-                        alt="DanceConnect Logo" />
+                    <img class="rounded-circle p-1 me-2 notification-img" src="{{ notification.recipient.get_profile_pic_url() }}"
+                        alt="{{ notification.recipient.display_name }}" />
                     <div class="h6 mb-0">{{ notification.recipient.display_name }}</div>
                 </div>
                 <div class="col-12 mb-1 d-flex align-items-center">

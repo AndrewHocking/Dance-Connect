@@ -562,8 +562,12 @@ def create_demo_events():
             )["data"]
 
         for _ in range(1, random.randint(0, 10)):
-            new_contributor = EventContributor(
-                event_id=new_event.id, user_id=random.choice(users).id, role="Contributor")
+            new_contributor: EventContributor = None
+            random_user = random.choice(users)
+            while random_user in new_event.contributors or random_user == new_event.organizer:
+                random_user = random.choice(users)
+            
+            new_contributor = EventContributor(event_id=new_event.id, user_id=random_user.id, role="Contributor")
             db.session.add(new_contributor)
 
     db.session.commit()

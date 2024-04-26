@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, abort, render_template, request, flash, redirect, url_for
 from flask_login import current_user, login_required
 
 from datetime import datetime, timedelta, timezone
@@ -95,10 +95,11 @@ def opportunities_list():
 def opportunity(organizer: str, title: str):
     resp = get_opportunity_by_organizer_and_title(
         organizer=organizer, title=title)
+    
+    if resp["status_code"] != 200:
+        abort(404)
 
-    opportunity: Opportunity = resp.get("data", None)
-    if opportunity is None:
-        return render_template("opportunity-details.html", user=current_user, opportunity=opportunity)
+    opportunity: Opportunity = resp.get("data")
 
     is_editable = current_user == opportunity.poster
     return render_template("opportunity-details.html", user=current_user, opportunity=opportunity, edit=is_editable, post_type=post_types)
@@ -233,11 +234,10 @@ def edit_opportunity(organizer: str, title: str):
 
     resp = get_opportunity_by_organizer_and_title(
         organizer=organizer, title=title)
+    if resp["status_code"] != 200:
+        abort(404)
 
-    opportunity: Opportunity = resp.get("data", None)
-    if opportunity is None:
-        flash('No such opportunity post exists.', category='error')
-        return redirect(url_for('opportunities.opportunities_list'))
+    opportunity: Opportunity = resp.get("data")
 
     if opportunity.poster_id != current_user.id:
         flash('You are not the poster of this opportunity.')
@@ -399,10 +399,10 @@ def delete_opportunity(organizer: str, title: str):
     resp = get_opportunity_by_organizer_and_title(
         organizer=organizer, title=title)
 
-    opportunity: Opportunity = resp.get("data", None)
-    if opportunity is None:
-        flash('No such opportunity post exists.', category='error')
-        return redirect(url_for('opportunities.opportunities_list'))
+    if resp["status_code"] != 200:
+        abort(404)
+
+    opportunity: Opportunity = resp.get("data")
 
     if opportunity.poster_id != current_user.id:
         flash('You are not the poster of this opportunity.')

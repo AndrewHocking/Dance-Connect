@@ -107,12 +107,11 @@ vision." %}
 {% endmacro %}
 
 
-{% macro circle_item(primary, secondary, tertiary, href) %}
+{% macro circle_item(primary, secondary, tertiary, href, image_src) %}
 <a href="{{ href }}"
     class="contributor-item col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body user-circle">
     <div class="rounded-circle mx-auto overflow-hidden position-relative mb-1">
-        <img src="{{url_for('static', filename='images/placeholder.jpg')}}"
-            class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle" alt="{{primary}}" />
+        <img src="{{ image_src }}" class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle" alt="{{primary}}" />
     </div>
     <div class="text-center text-truncate w-100 fw-medium">{{primary}}</div>
     <div class="text-center text-truncate w-100 fw-light text-body-tertiary small">{{secondary}}</div>
@@ -124,18 +123,18 @@ vision." %}
 {% macro event_contributors(contributors, limit) %}
 {% if limit %}
 {% for contributor in contributors[:limit] %}
-{{ circle_item(primary=contributor.user.display_name, secondary='@'~contributor.user.username, tertiary=contributor.role, href=url_for('people.person', username=contributor.user.username)) }}
+{{ circle_item(primary=contributor.user.display_name, secondary='@'~contributor.user.username, tertiary=contributor.role, href=url_for('people.person', username=contributor.user.username), image_src=contributor.user.get_profile_pic_url()) }}
 {% endfor %}
 {% else %}
 {% for contributor in contributors %}
-{{ circle_item(primary=contributor.user.display_name, secondary='@'~contributor.user.username, tertiary=contributor.role, href=url_for('people.person', username=contributor.user.username)) }}
+{{ circle_item(primary=contributor.user.display_name, secondary='@'~contributor.user.username, tertiary=contributor.role, href=url_for('people.person', username=contributor.user.username), image_src=contributor.user.get_profile_pic_url()) }}
 {% endfor %}
 {% endif %}
 {% endmacro %}
 
 
 {% macro grid_item(image_src, title, subtitle, text, href) %}
-<div class="card grid-card mb-2">
+<div class="card grid-card mb-2 p-0">
     <a href="{{ href }}" class="overflow-hidden ratio ratio-16x9"><img src="{{ image_src }}" class="card-img-top"
             alt="Image preview for {{ title }}"></a>
     <div class="card-body">
@@ -168,11 +167,11 @@ vision." %}
         <div class="d-flex flex-row form-text align-items-center">
             <small>
                 <div class="rounded {{bg}} px-2 me-2" style="padding-block:2px">
-                    <p class="mb-0 align-middle fw-medium">{{strength}}</p></small>
+                    <p class="mb-0 align-middle fw-medium">{{strength}}</p>
                 </div>
             </small>
             {% if errs|length > 0 %}
-                <div class="text-danger">Requirements</div>
+            <div class="text-danger">Requirements</div>
             {% endif %}
         </div>
     </div>

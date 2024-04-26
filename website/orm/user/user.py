@@ -43,7 +43,6 @@ def create_user(
         conflicts = db.session.query(User).filter_by(username=username).all()
         if conflicts is not None and len(conflicts) > 0:
             username = f"{username}_{len(conflicts)}"
-
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
     new_user = User(
         username=username,

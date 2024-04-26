@@ -118,7 +118,7 @@
         image_src=url_for('static',
         filename='images/placeholder.jpg'),
         title=event.title,
-        subtitle=(event.next_occurrence.start_time.strftime("%b %e, %-I:%M %p") if event.next_occurrence else ""),
+        subtitle=(event.get_next_occurrence_after(date=filters.start_date.data).start_time.strftime("%b %e, %-I:%M %p") if event.get_next_occurrence_after(date=filters.start_date.data) else ""),
         text=("+"+((occurrence_count-1)|string)+" more time" if occurrence_count != 1 else "") + ("s" if occurrence_count > 2 else ""),
         href=url_for('events.event_details',
         event_id=event.id)

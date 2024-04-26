@@ -230,18 +230,22 @@
                             <h3 class="text-center"><i class="bi bi-people-fill me-2"></i>Contributors</h3>
                         </div>
                         {% if contributors|length > 0 %}
+                        {% set max_people_to_show = 8 %}
                         <div class="row justify-content-center">
                             {% from "macros.html" import event_contributors %}
-                            {{ event_contributors(contributors=contributors, limit=8) }}
-                            {% if contributors|length > 8 %}
+                            {{ event_contributors(contributors=contributors, limit=max_people_to_show) }}
+                            {% if contributors|length > max_people_to_show %}
                             <div id="btn-view-all" class="col-auto align-items-center justify-content-center my-2 text-decoration-none text-body"
                                 data-bs-toggle="modal" data-bs-target="#view-all-modal">
                                 <div class="user-circle rounded-circle mx-auto">
                                     <div class="user-circle rounded-circle mx-auto p-0 btn btn-primary">
-                                        <i class="bi bi-people-fill text-white d-flex align-items-center justify-content-center fs-1 h-100"></i>
+                                        <div class="text-white d-flex align-items-center justify-content-center fs-2 h-100">
+                                            +{{contributors|length -
+                                            max_people_to_show}}
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="text-center text-truncate w-100 fw-medium pt-2">View all</div>
+                                <div class="text-center text-wrap w-100 fw-medium pt-1">View all contributors</div>
                             </div>
                             {% endif %}
                         </div>
@@ -286,7 +290,7 @@
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="view-all-modal-label">Contributors</h4>
+                <h4 class="modal-title" id="view-all-modal-label"><i class="bi bi-people-fill me-2"></i>Contributors for {{ event.title }}</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

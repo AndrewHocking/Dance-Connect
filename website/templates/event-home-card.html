@@ -40,13 +40,13 @@
         <h3><i class="bi bi-people-fill"></i> Contributors</h3>
     </div>
     <div class="row align-items-center flex-nowrap pe-sm-0">
-        <div class="col-1 col-lg-auto contributors-scroll-btn pe-0 pb-2 z-3">
-            <button class="btn btn-sm btn-primary rounded contributors-scroll-backward-btn" style="width: 40px; height: 40px;">
+        <div class="col-1 col-lg-auto scroll-btn pe-0 pb-2 z-3">
+            <button class="btn btn-sm btn-primary rounded scroll-backward-btn" style="width: 40px; height: 75px;">
                 <i class="bi bi-arrow-left-short bi-bold h5"></i>
             </button>
         </div>
         <div class="col-10 col-lg mx-1 mx-md-0 px-0 ps-4 ps-md-0">
-            <div class="home-card-contributor-list row align-items-center flex-nowrap overflow-x-scroll mx-1">
+            <div class="scroll-view row align-items-center flex-nowrap overflow-x-scroll mx-1">
                 {% set max_people_to_show = 5 %}
                 {% for contributor in event.contributor_association[:max_people_to_show] %}
                 <a href="{{url_for('people.person', username=contributor.user.username)}}" class="col-auto text-reset text-decoration-none me-2">
@@ -54,7 +54,7 @@
                         <div class="col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body me-2"
                             style="width: 75px; height: 75px;">
                             <div class="rounded-circle mx-auto overflow-hidden position-relative" style="width: 75px; height: 75px;">
-                                <img src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                                <img src="{{ contributor.user.get_profile_pic_url() }}"
                                     class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle h-100 w-100"
                                     alt="{{ contributor.user.display_name }}" />
                             </div>
@@ -62,7 +62,7 @@
                         <div class="col-auto home-card-contributor-info" style="">
                             <h5 class="fw-medium text-truncate mb-0">{{ contributor.user.display_name }}</h5>
                             <div class="text-body-tertiary text-truncate small mb-2">@{{ contributor.user.username }}</div>
-                            <h6 class="text-body-secondary text-truncate mb-0">{{ contributor.role }}</h6>
+                            <div class="text-body-secondary text-truncate mb-0">{{ contributor.role }}</div>
                         </div>
                     </div>
                 </a>
@@ -92,8 +92,8 @@
                 {% endif %}
             </div>
         </div>
-        <div class="col-1 col-lg-auto contributors-scroll-btn px-0 pb-2 z-3">
-            <button class="btn btn-sm btn-primary rounded contributors-scroll-forward-btn" style="width: 40px; height: 40px;">
+        <div class="col-1 col-lg-auto scroll-btn px-0 pb-2 z-3">
+            <button class="btn btn-sm btn-primary rounded scroll-forward-btn" style="width: 40px; height: 75px;">
                 <i class="bi bi-arrow-right-short bi-bold h5"></i>
             </button>
         </div>

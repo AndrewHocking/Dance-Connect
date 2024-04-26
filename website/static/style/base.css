@@ -292,7 +292,7 @@ body {
     overflow: hidden;
 }
 
-.home-card-contributor-list {
+.scroll-view {
     scroll-behavior: smooth;
 }
 
