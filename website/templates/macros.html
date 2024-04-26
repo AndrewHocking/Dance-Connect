@@ -30,8 +30,8 @@ vision." %}
     challenging. This can include changes
     to
     lighting and audio volume, as well as relaxing theatre &quot;rules&quot;.</p><a
-    href='https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed'
-    title='What is a relaxed performance?' target='_blank' rel='noopener noreferrer'>Click here to learn more.</a>" %}
+    href='https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed' title='What is a relaxed performance?'
+    target='_blank' rel='noopener noreferrer'>Click here to learn more.</a>" %}
 {% elif icon == "mobility aid" %}
 {% set icon_name = "person-wheelchair" %}
 {% set title = "mobility aid accessible venue" %}
@@ -49,9 +49,8 @@ such as wheelchairs." %}
 {% endif %}
 <li class="list-inline-item position-relative text-bg-{{ 'danger' if danger else 'primary' }} rounded-circle p-0 m-0 accessibility-icon {{extra_classes}}"
     title="{{ 'Not ' if danger }}{{ title|title }} - Click for more information">
-    <a data-bs-content="{{ popover_content }}" tabindex="0" title="What does this mean?" role="button"
-        data-bs-toggle="popover" data-bs-trigger="focus" data-bs-title="{{ 'Not ' if danger }}{{ title|title }}"
-        data-bs-html="true">
+    <a data-bs-content="{{ popover_content }}" tabindex="0" title="What does this mean?" role="button" data-bs-toggle="popover"
+        data-bs-trigger="focus" data-bs-title="{{ 'Not ' if danger }}{{ title|title }}" data-bs-html="true">
         <i class="bi bi-{{ icon_name }} position-absolute top-50 start-50 translate-middle p-2"></i>
     </a>
 </li>
@@ -101,8 +100,7 @@ such as wheelchairs." %}
         </div>
     </div>
     <div class="col-xl-auto col d-flex justify-content-center justify-content-xl-end form-group mt-xl-0 mt-2">
-        <button id="occurrence-occurrence_number-delete-btn" class="btn btn-danger delete-btn" type="button"
-            value="occurrence_number">
+        <button id="occurrence-occurrence_number-delete-btn" class="btn btn-danger delete-btn" type="button" value="occurrence_number">
             <i class="bi bi-trash3-fill"></i>
             Delete
         </button>
@@ -116,16 +114,15 @@ such as wheelchairs." %}
 {% endmacro %}
 
 
-{% macro contributor_item(contributor, role) %}
-<a href="{{ url_for('people.person', username=contributor.user.username) }}"
+{% macro circle_item(primary, secondary, tertiary, href, image_src) %}
+<a href="{{ href }}"
     class="contributor-item col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body user-circle">
-    <div class="rounded-circle mx-auto overflow-hidden position-relative">
-        <img src="{{contributor.user.get_profile_pic_url()}}"
-            class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle"
-            alt="{{contributor.user.display_name}}" />
+    <div class="rounded-circle mx-auto overflow-hidden position-relative mb-1">
+        <img src="{{ image_src }}" class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle" alt="{{primary}}" />
     </div>
-    <div class="text-center text-truncate w-100 fw-medium">{{contributor.user.display_name}}</div>
-    <div class="text-center text-truncate w-100 fw-light text-body-tertiary">{{contributor.role}}</div>
+    <div class="text-center text-truncate w-100 fw-medium">{{primary}}</div>
+    <div class="text-center text-truncate w-100 fw-light text-body-tertiary small">{{secondary}}</div>
+    <div class="text-center text-truncate w-100 text-body-secondary">{{tertiary}}</div>
 </a>
 {% endmacro %}
 
@@ -133,18 +130,18 @@ such as wheelchairs." %}
 {% macro event_contributors(contributors, limit) %}
 {% if limit %}
 {% for contributor in contributors[:limit] %}
-{{ contributor_item(contributor) }}
+{{ circle_item(primary=contributor.user.display_name, secondary='@'~contributor.user.username, tertiary=contributor.role, href=url_for('people.person', username=contributor.user.username), image_src=contributor.user.get_profile_pic_url()) }}
 {% endfor %}
 {% else %}
 {% for contributor in contributors %}
-{{ contributor_item(contributor) }}
+{{ circle_item(primary=contributor.user.display_name, secondary='@'~contributor.user.username, tertiary=contributor.role, href=url_for('people.person', username=contributor.user.username), image_src=contributor.user.get_profile_pic_url()) }}
 {% endfor %}
 {% endif %}
 {% endmacro %}
 
 
 {% macro grid_item(image_src, title, subtitle, text, href) %}
-<div class="card grid-card mb-2">
+<div class="card grid-card mb-2 p-0">
     <a href="{{ href }}" class="overflow-hidden ratio ratio-16x9"><img src="{{ image_src }}" class="card-img-top"
             alt="Image preview for {{ title }}"></a>
     <div class="card-body">
@@ -178,23 +175,22 @@ such as wheelchairs." %}
             <small>
                 <div class="rounded {{bg}} px-2 me-2" style="padding-block:2px">
                     <p class="mb-0 align-middle fw-medium">{{strength}}</p>
+                </div>
             </small>
+            {% if errs|length > 0 %}
+            <div class="text-danger">Requirements</div>
+            {% endif %}
         </div>
-        </small>
-        {% if errs|length > 0 %}
-        <div class="text-danger">Requirements</div>
-        {% endif %}
     </div>
-</div>
 
-{% if errs|length > 0 %}
-<div class="col-12">
-    <ul class="form-text m-0">
-        {% for err in errs %}
-        <li class="text-danger text-wrap">{{err.value}}</li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
+    {% if errs|length > 0 %}
+    <div class="col-12">
+        <ul class="form-text m-0">
+            {% for err in errs %}
+            <li class="text-danger text-wrap">{{err.value}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 </div>
 {% endmacro %}

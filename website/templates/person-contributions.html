@@ -1,0 +1,24 @@
+{% from "macros.html" import grid_item %}
+<div class="row justify-content-center gx-1">
+    {% if future_events %}
+    <div class="col-12">
+        <h5 class="mb-3 ms-2">Upcoming Events</h5>
+    </div>
+    {% for contribution in future_events %}
+    <div class="col-auto">
+        {{ grid_item(title=contribution.event.title, subtitle=contribution.role, text=("Next: " ~ contribution.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.next_occurrence else ("Last: " ~ (contribution.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.occurrences|length > 0 else "", image_src=contribution.event.get_image_url(), href=url_for('events.event_details', event_id=contribution.event.id)) }}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if past_events %}
+    <div class="col-12">
+        <h5 class="my-3 ms-2">Past Events</h5>
+    </div>
+    {% for contribution in past_events %}
+    <div class="col-auto">
+        {{ grid_item(title=contribution.event.title, subtitle=contribution.role, text=("Next: " ~ contribution.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.next_occurrence else ("Last: " ~ (contribution.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.occurrences|length > 0 else "", image_src=contribution.event.get_image_url(), href=url_for('events.event_details', event_id=contribution.event.id)) }}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>

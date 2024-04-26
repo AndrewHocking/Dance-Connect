@@ -3,10 +3,10 @@
 {% block title %}{{ person.display_name }}{% endblock %}
 
 {% block content %}
+{% from 'macros.html' import grid_item %}
 <div class="container">
     {% if edit %}
-    <form action="{{ url_for('people.edit_person', username=person.username) }}" method="POST"
-        enctype="multipart/form-data">
+    <form action="{{ url_for('people.edit_person', username=person.username) }}" method="POST" enctype="multipart/form-data">
         {% endif %}
         <div class="row align-items-center mb-4">
             <div class="col">
@@ -36,8 +36,7 @@
                     </div>
                     {% for tag in person.tags %}
                     <form class="col-auto mb-1" action="{{ url_for('people.people_list') }}" method="POST">
-                        <button name="tags" value="{{ tag.name }}"
-                            class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name
+                        <button name="tags" value="{{ tag.name }}" class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name
                             }}</button>
                     </form>
                     {% endfor %}
@@ -62,15 +61,16 @@
 
 
         <div class="row mb-4">
+            {# Header #}
             <div class="col-12 col-md-5 col-xl-3">
                 <div class="rounded mb-4 overflow-hidden ratio ratio-1x1">
                     <img src="{{ person.get_profile_pic_url() }}" class="img-fluid" alt="{{person.display_name}}" />
                 </div>
                 <!-- CONTACTS BLOCK -->
                 {% block edit_person_EditContacts %}
+                {% if socials %}
                 <div class="p-3 bg-body-tertiary rounded text-decoration-none">
                     <h4><i class="bi bi-chat-dots-fill pe-2"></i>Contact</h4>
-                    {% if socials %}
                     {% for site in socials %}
                     {% set icon_name = site %}
                     {% set url_prefix = "https://" %}
@@ -80,7 +80,7 @@
                     {% elif site == "instagram" %}
                     {% set url_prefix = "https://www.instagram.com/" %}
                     {% elif site == "email" %}
-                    {% set icon_name = "envelope-at" %}
+                    {% set icon_name = "envelope-at-fill" %}
                     {% set url_prefix = "mailto:" %}
                     {% elif site == "threads" %}
                     {% set url_prefix = "https://www.threads.net/@" %}
@@ -95,8 +95,7 @@
                     <a href="{{ url_prefix }}{{ handle.replace('https://', '', 1).replace('http://', '', 1) }}"
                         class="row align-items-center ps-3 py-1 text-decoration-none">
                         <div class="col-auto p-0">
-                            <div
-                                class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
+                            <div class="p-1 btn btn-primary rounded text-light d-flex justify-content-center social-icon">
                                 <i class="bi bi-{{ icon_name }}"></i>
                             </div>
                         </div>
@@ -106,15 +105,17 @@
                     </a>
                     {% endfor %}
 
-                    {% endif %}
                 </div> <!-- LEFT BLOCK END -->
+                {% endif %}
                 {% endblock %}
                 {% block edit_person_password %}
                 {% endblock %}
             </div>
 
+            {# Right Block #}
             <div class="col-12 col-md-7 col-xl-9 pl-xl-5 pl-3">
-                <div class="pb-4">
+                {# Bio #}
+                <div class="mb-4">
                     <h4><i class="bi bi-person-fill pe-2"></i>Bio</h4>
                     <p>
                         {% block edit_person_bio %}
@@ -126,50 +127,314 @@
                         {% endblock %}
                     </p>
                 </div>
-                <div class="pb-4">
-                    <h4><i class="bi bi-calendar-week-fill pe-2"></i>Events</h4>
-                    <div class="row-12 d-flex flex-no-wrap overflow-x-scroll ">
-                        {% from 'macros.html' import grid_item %}
-                        {% for contributed in events_contributed %}
-                        {% if contributed.event.occurrences|length != 0%}
-                        <div class="col-auto me-2">
-                            {{ grid_item(
-                            image_src=contributed.event.get_image_url(),
-                            title=contributed.event.title,
-                            subtitle=contributed.role,
-                            text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p'))
-                            if contributed.event.next_occurrence else ("Last: " ~
-                            (contributed.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if
-                            contributed.event.occurrences|length > 0 else "",
-                            href=url_for('events.event_details',
-                            event_id=contributed.event.id)
-                            ) }}
+
+                {# Events #}
+                {% if future_events or past_events %}
+                <div class="row align-items-center justify-items-between mb-4">
+                    <div class="row align-items-center mb-2">
+                        <div class="col-auto">
+                            <h4 class="mb-0"><i class="bi bi-calendar-week-fill pe-2 h4"></i>Events</h4>
                         </div>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="pb-4">
-                    <h4><i class="bi bi-people-fill pe-2"></i>Affiliated</h4>
-                    <div class="row-12 d-flex flex-no-wrap overflow-x-scroll ">
-                        {% if affiliations != None %}
-                        {% for affiliation in affiliations %}
-                        <div class="col-auto me-2">
-                            {{ grid_item(image_src=affiliation.get_profile_pic_url(),
-                            title=affiliation.display_name,
-                            subtitle="@" + affiliation.username,
-                            text=affiliations[affiliation][0].title if affiliations[affiliation]|length == 1 else
-                            (affiliations[affiliation]|length) ~ " events",
-                            href=url_for('people.person', username=affiliation.username)) }}
+                        <div class="col-auto ps-0">
+                            <div class="badge badge-sm text-bg-secondary rounded-pill small">{{future_events|length + past_events|length}}</div>
                         </div>
-                        {% endfor %}
-                        {% endif %}
                     </div>
+                    <div class="row align-items-center flex-nowrap pe-sm-0">
+                        <div class="col-1 col-lg-auto scroll-btn pe-0 z-3">
+                            <button class="btn btn-sm btn-primary rounded scroll-backward-btn" style="width: 40px; height: 250px;">
+                                <i class="bi bi-arrow-left-short bi-bold h5"></i>
+                            </button>
+                        </div>
+                        {% set max_events_to_show = 5 %}
+                        <div class="col-10 col-lg mx-1 px-0 ps-4 ps-lg-0">
+                            <div id="events-scroll-view"
+                                class="mx-2 scroll-view affiliation-list d-flex align-items-center flex-nowrap overflow-x-scroll">
+                                {% if future_events %}
+                                <div class="col-auto">
+                                    <div class="row align-items-center flex-nowrap mx-0">
+                                        <h6 class="px-0">Upcoming</h6>
+                                    </div>
+                                    <div class="row align-items-center flex-nowrap mx-0">
+                                        {% for contributed in future_events %}
+                                        {% if loop.index0 < max_events_to_show %} {# Why is the auto-formatter REFUSING to put this on a new line #}
+                                            <div class="col-auto me-2 px-0 {{ 'ps-0' if loop.index0 == 0 else ''}}" style="min-width: 250px;">
+                                            {{ grid_item(
+                                                            image_src=contributed.event.get_image_url(),
+                                                            title=contributed.event.title,
+                                                            subtitle=contributed.role,
+                                                            text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.occurrences|length > 0 else "",
+                                                            href=url_for('events.event_details',
+                                                                event_id=contributed.event.id)
+                                                        ) }}
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% if past_events and future_events|length < max_events_to_show %} {# why auto-formatter why are you like this please #}
+                                <div class="col-auto">
+                                <div class="row align-items-center flex-nowrap mx-0">
+                                    <h6 class="px-0">Past</h6>
+                                </div>
+                                <div class="row align-items-center flex-nowrap mx-0">
+                                    {% for contributed in past_events %}
+                                    {% if loop.index0 < (max_events_to_show - future_events|length) %} {# auto-formatter PLEASE make a new line #}
+                                        <div class="col-auto me-2 px-0 {{ 'ps-0' if loop.index0 == 0 else ''}}" style="min-width: 250px;">
+                                        {{ grid_item(
+                                                            image_src=ucontributed.event.get_image_url(),
+                                                            title=contributed.event.title,
+                                                            subtitle=contributed.role,
+                                                            text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.occurrences|length > 0 else "",
+                                                            href=url_for('events.event_details',
+                                                                event_id=contributed.event.id)
+                                                        ) }}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if future_events|length + past_events|length > max_events_to_show %}
+                    <div class="col-auto mx-4">
+                        <div class="view-all-contributions-button col-auto mx-3" data-bs-toggle="modal" data-bs-target="#view-all-contributions-modal"
+                            data-bs-user-id="{{ user.id }}" role="button">
+                            <div class="row align-items-center flex-nowrap">
+                                <div class="col-auto align-items-center p-0">
+                                    <div class="col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body"
+                                        style="width: 75px; height: 75px;">
+                                        <div class="rounded-circle mx-auto" style="height: 75px; width: 75px;">
+                                            <div class="rounded-circle mx-auto p-0 btn btn-primary" style="height: 75px; width: 75px;">
+                                                <div class="text-white d-flex align-items-center justify-content-center fs-4 h-100">
+                                                    +{{future_events|length + past_events|length -
+                                                    max_events_to_show}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h5 class="fw-medium mb-0 text-center">View all</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
-            </div> <!-- RIGHT BLOCK END -->
-        </div> <!-- BODY ROW END -->
-        {% if edit %}
-    </form>
-    {% endif %}
+            </div>
+            <div class="col-1 col-lg-auto scroll-btn px-0 z-3">
+                <button class="btn btn-sm btn-primary rounded scroll-forward-btn" style="width: 40px; height: 250px;">
+                    <i class="bi bi-arrow-right-short bi-bold h5"></i>
+                </button>
+            </div>
+        </div>
 </div>
+{% endif %}
+
+{# Related People/Affiliations #}
+{% if affiliations %}
+<div class="row align-items-center justify-items-between">
+    <div class="row align-items-center mb-2">
+        <div class="col-auto">
+            <h4 class="mb-0"><i class="bi bi-people-fill pe-2 h4"></i>Related People</h4>
+        </div>
+        <div class="col-auto ps-0">
+            <div class="badge badge-sm text-bg-secondary rounded-pill small">{{affiliations|length}}</div>
+        </div>
+    </div>
+    <div class="row align-items-center flex-nowrap pe-sm-0">
+        <div class="col-1 col-lg-auto scroll-btn pe-0 pb-4 z-3">
+            <button class="btn btn-sm btn-primary rounded scroll-backward-btn" style="width: 40px; height: 250px;">
+                <i class="bi bi-arrow-left-short bi-bold h5"></i>
+            </button>
+        </div>
+        {% set max_people_to_show = 5 %}
+        <div class="col-10 col-lg mx-1 px-0 ps-4 ps-lg-0">
+            <div class="scroll-view affiliation-list row align-items-center flex-nowrap overflow-x-scroll mx-2">
+                {% for affiliation in affiliations %}
+                {% if loop.index0 < max_people_to_show %} {# Why is the formatter just REFUSING to let this div be on a new line. PLEASE. #} <div
+                    class="col-auto me-2 px-0 {{ 'ps-0' if loop.index0 == 0 else ''}}" style="min-width: 250px;">
+                    {{ grid_item(image_src=affiliation.get_profile_pic_url(), title=affiliation.display_name, subtitle="@" + affiliation.username, text=affiliations[affiliation][0].title if affiliations[affiliation]|length==1 else (affiliations[affiliation]|length) ~ " mutual events", href=url_for('people.person', username=affiliation.username)) }}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% if affiliations|length > max_people_to_show %}
+            <div class="col-auto mx-4">
+                <div class="view-all-affiliations-button col-auto" data-bs-toggle="modal" data-bs-target="#view-all-affiliations-modal"
+                    data-bs-user-id="{{ user.id }}" role="button">
+                    <div class="row align-items-center flex-nowrap">
+                        <div class="col-auto align-items-center p-0">
+                            <div class="col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body"
+                                style="width: 75px; height: 75px;">
+                                <div class="rounded-circle mx-auto" style="height: 75px; width: 75px;">
+                                    <div class="rounded-circle mx-auto p-0 btn btn-primary" style="height: 75px; width: 75px;">
+                                        <div class="text-white d-flex align-items-center justify-content-center fs-4 h-100">
+                                            +{{affiliations|length -
+                                            max_people_to_show}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 class="fw-medium mb-0 text-center">View all</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-1 col-lg-auto scroll-btn px-0 pb-4 z-3">
+        <button class="btn btn-sm btn-primary rounded scroll-forward-btn" style="width: 40px; height: 250px;">
+            <i class="bi bi-arrow-right-short bi-bold h5"></i>
+        </button>
+    </div>
+</div>
+</div>
+{% endif %}
+<div class="modal fade" id="view-all-affiliations-modal" tabindex="-1" aria-labelledby="view-all-affiliations-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div hidden class="hidden" id="model-username"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="view-all-affiliations-modal-label"><i class="bi bi-people-fill pe-2 h4"></i>Related People</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-center">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="view-all-contributions-modal" tabindex="-1" aria-labelledby="view-all-contributions-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div hidden class="hidden" id="model-username"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="view-all-contributions-modal-label"><i class="bi bi-calendar-week-fill pe-2 h4"></i>Events</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row justify-content-center">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div> <!-- RIGHT BLOCK END -->
+{% if edit %}
+</form>
+{% endif %}
+</div> <!-- BODY ROW END -->
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const viewAllAffiliationsModal = document.getElementById('view-all-affiliations-modal')
+    if (viewAllAffiliationsModal) {
+        viewAllAffiliationsModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget
+
+            const loadedId = viewAllAffiliationsModal.querySelector('#model-username')
+            if (loadedId.textContent != "{{ person.username }}") {
+                loadedId.textContent = "{{ person.username }}"
+
+                const modalTitle = viewAllAffiliationsModal.querySelector('.modal-title')
+
+                const modalBodyInput = viewAllAffiliationsModal.querySelector('.modal-body .row')
+                fetch(`/people/${"{{ person.username }}"}/affiliations`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }).then(function (response) {
+                    if (response.ok) {
+                        response.text().then(function (content) {
+                            modalBodyInput.innerHTML = content;
+                        });
+                    } else {
+                        console.error("Error: " + response.status + " – Failed to load affiliations.");
+                    }
+                });
+            }
+        })
+    }
+</script>
+<script>
+    const viewAllContributionsModal = document.getElementById('view-all-contributions-modal')
+    if (viewAllContributionsModal) {
+        viewAllContributionsModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget
+
+            const loadedId = viewAllContributionsModal.querySelector('#model-username')
+            if (loadedId.textContent != "{{ person.username }}") {
+                loadedId.textContent = "{{ person.username }}"
+
+                const modalTitle = viewAllContributionsModal.querySelector('.modal-title')
+
+                const modalBodyInput = viewAllContributionsModal.querySelector('.modal-body .row')
+                fetch(`/people/${"{{ person.username }}"}/contributions`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }).then(function (response) {
+                    if (response.ok) {
+                        response.text().then(function (content) {
+                            modalBodyInput.innerHTML = content;
+                        });
+                    } else {
+                        console.error("Error: " + response.status + " – Failed to load contributions.");
+                    }
+                });
+            }
+        })
+    }
+</script>
+<script>
+    function setoverflown() {
+        for (let element of document.getElementsByClassName("scroll-view")) {
+            if (element.scrollWidth > element.clientWidth) {
+                for (let button of element.parentElement.parentElement.getElementsByClassName("scroll-btn")) {
+                    element.classList.add("overflow-x-scroll");
+                    if (element.id == "events-scroll-view") {
+                    }
+                    button.hidden = false;
+                    button.firstElementChild.addEventListener("click", function () {
+                        if (button.firstElementChild.classList.contains("scroll-forward-btn"))
+                            element.scrollLeft += element.clientWidth;
+                        else if (button.firstElementChild.classList.contains("scroll-backward-btn"))
+                            element.scrollLeft -= element.clientWidth;
+                    });
+                }
+            } else {
+                for (let button of element.parentElement.parentElement.getElementsByClassName("scroll-btn")) {
+                    element.classList.remove("overflow-x-scroll");
+                    if (element.id == "events-scroll-view") {
+                    }
+                    button.hidden = true;
+                }
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        setoverflown();
+    });
+
+    $(window).resize(function () {
+        setoverflown();
+    });
+</script>
 {% endblock %}

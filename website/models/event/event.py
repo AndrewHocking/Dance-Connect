@@ -1,5 +1,4 @@
-from datetime import datetime
-
+from datetime import date, datetime
 from flask import url_for
 from ... import db
 from sqlalchemy import Boolean, Integer, ForeignKey
@@ -49,6 +48,29 @@ class Event(db.Model):
         for occurrence in chronological_list:
             if occurrence.start_time > datetime.now():
                 return occurrence
+        return None
+
+    def get_next_occurrence_after(self, date: date|datetime) -> Optional[EventOccurrence]:
+        if date is None:
+            date = datetime.now()
+        if isinstance(date, datetime):
+            date = date.date()
+        print("date: ", date, "type: ", type(date))
+        chronological_list = self.occurrences
+        chronological_list.sort(
+            key=lambda occurrence: occurrence.start_time.date())
+        for occurrence in chronological_list:
+            if occurrence.start_time.date() >= date:
+                return occurrence
+        return None
+
+    @hybrid_property
+    def final_occurrence(self) -> Optional[EventOccurrence]:
+        chronological_list = self.occurrences
+        chronological_list.sort(
+            key=lambda occurrence: occurrence.start_time)
+        if chronological_list:
+            return chronological_list[-1]
         return None
 
     def get_image_url(self):

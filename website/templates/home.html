@@ -86,7 +86,8 @@
                 <div hidden class="hidden" id="model-event-id"></div>
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="view-all-contributors-modal-label">Contributors</h4>
+                        <h4 class="modal-title"><i class="bi bi-people-fill me-2"></i><span id="view-all-contributors-modal-label">Contributors</span>
+                        </h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -119,7 +120,7 @@
             if (loadedId.textContent != id) {
                 loadedId.textContent = id
 
-                const modalTitle = viewAllContributorsModal.querySelector('.modal-title')
+                const modalTitle = viewAllContributorsModal.querySelector('#view-all-contributors-modal-label')
                 modalTitle.textContent = `Contributors for ${eventTitle}`
 
                 const modalBodyInput = viewAllContributorsModal.querySelector('.modal-body .row')
@@ -143,20 +144,20 @@
 </script>
 <script>
     function setoverflown() {
-        for (let element of document.getElementsByClassName("home-card-contributor-list")) {
+        for (let element of document.getElementsByClassName("scroll-view")) {
             if (element.scrollWidth > element.clientWidth) {
-                for (let button of element.parentElement.parentElement.getElementsByClassName("contributors-scroll-btn")) {
+                for (let button of element.parentElement.parentElement.getElementsByClassName("scroll-btn")) {
                     element.classList.add("overflow-x-scroll");
                     button.hidden = false;
                     button.firstElementChild.addEventListener("click", function () {
-                        if (button.firstElementChild.classList.contains("contributors-scroll-forward-btn"))
+                        if (button.firstElementChild.classList.contains("scroll-forward-btn"))
                             element.scrollLeft += element.clientWidth;
-                        else if (button.firstElementChild.classList.contains("contributors-scroll-backward-btn"))
+                        else if (button.firstElementChild.classList.contains("scroll-backward-btn"))
                             element.scrollLeft -= element.clientWidth;
                     });
                 }
             } else {
-                for (let button of element.parentElement.parentElement.getElementsByClassName("contributors-scroll-btn")) {
+                for (let button of element.parentElement.parentElement.getElementsByClassName("scroll-btn")) {
                     element.classList.remove("overflow-x-scroll");
                     button.hidden = true;
                 }
