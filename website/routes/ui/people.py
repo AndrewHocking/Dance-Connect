@@ -17,9 +17,9 @@ from flask import flash
 
 from werkzeug.utils import secure_filename
 
-from ...cloud.cdn import CDN, ALLOWED_EXTENSIONS
+from ...cloud.cdn import CDN, ALLOWED_EXTENSIONS, MAX_FILE_SIZE
 
-MAX_FILE_SIZE = 1024 * 1024 * 10  # 10MB
+# MAX_FILE_SIZE = 1024 * 1024 * 10  # 10MB
 
 
 people = Blueprint("people", __name__)
@@ -256,27 +256,28 @@ def edit_person(username):
         file = request.files['profilePicture']
         # handle file upload
         if file.filename != "" and 'profilePicture' in request.files:
-            temp_error_flag = False
+            # temp_error_flag = False
             # app.config['UPLOAD_FOLDER'] = '/cloud/temp/'
 
             # according to co-pilot, this is a secure way to handle file uploads
             # this uses the werkzeug.utils library
-            filename = secure_filename(file.filename)
+            # filename = secure_filename(file.filename)
 
-            # Check if file was uploaded and that the type and size is correct
-            if not file:
-                flash("No file uploaded", "error")
-                temp_error_flag = True
+            # # Check if file was uploaded and that the type and size is correct
+            # if not file:
+            #     flash("No file uploaded", "error")
+            #     temp_error_flag = True
 
-            if not allowed_file(file.filename):
-                flash("File type not allowed", "error")
-                temp_error_flag = True
+            # if not allowed_file(file.filename):
+            #     flash("File type not allowed", "error")
+            #     temp_error_flag = True
 
-            if file.content_length > MAX_FILE_SIZE:
-                flash("File size too large", "error")
-                temp_error_flag = True
+            # if file.content_length > MAX_FILE_SIZE:
+            #     flash("File size too large", "error")
+            #     temp_error_flag = True
 
-            if temp_error_flag:
+            cdn = CDN()
+            if not cdn.check_image(file):
                 return render_template(
                     "edit_person.html",
                     user=current_user,
@@ -289,13 +290,27 @@ def edit_person(username):
                     socials=socialMediaDic,
                 )
             else:
+                filename = secure_filename(file.filename)
+
+                # print("\n\n")
+                # print(os.path.join(
+                #     os.path.join(os.path.split(
+                #         os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+                # print("\n\n")
+
                 # save file to temp folder
                 file.save(os.path.join(
-                    current_app.config['UPLOAD_FOLDER'], filename))
+                    os.path.join(os.path.split(
+                        os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+                # file.save(os.path.join(
+                #     current_app.config['UPLOAD_FOLDER'], filename))
                 # upload file to cloudflare
-                cdn = CDN()
                 output = cdn.upload(os.path.join(
-                    current_app.config['UPLOAD_FOLDER'], filename))
+                    os.path.join(os.path.split(
+                        os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+
+                # output = cdn.upload(os.path.join(
+                #     current_app.config['UPLOAD_FOLDER'], filename))
 
                 if len(output["errors"]) > 0:
                     flash("Error uploading file to cloudflare", "error")

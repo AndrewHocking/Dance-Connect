@@ -3,35 +3,41 @@
 {% set title = "photosensitivity-friendly" %}
 {% if danger %}
 {% set icon_name = "lightbulb-off-fill" %}
-{% set popover_content = "This event may contain lighting effects that are not safe for individuals who experience photosensitivity." %}
+{% set popover_content = "This event may contain lighting effects that are not safe for individuals who experience
+photosensitivity." %}
 {% else %}
 {% set icon_name = "lightbulb-fill" %}
-{% set popover_content = "Any lighting effects used during photosensitivity-friendly events should be safe for individuals who experience
+{% set popover_content = "Any lighting effects used during photosensitivity-friendly events should be safe for
+individuals who experience
 photosensitivity." %}
 {% endif %}
 {% elif icon == "hearing" %}
 {% set icon_name = "ear-fill" %}
 {% set title = "hearing accessible" %}
-{% set popover_content = "Events that are hearing accessible are, or have been modified to be, accessible for individuals who are deaf or hard of
+{% set popover_content = "Events that are hearing accessible are, or have been modified to be, accessible for
+individuals who are deaf or hard of
 hearing." %}
 {% elif icon == "vision" %}
 {% set icon_name = "eye-fill" %}
 {% set title = "visually accessible" %}
-{% set popover_content = "Events that are visually accessible are, or have been modified to be, accessible for individuals who are blind or have low
+{% set popover_content = "Events that are visually accessible are, or have been modified to be, accessible for
+individuals who are blind or have low
 vision." %}
 {% elif icon == "relaxed performance" %}
 {% set icon_name = "infinity" %}
 {% set title = "relaxed performance" %}
-{% set popover_content = "<p>Relaxed performances are adapted shows for those who find standard theater settings challenging. This can include changes
+{% set popover_content = "<p>Relaxed performances are adapted shows for those who find standard theater settings
+    challenging. This can include changes
     to
     lighting and audio volume, as well as relaxing theatre &quot;rules&quot;.</p><a
-    href='https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed' title='What is a relaxed performance?'
-    target='_blank' rel='noopener noreferrer'>Click here to learn more.</a>" %}
+    href='https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed'
+    title='What is a relaxed performance?' target='_blank' rel='noopener noreferrer'>Click here to learn more.</a>" %}
 {% elif icon == "mobility aid" %}
 {% set icon_name = "person-wheelchair" %}
 {% set title = "mobility aid accessible venue" %}
 {% if danger %}
-{% set popover_content = "This venue is <strong>not</strong> fully accessible for individuals who use mobility aids, such as wheelchairs." %}
+{% set popover_content = "This venue is <strong>not</strong> fully accessible for individuals who use mobility aids,
+such as wheelchairs." %}
 {% else %}
 {% set popover_content = "This venue is fully accessible for individuals who use mobility aids, such as wheelchairs." %}
 {% endif %}
@@ -43,8 +49,9 @@ vision." %}
 {% endif %}
 <li class="list-inline-item position-relative text-bg-{{ 'danger' if danger else 'primary' }} rounded-circle p-0 m-0 accessibility-icon {{extra_classes}}"
     title="{{ 'Not ' if danger }}{{ title|title }} - Click for more information">
-    <a data-bs-content="{{ popover_content }}" tabindex="0" title="What does this mean?" role="button" data-bs-toggle="popover"
-        data-bs-trigger="focus" data-bs-title="{{ 'Not ' if danger }}{{ title|title }}" data-bs-html="true">
+    <a data-bs-content="{{ popover_content }}" tabindex="0" title="What does this mean?" role="button"
+        data-bs-toggle="popover" data-bs-trigger="focus" data-bs-title="{{ 'Not ' if danger }}{{ title|title }}"
+        data-bs-html="true">
         <i class="bi bi-{{ icon_name }} position-absolute top-50 start-50 translate-middle p-2"></i>
     </a>
 </li>
@@ -68,7 +75,8 @@ vision." %}
                 {{ occurrence.end_time() }}
             </div>
         </div>
-        <div class="form-text text-start text-lg-center text-xl-start">Leave "End time" blank to not specify an end time for this occurrence.</div>
+        <div class="form-text text-start text-lg-center text-xl-start">Leave "End time" blank to not specify an end time
+            for this occurrence.</div>
         <div id="accessibility-info" class="form-group mt-3">
             <div class="form-check">
                 {{ occurrence.is_relaxed_performance() }}
@@ -93,7 +101,8 @@ vision." %}
         </div>
     </div>
     <div class="col-xl-auto col d-flex justify-content-center justify-content-xl-end form-group mt-xl-0 mt-2">
-        <button id="occurrence-occurrence_number-delete-btn" class="btn btn-danger delete-btn" type="button" value="occurrence_number">
+        <button id="occurrence-occurrence_number-delete-btn" class="btn btn-danger delete-btn" type="button"
+            value="occurrence_number">
             <i class="bi bi-trash3-fill"></i>
             Delete
         </button>
@@ -111,8 +120,9 @@ vision." %}
 <a href="{{ url_for('people.person', username=contributor.user.username) }}"
     class="contributor-item col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body user-circle">
     <div class="rounded-circle mx-auto overflow-hidden position-relative">
-        <img src="{{url_for('static', filename='images/placeholder.jpg')}}"
-            class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle" alt="{{contributor.user.display_name}}" />
+        <img src="{{contributor.user.get_profile_pic_url()}}"
+            class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle"
+            alt="{{contributor.user.display_name}}" />
     </div>
     <div class="text-center text-truncate w-100 fw-medium">{{contributor.user.display_name}}</div>
     <div class="text-center text-truncate w-100 fw-light text-body-tertiary">{{contributor.role}}</div>
@@ -167,24 +177,25 @@ vision." %}
         <div class="d-flex flex-row form-text align-items-center">
             <small>
                 <div class="rounded {{bg}} px-2 me-2" style="padding-block:2px">
-                    <p class="mb-0 align-middle fw-medium">{{strength}}</p></small>
-                </div>
+                    <p class="mb-0 align-middle fw-medium">{{strength}}</p>
             </small>
-            {% if errs|length > 0 %}
-                <div class="text-danger">Requirements</div>
-            {% endif %}
         </div>
+        </small>
+        {% if errs|length > 0 %}
+        <div class="text-danger">Requirements</div>
+        {% endif %}
     </div>
+</div>
 
-    {% if errs|length > 0 %}
-    <div class="col-12">
-        <ul class="form-text m-0">
-            {% for err in errs %}
-            <li class="text-danger text-wrap">{{err.value}}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+{% if errs|length > 0 %}
+<div class="col-12">
+    <ul class="form-text m-0">
+        {% for err in errs %}
+        <li class="text-danger text-wrap">{{err.value}}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
 </div>
 {% endmacro %}
 

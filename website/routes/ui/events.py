@@ -1,9 +1,12 @@
 from collections import namedtuple
 from datetime import datetime
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+import os
+from flask import Blueprint, current_app, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 
 from ...models.user import User
+from website.cloud.cdn import CDN
+
 from ...models.event.event import Event
 from ...models.event.event_contributor import EventContributor
 from ...models.notification.notification import EventRequestNotification
@@ -14,6 +17,8 @@ from ...orm.notification.notifications import get_event_request_notification, ad
 from ...orm.report.report import add_event_report, remove_event_report, did_user_report_event
 from ...forms.events import CreateEventForm, CreateEventOccurrenceForm
 from ...forms.event_filter import EventFilterForm
+
+from werkzeug.utils import secure_filename
 
 events = Blueprint('events', __name__)
 
@@ -213,6 +218,43 @@ def create_event_submit():
         for tag in tags.split(","):
             tag_list.append(tag.strip())
 
+    file = request.files['eventPicture']
+    # handle file upload
+    if file.filename != "" and 'eventPicture' in request.files:
+        cdn = CDN()
+        cdn.check_image(file)
+        filename = secure_filename(file.filename)
+        # # save file to temp folder
+        # file.save(os.path.join(
+        #     current_app.config['UPLOAD_FOLDER'], filename))
+        # # upload file to cloudflare
+        # output = cdn.upload(os.path.join(
+        #     current_app.config['UPLOAD_FOLDER'], filename))
+        # save file to temp folder
+        file.save(os.path.join(
+            os.path.join(os.path.split(
+                os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+        # file.save(os.path.join(
+        #     current_app.config['UPLOAD_FOLDER'], filename))
+        # upload file to cloudflare
+        output = cdn.upload(os.path.join(
+            os.path.join(os.path.split(
+                os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+
+        if len(output["errors"]) > 0:
+            flash("Error uploading file to cloudflare", "error")
+
+        # if user has profile picture in cloud then delete it!
+        # assume that there are no pictures in the cloud
+        # if event.image_picture_url != "":
+        #     delete_output = cdn.delete(event.image_picture_id)
+        # TODO CHECK IF DELETE WORKED!!!
+
+        # TODO allow for selection of which variant to use instead of always the first one
+
+        # purge temp folder
+        cdn.empty_temp_folder()
+
     response = create_event(
         title=title,
         description=description,
@@ -225,7 +267,9 @@ def create_event_submit():
         accessibility_notes=accessibility_notes,
         min_ticket_price=min_ticket_price,
         max_ticket_price=max_ticket_price,
-        occurrences=occurrences
+        occurrences=occurrences,
+        image_picture_url=output["result"]["variants"][0],
+        image_picture_id=output["result"]["id"]
     )
 
     if (response["status_code"] == 201):
@@ -362,6 +406,46 @@ def event_edit(event_id: int):
             for tag in tags.split(","):
                 tag_list.append(tag.strip())
 
+        file = request.files['eventPicture']
+        # handle file upload
+        if file.filename != "" and 'eventPicture' in request.files:
+            cdn = CDN()
+            cdn.check_image(file)
+            filename = secure_filename(file.filename)
+            # # save file to temp folder
+            # file.save(os.path.join(
+            #     current_app.config['UPLOAD_FOLDER'], filename))
+            # # upload file to cloudflare
+            # output = cdn.upload(os.path.join(
+            #     current_app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(
+                os.path.join(os.path.split(
+                    os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+            # file.save(os.path.join(
+            #     current_app.config['UPLOAD_FOLDER'], filename))
+            # upload file to cloudflare
+            output = cdn.upload(os.path.join(
+                os.path.join(os.path.split(
+                    os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+
+            if len(output["errors"]) > 0:
+                flash("Error uploading file to cloudflare", "error")
+
+            # if user has profile picture in cloud then delete it!
+            if event.image_picture_url != "":
+                delete_output = cdn.delete(event.image_picture_id)
+            # TODO CHECK IF DELETE WORKED!!!
+
+            # TODO allow for selection of which variant to use instead of always the first one
+            update_event(
+                event=event,
+                image_picture_url=output["result"]["variants"][0],
+                image_picture_id=output["result"]["id"]
+            )
+
+            # purge temp folder
+            cdn.empty_temp_folder()
+
         response = update_event(
             event=event,
             title=title,
@@ -385,6 +469,7 @@ def event_edit(event_id: int):
         else:
             flash(response["message"], category=response["response_type"])
             session['form_data'] = request.form
+
     else:
         title = event.title
         description = event.description
