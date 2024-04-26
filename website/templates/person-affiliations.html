@@ -1,0 +1,8 @@
+<div class="row justify-content-center gx-1">
+    {% from "macros.html" import grid_item %}
+    {% for affiliation in affiliations %}
+    <div class="col-auto">
+        {{ grid_item(image_src=affiliation.get_profile_pic_url(), title=affiliation.display_name, subtitle="@" + affiliation.username, text=affiliations[affiliation][0].title if affiliations[affiliation]|length==1 else (affiliations[affiliation]|length) ~ " mutual events", href=url_for('people.person', username=affiliation.username)) }}
+    </div>
+    {% endfor %}
+</div>

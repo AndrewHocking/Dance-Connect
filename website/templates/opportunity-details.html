@@ -7,23 +7,23 @@
     <div class="row">
         <div class="d-flex flex-wrap mb-2 col-12">
             <h6 class="px-3 py-1 me-4 d-inline rounded text-bg-{{post_type[opportunity.type.name]}}">
-                {{opportunity.type.value.upper()}}</h6>
+                {{opportunity.type.value.upper()}}
+            </h6>
             <h5 class="m-0 mt-1 d-inline-block text-wrap fw-medium">
-                <i class="bi bi-hourglass-split me-1"></i>{{"Deadline: "}}<span class="fw-normal">{{
-                    opportunity.closing_date.strftime("%b %e, %Y") }}</span>
+                <i class="bi bi-hourglass-split me-1"></i>{{"Deadline: "}}<span
+                    class="fw-normal">{{ opportunity.closing_date.strftime("%b %e, %Y") }}</span>
             </h5>
+
 
             {% if edit %}
             <div class="ms-md-auto mt-3 mt-md-0">
                 <a href="{{ url_for('opportunities.edit_opportunity', organizer=opportunity.organizer, title=opportunity.title) }}"
                     class="btn btn-secondary">Edit Post</a>
-                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
-                    data-bs-target="#confirm-delete-modal">
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirm-delete-modal">
                     Delete Post
                 </button>
             </div>
-            <div class="modal fade" id="confirm-delete-modal" tabindex="-1" aria-labelledby="confirm-delete-modal-label"
-                aria-hidden="true">
+            <div class="modal fade" id="confirm-delete-modal" tabindex="-1" aria-labelledby="confirm-delete-modal-label" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -36,8 +36,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <form
-                                action="{{ url_for('opportunities.delete_opportunity', organizer=opportunity.organizer, title=opportunity.title) }}"
+                            <form action="{{ url_for('opportunities.delete_opportunity', organizer=opportunity.organizer, title=opportunity.title) }}"
                                 method="post">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
@@ -60,8 +59,7 @@
                 </div>
                 {% for tag in opportunity.tags %}
                 <form class="col-auto mb-1" action="{{ url_for('opportunities.opportunities_list') }}" method="POST">
-                    <button name="tags" value="{{ tag.name }}"
-                        class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name
+                    <button name="tags" value="{{ tag.name }}" class="me-1 mb-1 px-2 py-0 bg-opacity-25 rounded text-nowrap tag btn btn-sm">{{ tag.name
                         }}</button>
                 </form>
                 {% endfor %}
@@ -78,20 +76,20 @@
 
 
 
+
         <div class="col-12 col-lg-6">
             <div id="poster-data" class="row flex-lg-row-reverse my-4 align-items-center">
-                <a href="{{ url_for('people.person', username=opportunity.poster.username) }}"
-                    class="col-auto mx-0 mx-md-4 rounded-circle">
-                    <img src="{{ opportunity.poster.get_profile_pic_url() }}" class="img-fluid rounded-circle"
-                        width="100px" alt="{{opportunity.poster.display_name}}" />
-                </a>
-                <div class="col-auto">
-                    <p class="h3 mb-2 fw-bold">{{opportunity.poster.display_name}}</p>
-                    <p class="m-0 fw-medium">{{"Posted: "}}<span class="fw-normal">{{
+                    <a href="{{ url_for('people.person', username=opportunity.poster.username) }}" class="col-auto mx-0 mx-md-4 rounded-circle">
+                        <img src="{{ opportunity.poster.get_profile_pic_url() }}" class="img-fluid rounded-circle" width="100px"
+                            alt="{{opportunity.poster.display_name}}" />
+                    </a>
+                    <div class="col-auto">
+                        <p class="h3 mb-2 fw-bold">{{opportunity.poster.display_name}}</p>
+                        <p class="m-0 fw-medium">{{"Posted: "}}<span class="fw-normal">{{
                             opportunity.date_posted.strftime("%b %e, %Y") }}</span></p>
-                    <p class="m-0 fw-medium">{{"Modified: "}}<span class="fw-normal">{{
+                        <p class="m-0 fw-medium">{{"Modified: "}}<span class="fw-normal">{{
                             opportunity.last_modified.strftime("%b %e, %Y") }}</span></p>
-                </div>
+                    </div>
             </div>
         </div>
 
@@ -126,8 +124,7 @@
                         <div class="mt-2"><span class="fw-medium">Starts: </span>{{opportunity.start_date.strftime("%b
                             %e, %Y")}}</div>
                         {% if opportunity.end_date %}
-                        <div class="mt-1"><span class="fw-medium">Closes: </span>{{opportunity.end_date.strftime("%b %e,
-                            %Y")}}</div>
+                        <div class="mt-1"><span class="fw-medium">Closes: </span>{{opportunity.end_date.strftime("%b %e, %Y")}}</div>
                         {% endif %}
                     </div>
                 </div>
@@ -152,8 +149,7 @@
                         <div class="h4 mb-0 pt-2 pb-3 ps-3 pe-5">Contents</div>
                         <a class="list-group-item list-group-item-action pe-5" href="#description">Description</a>
                         {% if opportunity.responsibilities %}
-                        <a class="list-group-item list-group-item-action pe-5"
-                            href="#responsibilities">Responsibilities</a>
+                        <a class="list-group-item list-group-item-action pe-5" href="#responsibilities">Responsibilities</a>
                         {% endif %}
                         <a class="list-group-item list-group-item-action pe-5" href="#requirements">Requirements</a>
                         <a class="list-group-item list-group-item-action pe-5" href="#compensation">Compensation</a>
@@ -165,12 +161,13 @@
                     </div>
                 </div>
                 <div class="col-12 col-md">
-                    <div data-bs-spy="scroll" data-bs-target="#content-table" data-bs-smooth-scroll="true"
-                        class="opportunity-post-content pe-1" tabindex="0">
+                    <div data-bs-spy="scroll" data-bs-target="#content-table" data-bs-smooth-scroll="true" class="opportunity-post-content pe-1"
+                        tabindex="0">
                         <div class="mb-3">
                             <h4 id="description">Description</h4>
                             <p>{{opportunity.description|safe}}</p>
                         </div>
+                        <hr />
                         <hr />
                         {% if opportunity.responsibilities %}
                         <div class="mb-3">
@@ -178,16 +175,19 @@
                             <p>{{opportunity.responsibilities|safe}}</p>
                         </div>
                         <hr />
+                        <hr />
                         {% endif %}
                         <div class="mb-3">
                             <h4 id="requirements">Requirements</h4>
                             <p>{{opportunity.requirements|safe}}</p>
                         </div>
                         <hr />
+                        <hr />
                         <div class="mb-3">
                             <h4 id="compensation">Compensation / Benefits</h4>
                             <p>{{opportunity.compensation|safe}}</p>
                         </div>
+                        <hr />
                         <hr />
                         {% if opportunity.additional_info %}
                         <div class="mb-3">
@@ -195,11 +195,13 @@
                             <p>{{opportunity.additional_info|safe}}</p>
                         </div>
                         <hr />
+                        <hr />
                         {% endif %}
                         <div class="mb-3">
                             <h4 id="application">Application Details</h4>
                             <p>{{opportunity.application_details|safe}}</p>
                         </div>
+                        <hr />
                         <hr />
                         {% if opportunity.application_link %}
                         <div class="mb-3">
@@ -210,6 +212,7 @@
                     </div>
                 </div>
             </div> <!-- CONTENT ROW END -->
+
 
         </div>
     </div>

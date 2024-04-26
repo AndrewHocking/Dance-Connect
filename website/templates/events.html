@@ -14,8 +14,8 @@
         {{ filters.venue_is_mobility_aid_accessible() }}
         {{ filters.venue_is_mobility_aid_accessible.label(class_="form-check-label") }}
         <a data-bs-content="Events with venues that are listed as being fully accessible for individuals who use mobility aids, such as wheelchairs."
-            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
-            data-bs-trigger="focus" data-bs-title="Mobility Aid Accessible Venue">
+            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Mobility Aid Accessible Venue">
             <i class="bi bi-question-circle"></i>
         </a>
     </div>
@@ -23,9 +23,9 @@
         {{ filters.is_relaxed_performance() }}
         {{ filters.is_relaxed_performance.label(class_="form-check-label") }}
         <a data-bs-content="<p>Relaxed performances are adapted shows for those who find standard theater settings challenging. This can include changes to lighting and audio volume, as well as relaxing theatre &quot;rules&quot;.</p><a href='https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed'
-                    title='What is a relaxed performance?' target='_blank' rel='noopener noreferrer'>Click here to learn more.</a>"
-            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
-            data-bs-trigger="focus" data-bs-title="Relaxed Performance" data-bs-html="true">
+                    title='What is a relaxed performance?' target='_blank' rel='noopener noreferrer'>Click here to learn more.</a>" tabindex="0"
+            title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Relaxed Performance" data-bs-html="true">
             <i class="bi bi-question-circle"></i>
         </a>
     </div>
@@ -33,8 +33,8 @@
         {{ filters.is_photosensitivity_friendly() }}
         {{ filters.is_photosensitivity_friendly.label(class_="form-check-label") }}
         <a data-bs-content="Any lighting effects used during photosensitivity-friendly events should be safe for individuals who experience photosensitivity."
-            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
-            data-bs-trigger="focus" data-bs-title="Photosensitivity-Friendly">
+            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Photosensitivity-Friendly">
             <i class="bi bi-question-circle"></i>
         </a>
     </div>
@@ -42,8 +42,8 @@
         {{ filters.is_hearing_accessible() }}
         {{ filters.is_hearing_accessible.label(class_="form-check-label") }}
         <a data-bs-content="Events that are hearing accessible are, or have been modified to be, accessible for individuals who are deaf or hard of hearing."
-            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
-            data-bs-trigger="focus" data-bs-title="Hearing Accessible">
+            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Hearing Accessible">
             <i class="bi bi-question-circle"></i>
         </a>
     </div>
@@ -51,8 +51,8 @@
         {{ filters.is_visually_accessible() }}
         {{ filters.is_visually_accessible.label(class_="form-check-label") }}
         <a data-bs-content="Events that are visually accessible are, or have been modified to be, accessible for individuals who are blind or have low vision."
-            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover"
-            data-bs-trigger="focus" data-bs-title="Visually Accessible">
+            tabindex="0" title="What does this mean?" class="text-link" role="button" data-bs-toggle="popover" data-bs-trigger="focus"
+            data-bs-title="Visually Accessible">
             <i class="bi bi-question-circle"></i>
         </a>
     </div>
@@ -118,11 +118,9 @@
     {{ grid_item(
     image_src=event.get_image_url(),
     title=event.title,
-    subtitle=(event.next_occurrence.start_time.strftime("%b %e, %-I:%M %p") if event.next_occurrence else ""),
-    text=("+"+((occurrence_count-1)|string)+" more time" if occurrence_count != 1 else "") + ("s" if occurrence_count >
-    2 else ""),
-    href=url_for('events.event_details',
-    event_id=event.id)
+    subtitle=(event.get_next_occurrence_after(date=filters.start_date.data).start_time.strftime("%b %e, %-I:%M %p") if event.get_next_occurrence_after(date=filters.start_date.data) else ""),
+    text=("+"+((occurrence_count-1)|string)+" more time" if occurrence_count != 1 else "") + ("s" if occurrence_count > 2 else ""),
+    href=url_for('events.event_details', event_id=event.id)
     ) }}
 </div>
 {% endfor %}

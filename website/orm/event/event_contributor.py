@@ -1,5 +1,6 @@
-from sqlalchemy import and_, distinct, func
-from ...models.event import Event, EventContributor
+from datetime import datetime
+
+from ...models.event import Event, EventContributor, EventOccurrence
 from ..user.user import User
 from ... import db, json_response
 
@@ -70,11 +71,12 @@ def get_event_contributors(event_id: int):
     return json_response(200, f"{len(contributors)} event contributors found.", contributors)
 
 
-def get_affilliations(user_id: int):
+def get_affiliations(user_id: int):
     query = (
         db.session.query(User, Event)
         .join(User.events_contributed)
         .filter(Event.contributors.any(id=user_id))
+        .filter(User.id != user_id)
         .order_by(User.id)
     )
 
@@ -87,3 +89,44 @@ def get_affilliations(user_id: int):
     if not affiliations or len(affiliations) == 0:
         return json_response(404, "No affiliations found.", None)
     return json_response(200, f"{len(affiliations)} affiliations found.", affiliations)
+
+
+def get_future_contributions(user_id: int):
+    query = (
+        db.session.query(EventContributor)
+        .join(EventOccurrence, EventContributor.event_id == EventOccurrence.event_id)
+        .filter(EventContributor.user_id == user_id)
+        .filter(EventOccurrence.start_time > datetime.now())
+        .order_by(EventOccurrence.start_time.asc())
+    )
+
+    future_contributions = query.all()
+
+    if not future_contributions:
+        return json_response(404, "No future contributions found.", None)
+    return json_response(200, f"{len(future_contributions)} future contributions found.", future_contributions)
+
+
+def get_past_contributions(user_id: int):
+    future_occurrences_subquery = (
+        db.session.query(EventContributor.id)
+        .join(EventOccurrence, EventContributor.event_id == EventOccurrence.event_id)
+        .filter(EventContributor.user_id == user_id)
+        .filter(EventOccurrence.start_time > datetime.now())
+        .subquery()
+    )
+
+    query = (
+        db.session.query(EventContributor)
+        .filter(EventContributor.user_id == user_id)
+        # Exclude contributors with future occurrences
+        .filter(~EventContributor.id.in_(future_occurrences_subquery))
+        .join(EventOccurrence, EventContributor.event_id == EventOccurrence.event_id)
+        .order_by(EventOccurrence.start_time.asc())
+    )
+
+    past_contributions = query.all()
+
+    if not past_contributions or len(past_contributions) == 0:
+        return json_response(404, "No past contributions found.", None)
+    return json_response(200, f"{len(past_contributions)} past contributions found.", past_contributions)
