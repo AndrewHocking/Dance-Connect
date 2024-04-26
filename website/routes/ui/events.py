@@ -3,12 +3,15 @@ from datetime import datetime
 from flask import Blueprint, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
 
+from ...models.user import User
 from ...models.event.event import Event
 from ...models.event.event_contributor import EventContributor
 from ...models.notification.notification import EventRequestNotification
+from ...orm.user.user import read_single_user
 from ...orm.event.event import delete_event, get_event, create_event, search_events, update_event
 from ...orm.event.event_contributor import connect_user_to_event, get_event_contributors, remove_user_from_event
 from ...orm.notification.notifications import get_event_request_notification, add_event_request_notification, delete_notification
+from ...orm.report.report import add_event_report, remove_event_report, did_user_report_event
 from ...forms.events import CreateEventForm, CreateEventOccurrenceForm
 from ...forms.event_filter import EventFilterForm
 
@@ -249,8 +252,13 @@ def event_details(event_id: int):
             occurrences[date] = []
         occurrences[date].append(occurrence)
 
+    reported = None
+    if current_user.is_authenticated:
+        reported = did_user_report_event(
+            reporter_id=current_user.id, reported_event_id=event_id).get("data")
+
     return render_template("event-details.html", user=current_user, event=event, occurrences=occurrences,
-                           contributors=contributors, event_request_notification=event_request_notification)
+                           contributors=contributors, event_request_notification=event_request_notification, reported=reported)
 
 
 @events.route('/<int:event_id>/join/', methods=['POST'])
@@ -384,7 +392,8 @@ def event_edit(event_id: int):
         tag_list = ", ".join([tag.name for tag in event.tags])
         venue_name = event.venue_name
         venue_address = event.venue_address
-        venue_is_mobility_aid_accessible = f"{event.venue_is_mobility_aid_accessible}"
+        venue_is_mobility_aid_accessible = f"{
+            event.venue_is_mobility_aid_accessible}"
         accessibility_notes = event.accessibility_notes
         min_ticket_price = event.min_ticket_price
         max_ticket_price = event.max_ticket_price
@@ -438,3 +447,42 @@ def event_home_card(index: int):
     else:
         event, occurrence_count = results.get("data")[0]
     return render_template("event-home-card.html", user=current_user, event=event, occurrence_count=occurrence_count)
+
+
+@events.route('/report/<reporter>/<reported>', methods=['POST'])
+@login_required
+def submit_event_report(reporter: str, reported: int):
+    reporter_user: User = read_single_user(reporter)["data"]
+    reported_event: Event = get_event(reported).get("data")
+
+    if reporter_user.id != current_user.id:
+        flash('Unauthorized to report event', category='error')
+        return redirect(url_for('events.event_details', event_id=reported_event.id))
+
+    reason = request.form.get("reason")
+    details = request.form.get("details")
+
+    resp = add_event_report(reason=reason, details=details,
+                            reporter_id=reporter_user.id, reported_event_id=reported_event.id)
+
+    if resp['status_code'] != 201:
+        flash('Unable to report event.', category='error')
+    else:
+        flash('Event report successfully submitted', category='success')
+
+    return redirect(url_for('events.event_details', event_id=reported_event.id))
+
+
+@events.route('/report_cancel/<reporter>/<reported>', methods=['POST'])
+@login_required
+def cancel_event_report(reporter: str, reported: int):
+    reporter_user: User = read_single_user(reporter)["data"]
+    reported_event: Event = get_event(reported).get("data")
+
+    if reporter_user.id != current_user.id:
+        flash('Unauthorized to cancel report', category='error')
+        return redirect(url_for('events.event_details', event_id=reported_event.id))
+
+    remove_event_report(reporter_id=reporter_user.id,
+                        reported_event_id=reported_event.id)
+    return redirect(url_for('events.event_details', event_id=reported_event.id))

@@ -45,8 +45,7 @@
                 {% endblock %}
             </div>
 
-            {% if user.is_authenticated and user.id == person.id%}
-
+            {% if user.is_authenticated and user.id == person.id %}
             <div class="col d-flex justify-content-end">
                 {% block edit_person_saveChanges %}
                 <a href="{{ url_for('people.edit_person', username=user.username) }}">
@@ -54,6 +53,17 @@
                 </a>
                 {% endblock %}
             </div>
+            {% elif user.is_authenticated %}
+                {% from "macros.html" import content_report_modal %}
+                <div class="col d-flex justify-content-end">
+                    {{ content_report_modal(
+                        reported=reported, 
+                        content_type="User",
+                        content_name=person.display_name,
+                        report_post_addr=url_for('people.submit_user_report', reporter=user.username, reported=person.username),
+                        cancel_post_addr=url_for('people.cancel_user_report', reporter=user.username, reported=person.username),
+                    ) }}
+                </div>
             {% endif %}
 
         </div> <!-- HEADER ROW END -->

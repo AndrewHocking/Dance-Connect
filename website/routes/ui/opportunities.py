@@ -7,8 +7,11 @@ from urllib.parse import urlparse
 from ... import sanitize_html
 from ...forms.opportunity_filter import OpportunityFilter, fill_post_type_data, fill_term_type_data, fill_location_type_data, fill_compensation_type_data
 from ...forms.opportunity import CreateOpportunityForm
+from ...orm.report.report import add_opportunity_report, did_user_report_opportunity, remove_opportunity_report
+from ...orm.user.user import read_single_user
 from ...orm.opportunity.opportunity import get_opportunity_posts, get_opportunity_by_organizer_and_title, create_opportunity_post, update_opportunity_post, delete_opportunity_post
 from ...models.opportunity import PostType, TermType, LocationType, Opportunity
+from ...models.user import User
 
 opportunities = Blueprint('opportunities', __name__)
 
@@ -101,7 +104,13 @@ def opportunity(organizer: str, title: str):
         return render_template("opportunity-details.html", user=current_user, opportunity=opportunity)
 
     is_editable = current_user == opportunity.poster
-    return render_template("opportunity-details.html", user=current_user, opportunity=opportunity, edit=is_editable, post_type=post_types)
+
+    reported = None
+    if current_user.is_authenticated:
+        reported = did_user_report_opportunity(
+            reporter_id=current_user.id, reported_opportunity_id=opportunity.id).get("data")
+
+    return render_template("opportunity-details.html", user=current_user, opportunity=opportunity, edit=is_editable, post_type=post_types, reported=reported)
 
 
 @opportunities.route('/create/', methods=['GET', 'POST'])
@@ -411,3 +420,44 @@ def delete_opportunity(organizer: str, title: str):
     delete_opportunity_post(opportunity.id)
     flash('Opportunity Post deleted!', category='success')
     return redirect(url_for('opportunities.opportunities_list'))
+
+
+@opportunities.route('/report/<reporter>/<reported_title>/<reported_org>', methods=['POST'])
+@login_required
+def submit_opportunity_report(reporter: str, reported_title: str, reported_org: str):
+    reporter_user: User = read_single_user(reporter)["data"]
+    reported_opportunity: Opportunity = get_opportunity_by_organizer_and_title(
+        title=reported_title, organizer=reported_org).get("data")
+
+    if reporter_user.id != current_user.id:
+        flash('Unauthorized to report opportunity', category='error')
+        return redirect(url_for('opportunities.opportunity', organizer=reported_opportunity.organizer, title=reported_opportunity.title))
+
+    reason = request.form.get("reason")
+    details = request.form.get("details")
+
+    resp = add_opportunity_report(reason=reason, details=details,
+                                  reporter_id=reporter_user.id, reported_opportunity_id=reported_opportunity.id)
+
+    if resp['status_code'] != 201:
+        flash('Unable to report opportunity.', category='error')
+    else:
+        flash('Opportunity report successfully submitted', category='success')
+
+    return redirect(url_for('opportunities.opportunity', organizer=reported_opportunity.organizer, title=reported_opportunity.title))
+
+
+@opportunities.route('/report_cancel/<reporter>/<reported_title>/<reported_org>', methods=['POST'])
+@login_required
+def cancel_opportunity_report(reporter: str, reported_title: str, reported_org: str):
+    reporter_user: User = read_single_user(reporter)["data"]
+    reported_opportunity: Opportunity = get_opportunity_by_organizer_and_title(
+        title=reported_title, organizer=reported_org).get("data")
+
+    if reporter_user.id != current_user.id:
+        flash('Unauthorized to cancel report', category='error')
+        return redirect(url_for('opportunities.opportunity', organizer=reported_opportunity.organizer, title=reported_opportunity.title))
+
+    remove_opportunity_report(reporter_id=reporter_user.id,
+                              reported_opportunity_id=reported_opportunity.id)
+    return redirect(url_for('opportunities.opportunity', organizer=reported_opportunity.organizer, title=reported_opportunity.title))

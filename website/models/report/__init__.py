@@ -1,1 +1,1 @@
-from .report import BugReport
+from .report import BugReport, UserReport, EventReport, OpportunityReport

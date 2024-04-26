@@ -1,5 +1,7 @@
 from flask import Blueprint, request, redirect, url_for, flash
 
+from ...models.user import User
+from ...models.event import Event
 from ...orm.report.report import add_bug_report
 
 reports = Blueprint('reports', __name__)

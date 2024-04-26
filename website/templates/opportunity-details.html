@@ -37,6 +37,17 @@
                     </div>
                 </div>
             </div>
+            {% elif user.is_authenticated %}            
+            {% from "macros.html" import content_report_modal %}
+            <div class="col d-flex justify-content-end">
+                {{ content_report_modal(
+                    reported=reported, 
+                    content_type="Opportunity",
+                    content_name=opportunity.title,
+                    report_post_addr=url_for('opportunities.submit_opportunity_report', reporter=user.username, reported_title=opportunity.title, reported_org=opportunity.organizer),
+                    cancel_post_addr=url_for('opportunities.cancel_opportunity_report', reporter=user.username, reported_title=opportunity.title, reported_org=opportunity.organizer),
+                ) }}
+            </div>
             {% endif %}
         </div>
 

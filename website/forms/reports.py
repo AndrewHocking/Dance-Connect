@@ -5,7 +5,7 @@ from wtforms.validators import InputRequired, Length
 
 class BugReportForm(FlaskForm):
     title = StringField(
-        label="Issue Name",
+        label="Issue",
         validators=[InputRequired()],
         name="title",
         render_kw={"placeholder": "Home Page doesn't load.",

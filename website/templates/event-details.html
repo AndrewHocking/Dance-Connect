@@ -42,6 +42,17 @@
                 </div>
             </div>
         </div>
+        {% elif user.is_authenticated %}
+        {% from "macros.html" import content_report_modal %}
+        <div class="col d-flex justify-content-end">
+            {{ content_report_modal(
+                reported=reported, 
+                content_type="Event",
+                content_name=event.title,
+                report_post_addr=url_for('events.submit_event_report', reporter=user.username, reported=event.id),
+                cancel_post_addr=url_for('events.cancel_event_report', reporter=user.username, reported=event.id),
+            ) }}
+        </div>
         {% endif %}
     </div>
     <div class="col">

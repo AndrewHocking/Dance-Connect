@@ -1,10 +1,11 @@
 import os
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask import current_app
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 from ... import bcrypt
 from ...orm.event.event_contributor import get_affilliations
+from ...orm.report.report import did_user_report_user, add_user_report, remove_user_report
 from ...orm.user.user import read_users, read_single_user, update_user, User, UserType, create_socials_link, update_socials_link, check_email_exists
 from ...forms.people_filter import (
     PeopleFilter,
@@ -143,8 +144,6 @@ def person(username):
     for social in person.socials:
         socialMediaDic[social.social_media] = social.handle
 
-    print(socialMediaDic)
-
     edit = False
 
     bio = None
@@ -152,6 +151,11 @@ def person(username):
         bio = person.bio
 
     affiliations = get_affilliations(person.id)["data"] or []
+
+    reported = None
+    if current_user.is_authenticated:
+        reported = did_user_report_user(
+            reporter_id=current_user.id, reported_user_id=person.id).get("data") is not None
 
     return render_template(
         "person.html",
@@ -163,6 +167,7 @@ def person(username):
         affiliations=affiliations,
         edit=edit,
         socials=socialMediaDic,
+        reported=reported,
     )
 
 
@@ -454,3 +459,42 @@ def allowed_file(filename) -> bool:
     """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@people.route('/report/<reporter>/<reported>/', methods=['POST'])
+@login_required
+def submit_user_report(reporter: str, reported: str):
+    reporter_user: User = read_single_user(reporter)["data"]
+    reported_user: User = read_single_user(reported)["data"]
+
+    if reporter_user.id != current_user.id:
+        flash('Unauthorized to report user', category='error')
+        return redirect(url_for('people.person', username=reported_user.username))
+
+    reason = request.form.get("reason")
+    details = request.form.get("details")
+
+    resp = add_user_report(reason=reason, details=details,
+                           reporter_id=reporter_user.id, reported_user_id=reported_user.id)
+
+    if resp['status_code'] != 201:
+        flash('Unable to report user.', category='error')
+    else:
+        flash('User report successfully recieved', category='success')
+
+    return redirect(url_for('people.person', username=reported_user.username))
+
+
+@people.route('/report_cancel/<reporter>/<reported>', methods=['POST'])
+@login_required
+def cancel_user_report(reporter: str, reported: str):
+    reporter_user: User = read_single_user(reporter)["data"]
+    reported_user: User = read_single_user(reported)["data"]
+
+    if reporter_user.id != current_user.id:
+        flash('Unauthorized to remove report', category='error')
+        return redirect(url_for('people.person', username=reported_user.username))
+
+    remove_user_report(reporter_id=reporter_user.id,
+                       reported_user_id=reported_user.id)
+    return redirect(url_for('people.person', username=reported_user.username))
