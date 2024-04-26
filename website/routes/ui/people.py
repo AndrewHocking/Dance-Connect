@@ -286,12 +286,26 @@ def edit_person(username):
                 )
             else:
                 filename = secure_filename(file.filename)
+
+                print("\n\n")
+                print(os.path.join(
+                    os.path.join(os.path.split(
+                        os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+                print("\n\n")
+
                 # save file to temp folder
                 file.save(os.path.join(
-                    current_app.config['UPLOAD_FOLDER'], filename))
+                    os.path.join(os.path.split(
+                        os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+                # file.save(os.path.join(
+                #     current_app.config['UPLOAD_FOLDER'], filename))
                 # upload file to cloudflare
                 output = cdn.upload(os.path.join(
-                    current_app.config['UPLOAD_FOLDER'], filename))
+                    os.path.join(os.path.split(
+                        os.path.split(os.path.dirname(__file__))[0])[0]) + "/cloud/temp/", filename))
+
+                # output = cdn.upload(os.path.join(
+                #     current_app.config['UPLOAD_FOLDER'], filename))
 
                 if len(output["errors"]) > 0:
                     flash("Error uploading file to cloudflare", "error")
