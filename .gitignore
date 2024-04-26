@@ -3,5 +3,6 @@
 .vscode/**
 /secrets/*
 .DS_Store
+/instance/*
 /instance
 website/secrets/keys.json
