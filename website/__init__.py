@@ -97,8 +97,10 @@ def create_app():
 
     # create the directory if it doesn't yet exist
     # This is the cloud temp folder and to make sure that it exists
-    if not os.path.isdir("./website/cloud/temp"):
-        os.mkdir("./website/cloud/temp")
+    tempFolder = os.path.join(os.path.dirname(
+        __file__)) + "/cloud/temp"
+    if not os.path.isdir(tempFolder):
+        os.mkdir(tempFolder)
 
     return app
 
