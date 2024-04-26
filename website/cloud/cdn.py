@@ -1,10 +1,12 @@
 # Path: cloud/cdn.py
+from flask import flash
 import requests
 import json
 import uuid
 import os
 import shutil
 from PIL import Image
+from werkzeug.utils import secure_filename
 # from ...instance.config import Config
 
 
@@ -12,6 +14,8 @@ from PIL import Image
 ALLOWED_EXTENSIONS = ("png", "gif", "jpeg", "svg", "jpg")
 
 TEMP_FOLDER = './website/cloud/temp'
+
+MAX_FILE_SIZE = 1024 * 1024 * 10  # 10MB
 
 # https://stackoverflow.com/a/32623308
 SECRETS = os.path.join(os.path.split(
@@ -311,6 +315,46 @@ class CDN:
             return True
         except Exception:
             return False
+
+    def check_image(self, file) -> bool:
+        """
+        Checks if the file is allowed to be uploaded.
+
+        Args: 
+            file (FileStorage): The file to check
+
+        Returns:
+            bool: True if the file is allowed to be uploaded, False otherwise
+        """
+
+        # according to co-pilot, this is a secure way to handle file uploads
+        # this uses the werkzeug.utils library
+        filename = secure_filename(file.filename)
+        if not file:
+            flash("No file uploaded", "error")
+            return False
+
+        if not self._allowed_file(file.filename):
+            flash("File type not allowed", "error")
+            return False
+
+        if file.content_length > MAX_FILE_SIZE:
+            flash("File size too large", "error")
+            return False
+        return True
+
+    def _allowed_file(self, filename) -> bool:
+        """
+        Check if the file is allowed to be uploaded
+
+        Args:
+            filename (str): the name of the file
+
+        Returns: 
+            bool: True if the file is allowed to be uploaded, False otherwise
+        """
+        return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     def _error_message(self, message: str) -> dict:
         """
