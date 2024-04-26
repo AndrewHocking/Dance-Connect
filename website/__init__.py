@@ -60,8 +60,8 @@ def sanitize_html(html_text, additional_tags: list[str] = []):
 def create_app():
     app = Flask(__name__)
 
-    config_type = 'DevelopmentConfig'
-    # config_type = 'ProductionConfig'
+    # config_type = 'DevelopmentConfig'
+    config_type = 'ProductionConfig'
     app.config.from_object(f'instance.config.{config_type}')
     db.init_app(app)
 
