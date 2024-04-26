@@ -44,13 +44,11 @@
     {% for person in people %}
     <div class="col-auto mx-xxl-2 mx-xl-0">
         {{ grid_item(
-            image_src=url_for('static',
-            filename='images/placeholder.jpg'),
-            title=person.display_name,
-            subtitle="@"+person.username,
-            text=person.password,
-            href=url_for('people.person',
-            username=person.username)
+        image_src=person.get_profile_pic_url(),
+        title=person.display_name,
+        subtitle="@"+person.username,
+        href=url_for('people.person',
+        username=person.username)
         ) }}
     </div>
     {% endfor %}

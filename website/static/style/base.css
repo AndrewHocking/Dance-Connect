@@ -300,6 +300,10 @@ body {
     min-height: 200px;
 }
 
+.ck-content {
+    color: black;
+}
+
 label.required:after {
     content: " ✽ ";
     color: var(--pink);

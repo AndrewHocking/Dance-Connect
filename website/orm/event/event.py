@@ -26,7 +26,9 @@ def create_event(
     max_ticket_price: float = None,
     occurrences: List[dict] = list(),
     contributors: List[User] = list(),
-    commit_db_after_creation: bool = True
+    commit_db_after_creation: bool = True,
+    image_picture_url="",
+    image_picture_id="",
 ):
     new_event = Event(
         organizer_id=organizer.id,
@@ -44,6 +46,8 @@ def create_event(
         occurrences=list(),
         contributors=contributors,
         request_notifications=list(),
+        image_picture_url=image_picture_url,
+        image_picture_id=image_picture_id,
     )
 
     db.session.add(new_event)
@@ -183,7 +187,9 @@ def update_event(
     max_ticket_price: float = None,
     occurrences: List[dict] = None,
     contributors: List[User] = None,
-    commit_db_after_update: bool = True
+    commit_db_after_update: bool = True,
+    image_picture_url=None,
+    image_picture_id=None,
 ):
 
     if organizer is not None:
@@ -234,6 +240,12 @@ def update_event(
         for contributor in contributors:
             connect_user_to_event(
                 user=contributor, event=event, role="Contributor")
+
+    if image_picture_url is not None:
+        event.image_picture_url = image_picture_url
+
+    if image_picture_id is not None:
+        event.image_picture_id = image_picture_id
 
     db.session.add(event)
     if commit_db_after_update:

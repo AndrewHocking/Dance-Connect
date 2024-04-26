@@ -1,15 +1,25 @@
 # Path: cloud/cdn.py
+from flask import flash
 import requests
 import json
 import uuid
 import os
 import shutil
 from PIL import Image
+from werkzeug.utils import secure_filename
+# from ...instance.config import Config
+
 
 # TODO: HERE TO MODIFY ACCEPTED FILE FORMATS
 ALLOWED_EXTENSIONS = ("png", "gif", "jpeg", "svg", "jpg")
 
-TEMP_FOLDER = "./website/cloud/temp/"
+TEMP_FOLDER = './website/cloud/temp'
+
+MAX_FILE_SIZE = 1024 * 1024 * 10  # 10MB
+
+# https://stackoverflow.com/a/32623308
+SECRETS = os.path.join(os.path.split(
+    os.path.split(os.path.dirname(__file__))[0])[0]) + "/secrets/keys.json"
 
 
 class CDN:
@@ -46,13 +56,13 @@ class CDN:
             bool: True if the keys were read successfully, False otherwise.
         """
         try:
-            with open("./secrets/keys.json", "r") as file:
+            with open(SECRETS, "r") as file:
                 data = json.load(file)
                 self._key = data["cloudflare"]["cdn_key"]
                 self._account_hash = data["cloudflare"]["account_hash"]
                 file.close()
         except Exception:
-            pass
+            print("ERROR: Failed to read keys from secrets folder")
 
     def upload(self, path: str) -> dict:
         """
@@ -118,7 +128,7 @@ class CDN:
                 return self._error_message("Image height is greater than 12000 pixels")
             if width * height > 100000000:
                 return self._error_message("Image area is greater than 100 MegaPixels")
-            if os.path.getsize(path) > 1000000:
+            if os.path.getsize(path) > 10000000:
                 return self._error_message("Image size is greater than 10MB")
 
             # check file formats
@@ -306,6 +316,46 @@ class CDN:
         except Exception:
             return False
 
+    def check_image(self, file) -> bool:
+        """
+        Checks if the file is allowed to be uploaded.
+
+        Args: 
+            file (FileStorage): The file to check
+
+        Returns:
+            bool: True if the file is allowed to be uploaded, False otherwise
+        """
+
+        # according to co-pilot, this is a secure way to handle file uploads
+        # this uses the werkzeug.utils library
+        filename = secure_filename(file.filename)
+        if not file:
+            flash("No file uploaded", "error")
+            return False
+
+        if not self._allowed_file(file.filename):
+            flash("File type not allowed", "error")
+            return False
+
+        if file.content_length > MAX_FILE_SIZE:
+            flash("File size too large", "error")
+            return False
+        return True
+
+    def _allowed_file(self, filename) -> bool:
+        """
+        Check if the file is allowed to be uploaded
+
+        Args:
+            filename (str): the name of the file
+
+        Returns: 
+            bool: True if the file is allowed to be uploaded, False otherwise
+        """
+        return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
     def _error_message(self, message: str) -> dict:
         """
         Returns a dictionary with an error message.
@@ -329,9 +379,13 @@ def main():
     The main function used for manually testing the CDN class.
     https://api.cloudflare.com/client/v4/accounts/{account_id}/images/v2
     """
+
     cdn = CDN()
-    print(cdn.download_original("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
-    # cdn.empty_temp_folder()
+    # output = cdn.upload(
+    #     "./temp/DEBUG_PROFILE_PICTURE_Grace Turner_22769.png")
+    # print(output)
+    # print(cdn.download_original("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
+    cdn.empty_temp_folder()
     # print(cdn.test())
     # print(cdn.get_image_details("57ca5a8c-f909-429d-d4cb-4b00b75f6d00"))
 
