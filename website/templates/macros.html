@@ -3,26 +3,31 @@
 {% set title = "photosensitivity-friendly" %}
 {% if danger %}
 {% set icon_name = "lightbulb-off-fill" %}
-{% set popover_content = "This event may contain lighting effects that are not safe for individuals who experience photosensitivity." %}
+{% set popover_content = "This event may contain lighting effects that are not safe for individuals who experience
+photosensitivity." %}
 {% else %}
 {% set icon_name = "lightbulb-fill" %}
-{% set popover_content = "Any lighting effects used during photosensitivity-friendly events should be safe for individuals who experience
+{% set popover_content = "Any lighting effects used during photosensitivity-friendly events should be safe for
+individuals who experience
 photosensitivity." %}
 {% endif %}
 {% elif icon == "hearing" %}
 {% set icon_name = "ear-fill" %}
 {% set title = "hearing accessible" %}
-{% set popover_content = "Events that are hearing accessible are, or have been modified to be, accessible for individuals who are deaf or hard of
+{% set popover_content = "Events that are hearing accessible are, or have been modified to be, accessible for
+individuals who are deaf or hard of
 hearing." %}
 {% elif icon == "vision" %}
 {% set icon_name = "eye-fill" %}
 {% set title = "visually accessible" %}
-{% set popover_content = "Events that are visually accessible are, or have been modified to be, accessible for individuals who are blind or have low
+{% set popover_content = "Events that are visually accessible are, or have been modified to be, accessible for
+individuals who are blind or have low
 vision." %}
 {% elif icon == "relaxed performance" %}
 {% set icon_name = "infinity" %}
 {% set title = "relaxed performance" %}
-{% set popover_content = "<p>Relaxed performances are adapted shows for those who find standard theater settings challenging. This can include changes
+{% set popover_content = "<p>Relaxed performances are adapted shows for those who find standard theater settings
+    challenging. This can include changes
     to
     lighting and audio volume, as well as relaxing theatre &quot;rules&quot;.</p><a
     href='https://www.sensoryfriendly.net/sensory-relaxed-performances/#What-makes-a-performance-relaxed' title='What is a relaxed performance?'
@@ -31,7 +36,8 @@ vision." %}
 {% set icon_name = "person-wheelchair" %}
 {% set title = "mobility aid accessible venue" %}
 {% if danger %}
-{% set popover_content = "This venue is <strong>not</strong> fully accessible for individuals who use mobility aids, such as wheelchairs." %}
+{% set popover_content = "This venue is <strong>not</strong> fully accessible for individuals who use mobility aids,
+such as wheelchairs." %}
 {% else %}
 {% set popover_content = "This venue is fully accessible for individuals who use mobility aids, such as wheelchairs." %}
 {% endif %}
@@ -68,7 +74,8 @@ vision." %}
                 {{ occurrence.end_time() }}
             </div>
         </div>
-        <div class="form-text text-start text-lg-center text-xl-start">Leave "End time" blank to not specify an end time for this occurrence.</div>
+        <div class="form-text text-start text-lg-center text-xl-start">Leave "End time" blank to not specify an end time
+            for this occurrence.</div>
         <div id="accessibility-info" class="form-group mt-3">
             <div class="form-check">
                 {{ occurrence.is_relaxed_performance() }}

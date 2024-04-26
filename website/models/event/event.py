@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from flask import url_for
 from ... import db
 from sqlalchemy import Boolean, Integer, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -27,6 +28,8 @@ class Event(db.Model):
     accessibility_notes: Mapped[str]
     min_ticket_price: Mapped[Optional[float]]
     max_ticket_price: Mapped[Optional[float]]
+    image_picture_url: Mapped[str]
+    image_picture_id: Mapped[str]
     occurrences: Mapped[List['EventOccurrence']] = relationship(
         'EventOccurrence', back_populates='event', order_by="asc(EventOccurrence.start_time)", cascade="all, delete-orphan")
     contributors: Mapped[List['User']] = relationship(
@@ -69,3 +72,8 @@ class Event(db.Model):
         if chronological_list:
             return chronological_list[-1]
         return None
+
+    def get_image_url(self):
+        if self.image_picture_url == "":
+            return url_for("static", filename="images/placeholder.jpg")
+        return self.image_picture_url

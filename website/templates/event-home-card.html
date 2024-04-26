@@ -2,7 +2,7 @@
     <div class="col-12 col-md-5 col-xl-4">
         <a href="{{url_for('events.event_details', event_id=event.id)}}" class="text-reset text-decoration-none">
             <div class="rounded mb-4 overflow-hidden ratio ratio-16x9">
-                <img src="{{url_for('static', filename='images/placeholder.jpg')}}" class="img-fluid" alt="Image for {{ event.title }}" />
+                <img src="{{ event.get_image_url() }}" class="img-fluid" alt="Image for {{ event.title }}" />
             </div>
         </a>
     </div>
@@ -10,10 +10,12 @@
         <a href="{{url_for('events.event_details', event_id=event.id)}}" class="text-reset text-decoration-none">
             <h3>{{ event.title }}</h3>
             <h5 class="text-body-secondary m-0">
-                {{ event.next_occurrence.start_time.strftime("%A, %B %-d at %-I:%M %p") if event.next_occurrence else "" }}
+                {{ event.next_occurrence.start_time.strftime("%A, %B %-d at %-I:%M %p") if event.next_occurrence else ""
+                }}
             </h5>
             {% if occurrence_count > 1 %}
-            <p class="text-body-secondary mb-0">{{ "+"+((occurrence_count-1)|string)+" more time" + ("s" if occurrence_count > 2 else "") }}</p>
+            <p class="text-body-secondary mb-0">{{ "+"+((occurrence_count-1)|string)+" more time" + ("s" if
+                occurrence_count > 2 else "") }}</p>
             {% endif %}
             <p class="mt-1 home-card-event-description">{{ event.description }}</p>
         </a>

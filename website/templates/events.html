@@ -7,7 +7,8 @@
     {{ filters.sort() }}
 </div>
 <label class="form-label mb-0">Accessibility</label>
-<div class="form-text mt-0 pt-0 mb-1">Click the <i class="bi bi-question-circle" aria-label="question mark icon"></i> for more information</div>
+<div class="form-text mt-0 pt-0 mb-1">Click the <i class="bi bi-question-circle" aria-label="question mark icon"></i>
+    for more information</div>
 <div class="form-group mb-3">
     <div class="form-check">
         {{ filters.venue_is_mobility_aid_accessible() }}
@@ -115,13 +116,11 @@
 {% for event, occurrence_count in events %}
 <div class="col-auto mx-xxl-2 mx-xl-0">
     {{ grid_item(
-        image_src=url_for('static',
-        filename='images/placeholder.jpg'),
-        title=event.title,
-        subtitle=(event.get_next_occurrence_after(date=filters.start_date.data).start_time.strftime("%b %e, %-I:%M %p") if event.get_next_occurrence_after(date=filters.start_date.data) else ""),
-        text=("+"+((occurrence_count-1)|string)+" more time" if occurrence_count != 1 else "") + ("s" if occurrence_count > 2 else ""),
-        href=url_for('events.event_details',
-        event_id=event.id)
+    image_src=event.get_image_url(),
+    title=event.title,
+    subtitle=(event.get_next_occurrence_after(date=filters.start_date.data).start_time.strftime("%b %e, %-I:%M %p") if event.get_next_occurrence_after(date=filters.start_date.data) else ""),
+    text=("+"+((occurrence_count-1)|string)+" more time" if occurrence_count != 1 else "") + ("s" if occurrence_count > 2 else ""),
+    href=url_for('events.event_details', event_id=event.id)
     ) }}
 </div>
 {% endfor %}

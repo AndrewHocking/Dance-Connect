@@ -58,7 +58,8 @@
         </div>
         {% endfor %}
         {% else %}
-        <div class="h5 my-4 text-center">There are currently no pending requests received from other users to join your events.</div>
+        <div class="h5 my-4 text-center">There are currently no pending requests received from other users to join your
+            events.</div>
         {% endif %}
     </div>
 
@@ -105,7 +106,7 @@
             <div class="row pt-3 pb-4 border-bottom border-2">
                 <div class="col-12 mb-1 d-flex flex-row align-items-center">
                     <div class="fw-bold h6 mb-0 me-2 me-sm-5 notification-title">Event</div>
-                    <img class="rounded-3 p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                    <img class="rounded-3 p-1 me-2 notification-img" src="{{ notification.event.get_image_url() }}"
                         alt="{{ notification.event.title }}" />
                     <div class="h6 mb-0">{{ notification.event.title }}</div>
                 </div>
