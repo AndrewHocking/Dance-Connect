@@ -6,7 +6,7 @@
     </div>
     {% for contribution in future_events %}
     <div class="col-auto">
-        {{ grid_item(title=contribution.event.title, subtitle=contribution.role, text=("Next: " ~ contribution.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.next_occurrence else ("Last: " ~ (contribution.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.occurrences|length > 0 else "", image_src=url_for('static', filename='images/placeholder.jpg'), href=url_for('events.event_details', event_id=contribution.event.id)) }}
+        {{ grid_item(title=contribution.event.title, subtitle=contribution.role, text=("Next: " ~ contribution.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.next_occurrence else ("Last: " ~ (contribution.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.occurrences|length > 0 else "", image_src=contribution.event.get_image_url(), href=url_for('events.event_details', event_id=contribution.event.id)) }}
     </div>
     {% endfor %}
     {% endif %}
@@ -17,7 +17,7 @@
     </div>
     {% for contribution in past_events %}
     <div class="col-auto">
-        {{ grid_item(title=contribution.event.title, subtitle=contribution.role, text=("Next: " ~ contribution.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.next_occurrence else ("Last: " ~ (contribution.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.occurrences|length > 0 else "", image_src=url_for('static', filename='images/placeholder.jpg'), href=url_for('events.event_details', event_id=contribution.event.id)) }}
+        {{ grid_item(title=contribution.event.title, subtitle=contribution.role, text=("Next: " ~ contribution.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.next_occurrence else ("Last: " ~ (contribution.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contribution.event.occurrences|length > 0 else "", image_src=contribution.event.get_image_url(), href=url_for('events.event_details', event_id=contribution.event.id)) }}
     </div>
     {% endfor %}
     {% endif %}

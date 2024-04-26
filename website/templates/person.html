@@ -159,8 +159,7 @@
                                         {% if loop.index0 < max_events_to_show %} {# Why is the auto-formatter REFUSING to put this on a new line #}
                                             <div class="col-auto me-2 px-0 {{ 'ps-0' if loop.index0 == 0 else ''}}" style="min-width: 250px;">
                                             {{ grid_item(
-                                                            image_src=url_for('static',
-                                                            filename='images/placeholder.jpg'),
+                                                            image_src=contributed.event.get_image_url(),
                                                             title=contributed.event.title,
                                                             subtitle=contributed.role,
                                                             text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.occurrences|length > 0 else "",
@@ -183,8 +182,7 @@
                                     {% if loop.index0 < (max_events_to_show - future_events|length) %} {# auto-formatter PLEASE make a new line #}
                                         <div class="col-auto me-2 px-0 {{ 'ps-0' if loop.index0 == 0 else ''}}" style="min-width: 250px;">
                                         {{ grid_item(
-                                                            image_src=url_for('static',
-                                                            filename='images/placeholder.jpg'),
+                                                            image_src=ucontributed.event.get_image_url(),
                                                             title=contributed.event.title,
                                                             subtitle=contributed.role,
                                                             text=("Next: " ~ contributed.event.next_occurrence.start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.next_occurrence else ("Last: " ~ (contributed.event.occurrences|last).start_time.strftime('%b %-d, %-I:%M %p')) if contributed.event.occurrences|length > 0 else "",

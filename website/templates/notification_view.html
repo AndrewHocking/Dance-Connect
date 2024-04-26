@@ -81,7 +81,7 @@
             <div class="row pt-1 pb-3 py-md-2 px-3 px-lg-4">
                 <a href="{{ url_for('events.event_details', event_id=notification.event.id) }}"
                     class="col d-flex flex-row align-items-center text-reset text-decoration-none">
-                    <img class="rounded-3 p-1 me-2 notification-img" src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                    <img class="rounded-3 p-1 me-2 notification-img" src="{{ notification.event.get_image_url() }}"
                         alt="{{ notification.event.title }}" />
                     <div class="h6 m-0">{{ notification.event.title }}</div>
                 </a>
