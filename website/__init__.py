@@ -1,3 +1,4 @@
+import os
 from typing import Any
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -93,6 +94,11 @@ def create_app():
     @login_manager.user_loader
     def load_user(id):
         return User.query.get(int(id))
+
+    # create the directory if it doesn't yet exist
+    # This is the cloud temp folder and to make sure that it exists
+    if not os.path.isdir("./website/cloud/temp"):
+        os.mkdir("./website/cloud/temp")
 
     return app
 
