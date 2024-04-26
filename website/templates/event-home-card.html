@@ -2,7 +2,7 @@
     <div class="col-12 col-md-5 col-xl-4">
         <a href="{{url_for('events.event_details', event_id=event.id)}}" class="text-reset text-decoration-none">
             <div class="rounded mb-4 overflow-hidden ratio ratio-16x9">
-                <img src="{{url_for('static', filename='images/placeholder.jpg')}}" class="img-fluid" alt="Image for {{ event.title }}" />
+                <img src="{{ event.get_image_url() }}" class="img-fluid" alt="Image for {{ event.title }}" />
             </div>
         </a>
     </div>
@@ -10,10 +10,12 @@
         <a href="{{url_for('events.event_details', event_id=event.id)}}" class="text-reset text-decoration-none">
             <h3>{{ event.title }}</h3>
             <h5 class="text-body-secondary m-0">
-                {{ event.next_occurrence.start_time.strftime("%A, %B %-d at %-I:%M %p") if event.next_occurrence else "" }}
+                {{ event.next_occurrence.start_time.strftime("%A, %B %-d at %-I:%M %p") if event.next_occurrence else ""
+                }}
             </h5>
             {% if occurrence_count > 1 %}
-            <p class="text-body-secondary mb-0">{{ "+"+((occurrence_count-1)|string)+" more time" + ("s" if occurrence_count > 2 else "") }}</p>
+            <p class="text-body-secondary mb-0">{{ "+"+((occurrence_count-1)|string)+" more time" + ("s" if
+                occurrence_count > 2 else "") }}</p>
             {% endif %}
             <p class="mt-1 home-card-event-description">{{ event.description }}</p>
         </a>
@@ -41,7 +43,8 @@
     </div>
     <div class="row align-items-center flex-nowrap pe-sm-0">
         <div class="col-1 col-lg-auto contributors-scroll-btn pe-0 pb-2 z-3">
-            <button class="btn btn-sm btn-primary rounded contributors-scroll-backward-btn" style="width: 40px; height: 40px;">
+            <button class="btn btn-sm btn-primary rounded contributors-scroll-backward-btn"
+                style="width: 40px; height: 40px;">
                 <i class="bi bi-arrow-left-short bi-bold h5"></i>
             </button>
         </div>
@@ -49,12 +52,14 @@
             <div class="home-card-contributor-list row align-items-center flex-nowrap overflow-x-scroll mx-1">
                 {% set max_people_to_show = 5 %}
                 {% for contributor in event.contributor_association[:max_people_to_show] %}
-                <a href="{{url_for('people.person', username=contributor.user.username)}}" class="col-auto text-reset text-decoration-none me-2">
+                <a href="{{url_for('people.person', username=contributor.user.username)}}"
+                    class="col-auto text-reset text-decoration-none me-2">
                     <div class="row align-items-center flex-nowrap">
                         <div class="col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body me-2"
                             style="width: 75px; height: 75px;">
-                            <div class="rounded-circle mx-auto overflow-hidden position-relative" style="width: 75px; height: 75px;">
-                                <img src="{{url_for('static', filename='images/placeholder.jpg')}}"
+                            <div class="rounded-circle mx-auto overflow-hidden position-relative"
+                                style="width: 75px; height: 75px;">
+                                <img src="{{ contributor.user.get_profile_pic_url() }}"
                                     class="img-fluid rounded-circle position-absolute top-50 start-50 translate-middle h-100 w-100"
                                     alt="{{ contributor.user.display_name }}" />
                             </div>
@@ -67,15 +72,18 @@
                 </a>
                 {% endfor %}
                 {% if event.contributor_association|length > max_people_to_show %}
-                <div class="view-all-contributors-button col-auto ms-3 me-2" data-bs-toggle="modal" data-bs-target="#view-all-contributors-modal"
-                    data-bs-event-title="{{ event.title }}" data-bs-event-id="{{ event.id }}" role="button">
+                <div class="view-all-contributors-button col-auto ms-3 me-2" data-bs-toggle="modal"
+                    data-bs-target="#view-all-contributors-modal" data-bs-event-title="{{ event.title }}"
+                    data-bs-event-id="{{ event.id }}" role="button">
                     <div class="row align-items-center flex-nowrap">
                         <div class="col-auto align-items-center p-0">
                             <div class="col-auto align-items-center justify-content-center my-2 position-relative text-decoration-none text-body"
                                 style="width: 75px; height: 75px;">
                                 <div class="rounded-circle mx-auto" style="height: 75px; width: 75px;">
-                                    <div class="rounded-circle mx-auto p-0 btn btn-primary" style="height: 75px; width: 75px;">
-                                        <div class="text-white d-flex align-items-center justify-content-center fs-4 h-100">
+                                    <div class="rounded-circle mx-auto p-0 btn btn-primary"
+                                        style="height: 75px; width: 75px;">
+                                        <div
+                                            class="text-white d-flex align-items-center justify-content-center fs-4 h-100">
                                             +{{event.contributor_association|length -
                                             max_people_to_show}}
                                         </div>
@@ -92,7 +100,8 @@
             </div>
         </div>
         <div class="col-1 col-lg-auto contributors-scroll-btn px-0 pb-2 z-3">
-            <button class="btn btn-sm btn-primary rounded contributors-scroll-forward-btn" style="width: 40px; height: 40px;">
+            <button class="btn btn-sm btn-primary rounded contributors-scroll-forward-btn"
+                style="width: 40px; height: 40px;">
                 <i class="bi bi-arrow-right-short bi-bold h5"></i>
             </button>
         </div>
